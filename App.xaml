@@ -1,0 +1,20 @@
+﻿<Application x:Class="PasswortNET.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PasswortNET"
+             StartupUri="Views\MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  Alle Styles sammeln und mergen  -->
+                <ResourceDictionary Source="pack://application:,,,/ModernUILibrary;component/Themes/Generic.xaml" />
+
+                <!--  Lokale Styles  -->
+                <ResourceDictionary Source="Resources\XamlIcon\XamlIcon.xaml" />
+                <!--  Externe Styles aus Bibliotheken  -->
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>

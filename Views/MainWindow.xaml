@@ -1,0 +1,92 @@
+﻿<winbase:WindowBase
+    x:Class="PasswortNET.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ModernUI="clr-namespace:ModernIU.Controls;assembly=ModernUILibrary"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PasswortNET"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winbase="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
+    Title="{Binding Path=DialogDescription}"
+    Width="800"
+    Height="450"
+    winbase:DialogClosing.IsClosing="True"
+    mc:Ignorable="d">
+
+    <ModernUI:MWindow.MoreOnTitle>
+        <StackPanel
+            Margin="0,0,10,0"
+            HorizontalAlignment="Left"
+            Orientation="Horizontal">
+            <ModernUI:DropDownButton Width="100" Content="Menü">
+                <ModernUI:DropDownButton.DropDownContent>
+                    <StackPanel Orientation="Vertical">
+                        <ModernUI:PathButton
+                            Width="100"
+                            Height="30"
+                            Margin="0,2"
+                            Background="#3399ff"
+                            Content="Menü 1"
+                            CornerRadius="3"
+                            MouseOverBackground="LightGray"
+                            PathData="{StaticResource ResourceKey=IconExcel}"
+                            PathWidth="14"
+                            PressedBackground="Gray" />
+
+                        <ModernUI:PathButton
+                            Width="100"
+                            Height="30"
+                            Margin="0,2"
+                            Background="#3399ff"
+                            Content="Menü 2"
+                            CornerRadius="3"
+                            MouseOverBackground="LightGray"
+                            PathData="{StaticResource ResourceKey=IconExcel}"
+                            PathWidth="14"
+                            PressedBackground="Gray" />
+
+                        <ModernUI:PathButton
+                            Width="100"
+                            Height="30"
+                            Margin="0,2"
+                            Background="#3399ff"
+                            Command="{Binding Path=CmdAgg[CloseWindowCommand]}"
+                            Content="Beenden"
+                            CornerRadius="3"
+                            MouseOverBackground="LightGray"
+                            PathData="{StaticResource ResourceKey=AppExit}"
+                            PathWidth="14"
+                            PressedBackground="Gray" />
+                    </StackPanel>
+                </ModernUI:DropDownButton.DropDownContent>
+            </ModernUI:DropDownButton>
+        </StackPanel>
+    </ModernUI:MWindow.MoreOnTitle>
+
+    <ModernUI:SimpleGrid Columns="*" Rows="40,*,30">
+        <TextBlock Grid.Row="0" Text="Zeile 1" />
+
+        <!--#region Contentbereich-->
+        <Border
+            Grid.Row="1"
+            Grid.Column="0"
+            BorderBrush="Black"
+            BorderThickness="0,1,0,1">
+            <ContentControl
+                x:Name="mainContent"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="LightGray"
+                Content="{Binding Path=WorkContent, UpdateSourceTrigger=PropertyChanged}"
+                KeyboardNavigation.IsTabStop="False"
+                KeyboardNavigation.TabNavigation="None"
+                ScrollViewer.CanContentScroll="True"
+                VirtualizingPanel.IsVirtualizing="True"
+                Visibility="Visible" />
+        </Border>
+        <!--#endregion Contentbereich-->
+
+        <TextBlock Grid.Row="2" Text="Statuszeile" />
+    </ModernUI:SimpleGrid>
+
+</winbase:WindowBase>
