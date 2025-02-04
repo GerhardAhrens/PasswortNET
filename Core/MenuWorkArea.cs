@@ -1,4 +1,4 @@
-namespace Mainova.Tools.Core
+namespace PasswortNET.Core
 {
     using System;
     using System.Windows.Controls;

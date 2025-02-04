@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Mainova.Tools.Core;
 
     using ModernUI.MVVM.Base;
+
     using PasswortNET.Views.ContentControls;
 
     public static class DialogFactory

@@ -31,5 +31,7 @@ namespace PasswortNET.Core
         Logoff = 2,
         [Description("Einstellungen")]
         AppSettings = 3,
+        [Description("Zurück")]
+        Back = 4,
     }
 }

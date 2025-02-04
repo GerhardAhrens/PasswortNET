@@ -4,7 +4,6 @@
     using System.Runtime.Versioning;
     using System.Windows;
     using System.Windows.Controls;
-    using Mainova.Tools.Core;
 
     using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
@@ -14,6 +13,7 @@
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Core;
+    using PasswortNET.Views.ContentControls;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -26,6 +26,9 @@
         public MainWindow() : base(typeof(MainWindow))
         {
             this.InitializeComponent();
+
+            this.DialogDescription = "PasswortNET";
+
             base.EventAgg.Subscribe<ChangeViewEventArgs>(this.ChangeControl);
             WeakEventManager<Window, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
             this.InitCommands();
@@ -50,6 +53,18 @@
             set { base.SetValue(value); }
         }
 
+        public bool IsAppSettings
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
+        public bool IsLogoff
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
         public override void InitCommands()
         {
             base.CmdAgg.AddOrSetCommand("CloseWindowCommand", new RelayCommand(p1 => this.CloseWindowHandler(p1), p2 => true));
@@ -59,15 +74,14 @@
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            this.DialogDescription = "PasswortNET";
             NotificationService.RegisterDialog<QuestionYesNo>();
             NotificationService.RegisterDialog<QuestionHtmlYesNo>();
 
             /* Letzte Windows Positionn landen*/
-            //using (UserPreferences userPrefs = new UserPreferences(this))
-            //{
-            //    userPrefs.Load();
-            //}
+            using (UserPreferences userPrefs = new UserPreferences(this))
+            {
+                userPrefs.Load();
+            }
 
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
             arg.MenuButton = MainButton.Login;
@@ -102,10 +116,10 @@
                 NotificationBoxButton result = this._notificationService.ApplicationExit();
                 if (result == NotificationBoxButton.Yes)
                 {
-                    //using (UserPreferences userPrefs = new UserPreferences(this))
-                    //{
-                    //    userPrefs.Save();
-                    //}
+                    using (UserPreferences userPrefs = new UserPreferences(this))
+                    {
+                        userPrefs.Save();
+                    }
 
                     e.Cancel = false;
                     Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
@@ -126,6 +140,21 @@
                 string name = e.MenuButton.ToDescription();
                 this.WorkContent = menuWorkArea.WorkContent;
                 this.WorkContent.VerticalAlignment = VerticalAlignment.Stretch;
+                if (this.WorkContent.GetType() == typeof(LoginUC))
+                {
+                    this.IsAppSettings = false;
+                    this.IsLogoff = false;
+                }
+                else if (this.WorkContent.GetType() == typeof(AppSettingsUC))
+                {
+                    this.IsAppSettings = false;
+                    this.IsLogoff = true;
+                }
+                else if (this.WorkContent.GetType() == typeof(HomeUC))
+                {
+                    this.IsAppSettings = true;
+                    this.IsLogoff = true;
+                }
             }
 
             this.IsDropDownOpen = false;
