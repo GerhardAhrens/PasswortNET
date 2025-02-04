@@ -57,6 +57,7 @@
                     Views = new Dictionary<Enum, Type>();
                     Views.Add(MainButton.Home, typeof(HomeUC));
                     Views.Add(MainButton.Login, typeof(LoginUC));
+                    Views.Add(MainButton.AppSettings, typeof(AppSettingsUC));
                 }
             }
             catch (Exception ex)

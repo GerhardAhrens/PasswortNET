@@ -27,5 +27,9 @@ namespace PasswortNET.Core
         Home = 1,
         [Description("Login")]
         Login = 2,
+        [Description("Logoff")]
+        Logoff = 2,
+        [Description("Einstellungen")]
+        AppSettings = 3,
     }
 }

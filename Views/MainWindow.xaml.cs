@@ -38,6 +38,12 @@
             set => base.SetValue(value);
         }
 
+        public bool IsDropDownOpen
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
         public UserControl WorkContent
         {
             get { return base.GetValue<UserControl>(); }
@@ -47,6 +53,8 @@
         public override void InitCommands()
         {
             base.CmdAgg.AddOrSetCommand("CloseWindowCommand", new RelayCommand(p1 => this.CloseWindowHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("AppSettingsCommand", new RelayCommand(p1 => this.AppSettingsHandler(p1), p2 => true));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -70,6 +78,20 @@
         private void CloseWindowHandler(object p1)
         {
             this.Close();
+        }
+
+        private void LogoffHandler(object p1)
+        {
+            ChangeViewEventArgs arg = new ChangeViewEventArgs();
+            arg.MenuButton = MainButton.Login;
+            this.ChangeControl(arg);
+        }
+
+        private void AppSettingsHandler(object p1)
+        {
+            ChangeViewEventArgs arg = new ChangeViewEventArgs();
+            arg.MenuButton = MainButton.AppSettings;
+            this.ChangeControl(arg);
         }
 
         public override void OnViewIsClosing(CancelEventArgs e)
@@ -105,7 +127,8 @@
                 this.WorkContent = menuWorkArea.WorkContent;
                 this.WorkContent.VerticalAlignment = VerticalAlignment.Stretch;
             }
-        }
 
+            this.IsDropDownOpen = false;
+        }
     }
 }

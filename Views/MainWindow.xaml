@@ -18,7 +18,10 @@
             Margin="0,0,10,0"
             HorizontalAlignment="Left"
             Orientation="Horizontal">
-            <ModernUI:DropDownButton Width="100" Content="Menü">
+            <ModernUI:DropDownButton
+                Width="100"
+                Content="Menü"
+                IsDropDownOpen="{Binding Path=IsDropDownOpen, UpdateSourceTrigger=PropertyChanged}">
                 <ModernUI:DropDownButton.DropDownContent>
                     <StackPanel Orientation="Vertical">
                         <ModernUI:PathButton
@@ -39,6 +42,34 @@
                             Margin="0,2"
                             Background="#3399ff"
                             Content="Menü 2"
+                            CornerRadius="3"
+                            MouseOverBackground="LightGray"
+                            PathData="{StaticResource ResourceKey=IconExcel}"
+                            PathWidth="14"
+                            PressedBackground="Gray" />
+
+                        <Separator Height="3" Background="Blue" />
+
+                        <ModernUI:PathButton
+                            Width="100"
+                            Height="30"
+                            Margin="0,2"
+                            Background="#3399ff"
+                            Command="{Binding Path=CmdAgg[AppSettingsCommand]}"
+                            Content="Einstellungen"
+                            CornerRadius="3"
+                            MouseOverBackground="LightGray"
+                            PathData="{StaticResource ResourceKey=IconExcel}"
+                            PathWidth="14"
+                            PressedBackground="Gray" />
+
+                        <ModernUI:PathButton
+                            Width="100"
+                            Height="30"
+                            Margin="0,2"
+                            Background="#3399ff"
+                            Command="{Binding Path=CmdAgg[LogoffCommand]}"
+                            Content="Abmelden"
                             CornerRadius="3"
                             MouseOverBackground="LightGray"
                             PathData="{StaticResource ResourceKey=IconExcel}"

@@ -1,0 +1,31 @@
+﻿<base:UserControlBase
+    x:Class="PasswortNET.Views.ContentControls.AppSettingsUC"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ModernUI="clr-namespace:ModernIU.Controls;assembly=ModernUILibrary"
+    xmlns:base="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <ModernUI:SimpleGrid Columns="*" Rows="30,*,30">
+        <StackPanel Orientation="Horizontal">
+            <ModernUI:PathButton
+                Width="100"
+                Height="30"
+                Margin="0,2"
+                Background="#3399ff"
+                Command="{Binding Path=CmdAgg[BackCommand]}"
+                Content="Zurück"
+                CornerRadius="3"
+                MouseOverBackground="LightGray"
+                PathData="{StaticResource ResourceKey=ArrowLeft}"
+                PathWidth="14"
+                PressedBackground="Gray" />
+
+            <TextBlock Text="Applikation Einstellungen Dialog" />
+        </StackPanel>
+    </ModernUI:SimpleGrid>
+</base:UserControlBase>
