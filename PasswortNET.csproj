@@ -15,16 +15,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ModernBaseLibrary">
-      <HintPath>..\_Lib\ModernBaseLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="ModernUILibrary">
-      <HintPath>..\_Lib\ModernUILibrary.dll</HintPath>
-    </Reference>
+    <Folder Include="Views\NotificationContent\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\NotificationContent\" />
+    <Reference Include="ModernBaseLibrary">
+      <HintPath>_Lib\ModernBaseLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="ModernUILibrary">
+      <HintPath>_Lib\ModernUILibrary.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
