@@ -33,7 +33,7 @@
                         <TextBlock
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="Header" />
+                            Text="Menü" />
                     </MenuItem.Header>
                     <MenuItem
                         Header="Passwörter/Lizenzen"
@@ -47,19 +47,32 @@
                         <MenuItem Header="Auswahl löschen (Entf)" />
                         <MenuItem Header="Auswahl kopieren" />
                     </MenuItem>
+
                     <Separator />
+
                     <MenuItem
                         Command="{Binding Path=CmdAgg[AppSettingsCommand]}"
                         CommandParameter="{x:Static localStatic:MainButton.AppSettings}"
                         Header="Einstellungen"
                         Icon="{StaticResource ResourceKey=MenuItemAppSettings}"
                         IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[AboutCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.About}"
+                        Header="Über ..."
+                        Icon="{StaticResource ResourceKey=MenuItemAbout}"
+                        IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Separator />
+
                     <MenuItem
                         Command="{Binding Path=CmdAgg[LogoffCommand]}"
                         CommandParameter="{x:Static localStatic:MainButton.Logoff}"
                         Header="Abmelden"
                         Icon="{StaticResource ResourceKey=MenuItemLogoff}"
                         IsEnabled="{Binding Path=IsLogoff, UpdateSourceTrigger=PropertyChanged}" />
+
                     <MenuItem
                         Command="{Binding Path=CmdAgg[CloseWindowCommand]}"
                         Header="Beenden"
@@ -70,20 +83,20 @@
         </StackPanel>
     </ModernUI:MWindow.MoreOnTitle>
 
-    <ModernUI:SimpleGrid Columns="*" Rows="40,*,30">
-        <TextBlock Grid.Row="0" Text="Zeile 1" />
-
+    <ModernUI:SimpleGrid Columns="*" Rows="*,40">
         <!--#region Contentbereich-->
         <Border
-            Grid.Row="1"
+            Grid.Row="0"
             Grid.Column="0"
+            Margin="0,10,0,0"
+            Background="Snow"
             BorderBrush="Black"
             BorderThickness="0,1,0,1">
             <ContentControl
                 x:Name="mainContent"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                Background="LightGray"
+                Background="Transparent"
                 Content="{Binding Path=WorkContent, UpdateSourceTrigger=PropertyChanged}"
                 KeyboardNavigation.IsTabStop="False"
                 KeyboardNavigation.TabNavigation="None"
@@ -93,7 +106,36 @@
         </Border>
         <!--#endregion Contentbereich-->
 
-        <TextBlock Grid.Row="2" Text="Statuszeile" />
+        <!--#region Statuszeile-->
+        <StatusBar
+            Grid.Row="2"
+            Height="Auto"
+            Background="Transparent"
+            FontSize="13">
+            <StatusBarItem DockPanel.Dock="Left">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{StaticResource ResourceKey=IconStatusbarUser}" />
+                    <Label x:Name="StatusbarUser" Content="{x:Static localStatic:StatusbarMain.CurrentUser}" />
+                </StackPanel>
+            </StatusBarItem>
+
+            <StatusBarItem DockPanel.Dock="Right">
+                <Label Content="{StaticResource ResourceKey=IconStatusbarCalendar}" />
+            </StatusBarItem>
+
+            <Separator Background="Black" />
+
+            <StatusBarItem DockPanel.Dock="Left">
+                <Label Content="{StaticResource ResourceKey=IconStatusbarDatabase}" />
+            </StatusBarItem>
+
+            <Separator Background="Black" />
+
+            <StatusBarItem DockPanel.Dock="Left">
+                <Label Content="{StaticResource ResourceKey=IconStatusbarNotification}" />
+            </StatusBarItem>
+        </StatusBar>
+        <!--#endregion Statuszeile-->
     </ModernUI:SimpleGrid>
 
 </winbase:WindowBase>

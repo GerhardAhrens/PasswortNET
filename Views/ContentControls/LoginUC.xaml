@@ -11,12 +11,37 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <ModernUI:SimpleGrid Columns="*" Rows="30,*,30">
-        <TextBlock Text="Login Dialog" />
+        <StackPanel
+            Height="Auto"
+            Background="LightBlue"
+            Orientation="Horizontal">
 
-        <ModernUI:FlatButton
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="14"
+                FontWeight="Bold"
+                Text="An PasswortNET anmelden" />
+        </StackPanel>
+
+        <DockPanel
             Grid.Row="2"
             Grid.Column="0"
-            Command="{Binding Path=CmdAgg[LoginCommand]}"
-            Content="Click" />
+            Height="Auto"
+            Background="LightBlue">
+
+            <ModernUI:FlatButton
+                Width="100"
+                Margin="10,0,0,0"
+                Command="{Binding Path=CmdAgg[LoginCommand]}"
+                Content="Anmelden"
+                DockPanel.Dock="Right" />
+
+            <ModernUI:FlatButton
+                Width="100"
+                HorizontalAlignment="Right"
+                Command="{Binding Path=CmdAgg[LoginCommand]}"
+                Content="Beeenden" />
+        </DockPanel>
+
     </ModernUI:SimpleGrid>
 </base:UserControlBase>

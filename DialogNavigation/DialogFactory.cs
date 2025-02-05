@@ -58,6 +58,7 @@
                     Views.Add(MainButton.Home, typeof(HomeUC));
                     Views.Add(MainButton.Login, typeof(LoginUC));
                     Views.Add(MainButton.AppSettings, typeof(AppSettingsUC));
+                    Views.Add(MainButton.About, typeof(AboutUC));
                 }
             }
             catch (Exception ex)

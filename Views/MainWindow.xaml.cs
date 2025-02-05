@@ -1,5 +1,6 @@
 ﻿namespace PasswortNET.Views
 {
+    using System;
     using System.ComponentModel;
     using System.Runtime.Versioning;
     using System.Windows;
@@ -76,6 +77,7 @@
             base.CmdAgg.AddOrSetCommand("CloseWindowCommand", new RelayCommand(p1 => this.CloseWindowHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("AppSettingsCommand", new RelayCommand(p1 => this.AppSettingsHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("AboutCommand", new RelayCommand(p1 => this.AboutHandler(p1), p2 => true));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -111,6 +113,13 @@
         {
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
             arg.MenuButton = MainButton.AppSettings;
+            this.ChangeControl(arg);
+        }
+
+        private void AboutHandler(object p1)
+        {
+            ChangeViewEventArgs arg = new ChangeViewEventArgs();
+            arg.MenuButton = MainButton.About;
             this.ChangeControl(arg);
         }
 
@@ -153,6 +162,12 @@
                     this.IsWorkPassword = false;
                 }
                 else if (this.WorkContent.GetType() == typeof(AppSettingsUC))
+                {
+                    this.IsAppSettings = false;
+                    this.IsWorkPassword = false;
+                    this.IsLogoff = true;
+                }
+                else if (this.WorkContent.GetType() == typeof(AboutUC))
                 {
                     this.IsAppSettings = false;
                     this.IsWorkPassword = false;

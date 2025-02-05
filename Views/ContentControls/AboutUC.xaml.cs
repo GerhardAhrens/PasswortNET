@@ -7,11 +7,11 @@
     using PasswortNET.Core;
 
     /// <summary>
-    /// Interaktionslogik für AppSettingsUC.xaml
+    /// Interaktionslogik für AboutUC.xaml
     /// </summary>
-    public partial class AppSettingsUC : UserControlBase
+    public partial class AboutUC : UserControlBase
     {
-        public AppSettingsUC() : base(typeof(AppSettingsUC))
+        public AboutUC() : base(typeof(AboutUC))
         {
             this.InitializeComponent();
             this.InitCommands();
@@ -20,7 +20,7 @@
 
         public override void InitCommands()
         {
-            this.CmdAgg.AddOrSetCommand("BackSettingsCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("BackAboutCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
         }
 
         private void BackHandler(object p1)
