@@ -23,6 +23,33 @@
                 Text="An PasswortNET anmelden" />
         </StackPanel>
 
+        <StackPanel Grid.Row="1" VerticalAlignment="Center">
+            <ModernUI:IconTextBox
+                x:Name="TxtBenutzername"
+                Width="300"
+                Height="30"
+                BorderThickness="1"
+                CornerRadius="3"
+                IconBackground="AliceBlue"
+                IconForeground="Gray"
+                IconPlacement="Left"
+                IconWidth="18"
+                Text="{Binding Path=LoginUser, UpdateSourceTrigger=PropertyChanged}"
+                Watermark="Benutzername" />
+
+            <ModernUI:MPasswordBox
+                x:Name="passwordBox"
+                Width="300"
+                Height="30"
+                BorderThickness="1"
+                CornerRadius="3"
+                IconBackground="AliceBlue"
+                IconForeground="Gray"
+                IconWidth="18"
+                IsCanSeePassword="True"
+                Watermark="Bitte geben Sie Ihr Passwort ein" />
+        </StackPanel>
+
         <DockPanel
             Grid.Row="2"
             Grid.Column="0"
