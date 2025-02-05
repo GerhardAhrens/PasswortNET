@@ -28,8 +28,17 @@
                 FontWeight="Bold"
                 Foreground="Black">
 
-                <MenuItem Header="Menü" IsCheckable="False">
-                    <MenuItem Header="Passwörter/Lizenzen">
+                <MenuItem VerticalAlignment="Center" Icon="{StaticResource ResourceKey=MenuItemDots}">
+                    <MenuItem.Header>
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text="Header" />
+                    </MenuItem.Header>
+                    <MenuItem
+                        Header="Passwörter/Lizenzen"
+                        Icon="{StaticResource ResourceKey=MenuItemSecurity}"
+                        IsEnabled="{Binding Path=IsWorkPassword, UpdateSourceTrigger=PropertyChanged}">
                         <MenuItem Header="Neuer Eintrag (Webseite, F2)" />
                         <MenuItem Header="Neuer Eintrag (Passwort, F3)" />
                         <MenuItem Header="Neuer Eintrag (Pin, F4)" />
@@ -43,7 +52,7 @@
                         Command="{Binding Path=CmdAgg[AppSettingsCommand]}"
                         CommandParameter="{x:Static localStatic:MainButton.AppSettings}"
                         Header="Einstellungen"
-                        Icon="{StaticResource ResourceKey=MenuIteAppSettings}"
+                        Icon="{StaticResource ResourceKey=MenuItemAppSettings}"
                         IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}" />
                     <MenuItem
                         Command="{Binding Path=CmdAgg[LogoffCommand]}"

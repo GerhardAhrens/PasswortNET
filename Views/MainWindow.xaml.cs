@@ -65,6 +65,12 @@
             set => base.SetValue(value);
         }
 
+        public bool IsWorkPassword
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
         public override void InitCommands()
         {
             base.CmdAgg.AddOrSetCommand("CloseWindowCommand", new RelayCommand(p1 => this.CloseWindowHandler(p1), p2 => true));
@@ -144,16 +150,19 @@
                 {
                     this.IsAppSettings = false;
                     this.IsLogoff = false;
+                    this.IsWorkPassword = false;
                 }
                 else if (this.WorkContent.GetType() == typeof(AppSettingsUC))
                 {
                     this.IsAppSettings = false;
+                    this.IsWorkPassword = false;
                     this.IsLogoff = true;
                 }
                 else if (this.WorkContent.GetType() == typeof(HomeUC))
                 {
                     this.IsAppSettings = true;
                     this.IsLogoff = true;
+                    this.IsWorkPassword = true;
                 }
             }
 
