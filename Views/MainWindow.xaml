@@ -12,90 +12,52 @@
     Width="800"
     Height="450"
     winbase:DialogClosing.IsClosing="True"
-    mc:Ignorable="d" Icon="/Resources/Picture/ApplicationIcon.ico">
+    Icon="/Resources/Picture/ApplicationIcon.ico"
+    mc:Ignorable="d">
 
     <ModernUI:MWindow.MoreOnTitle>
         <StackPanel
             Margin="0,0,10,0"
             HorizontalAlignment="Left"
             Orientation="Horizontal">
-            <ModernUI:DropDownButton
-                Width="100"
-                Content="Menü"
-                IsDropDownOpen="{Binding Path=IsDropDownOpen, UpdateSourceTrigger=PropertyChanged}">
-                <ModernUI:DropDownButton.DropDownContent>
-                    <StackPanel Orientation="Vertical">
-                        <ModernUI:PathButton
-                            Width="100"
-                            Height="30"
-                            Margin="0,2"
-                            Background="#3399ff"
-                            Content="Menü 1"
-                            CornerRadius="3"
-                            MouseOverBackground="LightGray"
-                            PathData="{StaticResource ResourceKey=IconExcel}"
-                            PathWidth="14"
-                            PressedBackground="Gray" />
 
-                        <ModernUI:PathButton
-                            Width="100"
-                            Height="30"
-                            Margin="0,2"
-                            Background="#3399ff"
-                            Content="Menü 2"
-                            CornerRadius="3"
-                            MouseOverBackground="LightGray"
-                            PathData="{StaticResource ResourceKey=IconExcel}"
-                            PathWidth="14"
-                            PressedBackground="Gray" />
+            <Menu
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                FontWeight="Bold"
+                Foreground="Black">
 
-                        <Separator Height="3" Background="Blue" />
+                <MenuItem Header="Menü" IsCheckable="False">
+                    <MenuItem Header="Passwörter/Lizenzen">
+                        <MenuItem Header="Neuer Eintrag (Webseite, F2)" />
+                        <MenuItem Header="Neuer Eintrag (Passwort, F3)" />
+                        <MenuItem Header="Neuer Eintrag (Pin, F4)" />
+                        <MenuItem Header="Neuer Eintrag (Lizenzen, F4)" />
+                        <Separator />
+                        <MenuItem Header="Auswahl löschen (Entf)" />
+                        <MenuItem Header="Auswahl kopieren" />
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[AppSettingsCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.AppSettings}"
+                        Header="Einstellungen"
+                        Icon="{StaticResource ResourceKey=MenuIteAppSettings}"
+                        IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}" />
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[LogoffCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.Logoff}"
+                        Header="Abmelden"
+                        Icon="{StaticResource ResourceKey=MenuItemLogoff}"
+                        IsEnabled="{Binding Path=IsLogoff, UpdateSourceTrigger=PropertyChanged}" />
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[CloseWindowCommand]}"
+                        Header="Beenden"
+                        Icon="{StaticResource ResourceKey=MenuItemAppExit}" />
+                </MenuItem>
+            </Menu>
 
-                        <ModernUI:PathButton
-                            Width="100"
-                            Height="30"
-                            Margin="0,2"
-                            Background="#3399ff"
-                            Command="{Binding Path=CmdAgg[AppSettingsCommand]}"
-                            CommandParameter="{x:Static localStatic:MainButton.AppSettings}"
-                            Content="Einstellungen"
-                            CornerRadius="3"
-                            IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}"
-                            MouseOverBackground="LightGray"
-                            PathData="{StaticResource ResourceKey=IconExcel}"
-                            PathWidth="14"
-                            PressedBackground="Gray" />
-
-                        <ModernUI:PathButton
-                            Width="100"
-                            Height="30"
-                            Margin="0,2"
-                            Background="#3399ff"
-                            Command="{Binding Path=CmdAgg[LogoffCommand]}"
-                            CommandParameter="{x:Static localStatic:MainButton.Logoff}"
-                            Content="Abmelden"
-                            CornerRadius="3"
-                            IsEnabled="{Binding Path=IsLogoff, UpdateSourceTrigger=PropertyChanged}"
-                            MouseOverBackground="LightGray"
-                            PathData="{StaticResource ResourceKey=IconExcel}"
-                            PathWidth="14"
-                            PressedBackground="Gray" />
-
-                        <ModernUI:PathButton
-                            Width="100"
-                            Height="30"
-                            Margin="0,2"
-                            Background="#3399ff"
-                            Command="{Binding Path=CmdAgg[CloseWindowCommand]}"
-                            Content="Beenden"
-                            CornerRadius="3"
-                            MouseOverBackground="LightGray"
-                            PathData="{StaticResource ResourceKey=AppExit}"
-                            PathWidth="14"
-                            PressedBackground="Gray" />
-                    </StackPanel>
-                </ModernUI:DropDownButton.DropDownContent>
-            </ModernUI:DropDownButton>
         </StackPanel>
     </ModernUI:MWindow.MoreOnTitle>
 
