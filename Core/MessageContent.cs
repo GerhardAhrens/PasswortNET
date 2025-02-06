@@ -17,6 +17,7 @@ namespace PasswortNET.Core
 {
     using System;
     using System.Text;
+    using ModernBaseLibrary.Text;
 
     using ModernIU.Controls;
 
@@ -53,6 +54,33 @@ namespace PasswortNET.Core
             htmlContent.Append("</body></html>");
 
             (string InfoText, string CustomText, double FontSize) msgText = ("Programm beenden", htmlContent.ToString(), 0);
+            NotificationBoxButton questionResult = NotificationBoxButton.None;
+
+            @this.ShowDialog<QuestionHtmlYesNo>(msgText, (result, tag) =>
+            {
+                resultDialog = result;
+                if (result == true && tag != null)
+                {
+                    questionResult = ((System.Tuple<ModernIU.Controls.NotificationBoxButton>)tag).Item1;
+                }
+            });
+
+            return questionResult;
+        }
+
+        public static NotificationBoxButton BenutzerPasswortFalsch(this INotificationService @this, int maxCount = 3)
+        {
+            bool? resultDialog = null;
+
+            string countMsg = FormatMessage.Get("Sie noch [ein/{0}] [Versuch/Versuche]", maxCount);
+
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append("<h2 style=\"color:red;\">Der Benutzer oder das Passwort ist falsch.</h2>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Wollen Sie es erneut versuchen. {countMsg}.</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Benutzer/Passwort", htmlContent.ToString(), 0);
             NotificationBoxButton questionResult = NotificationBoxButton.None;
 
             @this.ShowDialog<QuestionHtmlYesNo>(msgText, (result, tag) =>

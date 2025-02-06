@@ -5,6 +5,7 @@
     using System.Runtime.Versioning;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Threading;
 
     using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
@@ -22,14 +23,13 @@
     [SupportedOSPlatform("windows")]
     public partial class MainWindow : WindowBase, IDialogClosing
     {
-        private INotificationService _notificationService = new NotificationService();
+        private INotificationService notificationService = new NotificationService();
 
         public MainWindow() : base(typeof(MainWindow))
         {
             this.InitializeComponent();
 
             this.DialogDescription = "PasswortNET";
-
             base.EventAgg.Subscribe<ChangeViewEventArgs>(this.ChangeControl);
             WeakEventManager<Window, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
             this.InitCommands();
@@ -94,6 +94,8 @@
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
             arg.MenuButton = MainButton.Login;
             this.ChangeControl(arg);
+
+            StatusbarContent.Statusbar.Notification = "laskdlöask";
         }
 
 
@@ -128,21 +130,30 @@
             Window window = Application.Current.MainWindow;
             if (window != null)
             {
-                NotificationBoxButton result = this._notificationService.ApplicationExit();
-                if (result == NotificationBoxButton.Yes)
+                if (App.ExitApplicationQuestion == true)
                 {
-                    using (UserPreferences userPrefs = new UserPreferences(this))
+                    NotificationBoxButton result = this.notificationService.ApplicationExit();
+                    if (result == NotificationBoxButton.Yes)
                     {
-                        userPrefs.Save();
-                    }
+                        using (UserPreferences userPrefs = new UserPreferences(this))
+                        {
+                            userPrefs.Save();
+                        }
 
-                    e.Cancel = false;
-                    Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                    Application.Current.Shutdown();
+                        e.Cancel = false;
+                        Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                        Application.Current.Shutdown();
+                    }
+                    else
+                    {
+                        e.Cancel = true;
+                    }
                 }
                 else
                 {
-                    e.Cancel = true;
+                    e.Cancel = false;
+                    Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                    Application.Current.Shutdown();
                 }
             }
         }

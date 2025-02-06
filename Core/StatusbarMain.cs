@@ -16,10 +16,17 @@
 namespace PasswortNET.Core
 {
     using System;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
 
-    public class StatusbarMain
+    using ModernBaseLibrary.Core;
+
+    using ModernIU.WPF.Base;
+
+    public static class StatusbarMain 
     {
         private static string currentUser = string.Empty;
+        private static string currentDate = string.Empty;
         private static string notification = string.Empty;
         private static string databaseInfo = string.Empty;
         private static string databaseInfoTooltip = string.Empty;
@@ -29,11 +36,6 @@ namespace PasswortNET.Core
         /// </summary>
         static StatusbarMain()
         {
-            UserChanged += (sender, e) => { return; };
-            NotificationChanged += (sender, e) => { return; };
-            DatabaseInfoChanged += (sender, e) => { return; };
-            DatabaseInfoTooltipChanged += (sender, e) => { return; };
-
             CurrentUser = $"{Environment.UserDomainName}\\{Environment.UserName}";
             CurrentDate = $"{DateTime.Now.ToShortDateString()}";
         }
@@ -44,7 +46,17 @@ namespace PasswortNET.Core
             set
             {
                 currentUser = value;
-                OnUserChanged(EventArgs.Empty);
+                OnGlobalPropertyChanged();
+            }
+        }
+
+        public static string CurrentDate
+        {
+            get { return currentDate; }
+            set
+            {
+                currentDate = value;
+                OnGlobalPropertyChanged();
             }
         }
 
@@ -54,7 +66,7 @@ namespace PasswortNET.Core
             set
             {
                 databaseInfo = value;
-                OnDatabaseInfoChanged(EventArgs.Empty);
+                OnGlobalPropertyChanged();
             }
         }
 
@@ -64,11 +76,9 @@ namespace PasswortNET.Core
             set
             {
                 databaseInfoTooltip = value;
-                OnDatabaseInfoTooltipChanged(EventArgs.Empty);
+                OnGlobalPropertyChanged();
             }
         }
-
-        public static string CurrentDate { get; set; }
 
         public static string CurrentHost { get; set; }
 
@@ -78,54 +88,73 @@ namespace PasswortNET.Core
             set
             {
                 notification = value;
-                OnNotificationChanged(EventArgs.Empty);
+                OnGlobalPropertyChanged();
             }
         }
 
         // Declare a static event representing changes to your static property
-        public static event EventHandler UserChanged;
-        public static event EventHandler NotificationChanged;
-        public static event EventHandler DatabaseInfoChanged;
-        public static event EventHandler DatabaseInfoTooltipChanged;
+        public static event EventHandler GlobalPropertyChanged;
 
         // Raise the change event through this static method
-        protected static void OnUserChanged(EventArgs e)
+        public static void OnGlobalPropertyChanged()
         {
-            EventHandler handler = UserChanged;
-
-            if (handler != null)
+            if (GlobalPropertyChanged != null)
             {
-                handler(null, e);
+                GlobalPropertyChanged(typeof(StatusbarMain), EventArgs.Empty);
+            }
+        }
+    }
+
+    public static class StatusbarContent
+    {
+        private static StatusbarModel _StatusbarModel = new StatusbarModel();
+        public static StatusbarModel Statusbar
+        {
+            get { return _StatusbarModel; }
+            set { _StatusbarModel = value; }
+        }
+    }
+
+    public class StatusbarModel : INotifyPropertyChanged
+    {
+        public StatusbarModel()
+        {
+            CurrentUser = $"{Environment.UserDomainName}\\{Environment.UserName}";
+            CurrentDate = $"{DateTime.Now.ToShortDateString()}";
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private string currentUser = string.Empty;
+        public string CurrentUser
+        {
+            get { return currentUser; }
+            set
+            {
+                currentUser = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentUser"));
             }
         }
 
-        protected static void OnNotificationChanged(EventArgs e)
+        private static string currentDate = string.Empty;
+        public string CurrentDate
         {
-            EventHandler handler = NotificationChanged;
-
-            if (handler != null)
+            get { return currentDate; }
+            set
             {
-                handler(null, e);
+                currentDate = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentDate"));
             }
         }
 
-        protected static void OnDatabaseInfoChanged(EventArgs e)
+        private string notification = string.Empty;
+        public string Notification
         {
-            EventHandler handler = DatabaseInfoChanged;
-
-            if (handler != null)
+            get { return this.notification; }
+            set
             {
-                handler(null, e);
-            }
-        }
-
-        protected static void OnDatabaseInfoTooltipChanged(EventArgs e)
-        {
-            EventHandler handler = DatabaseInfoTooltipChanged;
-
-            if (handler != null)
-            {
-                handler(null, e);
+                this.notification = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Notification"));
             }
         }
     }

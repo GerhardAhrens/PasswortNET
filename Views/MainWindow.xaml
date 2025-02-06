@@ -111,16 +111,26 @@
             Grid.Row="2"
             Height="Auto"
             Background="Transparent"
+            DataContext="StatusMain"
             FontSize="13">
             <StatusBarItem DockPanel.Dock="Left">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{StaticResource ResourceKey=IconStatusbarUser}" />
-                    <Label x:Name="StatusbarUser" Content="{x:Static localStatic:StatusbarMain.CurrentUser}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=CurrentUser, Source={x:Static localStatic:StatusbarContent.Statusbar}}" />
                 </StackPanel>
             </StatusBarItem>
 
             <StatusBarItem DockPanel.Dock="Right">
-                <Label Content="{StaticResource ResourceKey=IconStatusbarCalendar}" />
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{StaticResource ResourceKey=IconStatusbarCalendar}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=CurrentDate, Source={x:Static localStatic:StatusbarContent.Statusbar}}" />
+                </StackPanel>
             </StatusBarItem>
 
             <Separator Background="Black" />
@@ -132,7 +142,13 @@
             <Separator Background="Black" />
 
             <StatusBarItem DockPanel.Dock="Left">
-                <Label Content="{StaticResource ResourceKey=IconStatusbarNotification}" />
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{StaticResource ResourceKey=IconStatusbarNotification}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=Notification, Source={x:Static localStatic:StatusbarContent.Statusbar}}" />
+                </StackPanel>
             </StatusBarItem>
         </StatusBar>
         <!--#endregion Statuszeile-->
