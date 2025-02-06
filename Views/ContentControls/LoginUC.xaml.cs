@@ -1,6 +1,7 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
     using System;
+    using System.Security;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Ribbon;
@@ -54,6 +55,7 @@
         public override void InitCommands()
         {
             base.CmdAgg.AddOrSetCommand("LoginCommand", new RelayCommand(p1 => this.LoginHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("InputLoginCommand", new RelayCommand(p1 => this.InputLoginHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("CloseWindowCommand", new RelayCommand(p1 => this.CloseWindowHandler(p1), p2 => true));
         }
 
@@ -78,6 +80,8 @@
                 App.ExitApplicationQuestion = settings.ExitApplicationQuestion;
                 App.SaveLastWindowsPosition = settings.SaveLastWindowsPosition;
                 App.RunEnvironment = settings.RunEnvironment;
+
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtBenutzername.Focus(); }));
             }
         }
 
@@ -86,17 +90,40 @@
             string userName = this.LoginUser;
             string passwort = this.passwordBox.Password;
 
-            string hash = $"{this.LoginUser}{passwort}".ToMD5();
+            string hash = $"{userName}{passwort}".ToMD5(false);
+            string encryptHash = hash.Encrypt();
+            string compareHash = string.Empty;
 
-            NotificationBoxButton result = this.notificationService.BenutzerPasswortFalsch();
-            if (result == NotificationBoxButton.Yes)
+            using (ApplicationSettings settings = new ApplicationSettings())
             {
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtBenutzername.Focus();}));
-                return;
+                if (settings.IsExitSettings() == true)
+                {
+                    settings.Load();
+
+                    if (string.IsNullOrEmpty(settings.Hash) == true)
+                    {
+                        settings.Hash = encryptHash;
+                        settings.Save();
+                    }
+                    else
+                    {
+                        compareHash = settings.Hash.Decrypt();
+                    }
+                }
             }
-            else
+
+            if (string.Equals(hash,compareHash) == false)
             {
-                this.CloseWindowHandler(null);
+                NotificationBoxButton result = this.notificationService.BenutzerPasswortFalsch();
+                if (result == NotificationBoxButton.Yes)
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtBenutzername.Focus(); }));
+                    return;
+                }
+                else
+                {
+                    this.CloseWindowHandler(null);
+                }
             }
 
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
@@ -114,6 +141,12 @@
             {
                 mainWindow.Close();
             }
+        }
+
+        private void InputLoginHandler(object p1)
+        {
+            this.LoginUser = "lifeprojects";
+            this.passwordBox.Text = "beate.2019";
         }
     }
 }

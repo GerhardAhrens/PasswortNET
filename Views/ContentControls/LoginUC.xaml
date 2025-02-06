@@ -14,7 +14,8 @@
 
     <UserControl.Resources>
         <ModernWPF:CommandKeyReference x:Key="WindowCloseCmdKey" Command="{Binding Path=CmdAgg[CloseWindowCommand]}" />
-        <ModernWPF:CommandKeyReference x:Key="InputLoginCmdKey" Command="{Binding Path=CmdAgg[LoginCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="LoginCmdKey" Command="{Binding Path=CmdAgg[LoginCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="InputLoginCmdKey" Command="{Binding Path=CmdAgg[InputLoginCommand]}" />
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -36,6 +37,7 @@
             Orientation="Horizontal">
 
             <TextBlock
+                Margin="5,0,0,0"
                 VerticalAlignment="Center"
                 FontSize="14"
                 FontWeight="Bold"
@@ -78,7 +80,8 @@
             <ModernUI:FlatButton
                 Width="100"
                 Margin="10,0,0,0"
-                Command="{StaticResource ResourceKey=InputLoginCmdKey}"
+                IsDefault="True"
+                Command="{StaticResource ResourceKey=LoginCmdKey}"
                 Content="Anmelden"
                 DockPanel.Dock="Right" />
 

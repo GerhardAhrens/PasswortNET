@@ -23,5 +23,7 @@ namespace PasswortNET.Core
 
         public string RunEnvironment { get; set; } = "dev";
 
+        public string Hash { get; set; }
+
     }
 }
