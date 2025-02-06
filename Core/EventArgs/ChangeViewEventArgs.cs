@@ -8,5 +8,6 @@
         public string Sender { get; set; }
         public string Description { get; set; }
         public MainButton MenuButton { get; set; }
+        public string LoginHash { get; set; }
     }
 }

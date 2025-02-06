@@ -20,7 +20,7 @@
                 VerticalAlignment="Center"
                 FontSize="14"
                 FontWeight="Bold"
-                Text="An PasswortNET anmelden" />
+                Text="{Binding Path=Titel, UpdateSourceTrigger=PropertyChanged, FallbackValue=TitelUC}" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" VerticalAlignment="Center">
