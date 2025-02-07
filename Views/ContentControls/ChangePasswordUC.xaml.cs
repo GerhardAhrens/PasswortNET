@@ -43,6 +43,12 @@
             set => base.SetValue(value);
         }
 
+        public bool IsPasswordRepeat
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
         private int MaxTryLogin { get; set; } = 3;
 
         public override void InitCommands()

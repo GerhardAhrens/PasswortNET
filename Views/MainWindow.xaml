@@ -51,18 +51,18 @@
                     <Separator />
 
                     <MenuItem
-                        Command="{Binding Path=CmdAgg[AppSettingsCommand]}"
-                        CommandParameter="{x:Static localStatic:MainButton.AppSettings}"
-                        Header="Einstellungen"
-                        Icon="{StaticResource ResourceKey=MenuItemAppSettings}"
-                        IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <MenuItem
                         Command="{Binding Path=CmdAgg[AboutCommand]}"
                         CommandParameter="{x:Static localStatic:MainButton.About}"
                         Header="Über ..."
                         Icon="{StaticResource ResourceKey=MenuItemAbout}"
                         IsEnabled="{Binding Path=IsAbout, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[AppSettingsCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.AppSettings}"
+                        Header="Einstellungen"
+                        Icon="{StaticResource ResourceKey=MenuItemAppSettings}"
+                        IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Separator />
 
