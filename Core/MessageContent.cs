@@ -27,13 +27,11 @@ namespace PasswortNET.Core
     {
         public static NotificationBoxButton ApplicationExit(this INotificationService @this)
         {
-            bool? resultDialog = null;
             (string InfoText, string CustomText, double FontSize) msgText = ("Programm beenden", $"Soll das Programm beendet werden?", 18);
             NotificationBoxButton questionResult = NotificationBoxButton.None;
 
             @this.ShowDialog<QuestionYesNo>(msgText, (result, tag) =>
             {
-                resultDialog = result;
                 if (result == true && tag != null)
                 {
                     questionResult = ((System.Tuple<ModernIU.Controls.NotificationBoxButton>)tag).Item1;
@@ -45,8 +43,6 @@ namespace PasswortNET.Core
 
         public static NotificationBoxButton ApplicationExit2(this INotificationService @this)
         {
-            bool? resultDialog = null;
-
             StringBuilder htmlContent = new StringBuilder();
             htmlContent.Append("<html><body scroll=\"no\">");
             htmlContent.Append("<h2 style=\"color:black;\">Soll das Programm beendet werden?</h2>");
@@ -58,7 +54,6 @@ namespace PasswortNET.Core
 
             @this.ShowDialog<QuestionHtmlYesNo>(msgText, (result, tag) =>
             {
-                resultDialog = result;
                 if (result == true && tag != null)
                 {
                     questionResult = ((System.Tuple<ModernIU.Controls.NotificationBoxButton>)tag).Item1;
@@ -68,16 +63,15 @@ namespace PasswortNET.Core
             return questionResult;
         }
 
+        #region Login und Change Password
         public static NotificationBoxButton BenutzerPasswortFalsch(this INotificationService @this, int maxCount = 3)
         {
-            bool? resultDialog = null;
-
             string countMsg = FormatMessage.Get("Sie noch [ein/{0}] [Versuch/Versuche]", maxCount);
 
             StringBuilder htmlContent = new StringBuilder();
             htmlContent.Append("<html><body scroll=\"no\">");
             htmlContent.Append("<h2 style=\"color:red;\">Der Benutzer oder das Passwort ist falsch.</h2>");
-            htmlContent.Append($"<h3 style=\"color:black;\">Wollen Sie es erneut versuchen. {countMsg}.</h3>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Wollen Sie es erneut versuchen? {countMsg}.</h3>");
             htmlContent.Append("</body></html>");
 
             (string InfoText, string CustomText, double FontSize) msgText = ("Benutzer/Passwort", htmlContent.ToString(), 0);
@@ -85,7 +79,6 @@ namespace PasswortNET.Core
 
             @this.ShowDialog<QuestionHtmlYesNo>(msgText, (result, tag) =>
             {
-                resultDialog = result;
                 if (result == true && tag != null)
                 {
                     questionResult = ((System.Tuple<ModernIU.Controls.NotificationBoxButton>)tag).Item1;
@@ -94,5 +87,52 @@ namespace PasswortNET.Core
 
             return questionResult;
         }
+
+        public static NotificationBoxButton MaxTryLogin(this INotificationService @this, int maxCount = 3)
+        {
+            string countMsg = FormatMessage.Get("[einem/{0}] [Versuch/Versuche]", maxCount);
+
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:red;\">Der Benutzer oder das Passwort ist falsch. Sie haben die maximale Anzahl von {countMsg} erreicht.</h2>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Die Anwendung wird beendet.</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Benutzer/Passwort", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+
+        public static NotificationBoxButton PasswortRepeatWrong(this INotificationService @this)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:red;\">Das Passwort und die Passwort Wiederholung stimmen nicht überein.</h2>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Prüfen Sie Ihre Eingabe.</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Benutzer/Passwort", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+        #endregion Login und Change Password
     }
 }

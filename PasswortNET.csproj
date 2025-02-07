@@ -52,6 +52,9 @@
     <Compile Update="Views\ContentControls\AppSettingsUC.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\ContentControls\ChangePasswordUC.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

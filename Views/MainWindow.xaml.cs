@@ -66,6 +66,12 @@
             set => base.SetValue(value);
         }
 
+        public bool IsChangePassword
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
         public bool IsWorkPassword
         {
             get => base.GetValue<bool>();
@@ -76,6 +82,7 @@
         {
             base.CmdAgg.AddOrSetCommand("CloseWindowCommand", new RelayCommand(p1 => this.CloseWindowHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("ChangePasswordCommand", new RelayCommand(p1 => this.ChangePasswordHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("AppSettingsCommand", new RelayCommand(p1 => this.AppSettingsHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("AboutCommand", new RelayCommand(p1 => this.AboutHandler(p1), p2 => true));
         }
@@ -84,6 +91,7 @@
         {
             NotificationService.RegisterDialog<QuestionYesNo>();
             NotificationService.RegisterDialog<QuestionHtmlYesNo>();
+            NotificationService.RegisterDialog<MessageHtmlOk>();
 
             /* Letzte Windows Positionn landen*/
             using (UserPreferences userPrefs = new UserPreferences(this))
@@ -91,11 +99,19 @@
                 userPrefs.Load();
             }
 
+            using (ApplicationSettings settings = new ApplicationSettings())
+            {
+                settings.Load();
+                App.ExitApplicationQuestion = settings.ExitApplicationQuestion;
+                App.SaveLastWindowsPosition = settings.SaveLastWindowsPosition;
+                App.RunEnvironment = settings.RunEnvironment;
+            }
+
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
             arg.MenuButton = MainButton.Login;
             this.ChangeControl(arg);
 
-            StatusbarContent.Statusbar.Notification = "laskdlöask";
+            StatusbarMain.Statusbar.Notification = "Anwendung wird gestartet ...";
         }
 
 
@@ -108,6 +124,13 @@
         {
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
             arg.MenuButton = MainButton.Login;
+            this.ChangeControl(arg);
+        }
+
+        private void ChangePasswordHandler(object p1)
+        {
+            ChangeViewEventArgs arg = new ChangeViewEventArgs();
+            arg.MenuButton = MainButton.ChangePassword;
             this.ChangeControl(arg);
         }
 
@@ -163,6 +186,8 @@
             MenuWorkArea view = DialogFactory.Get(e.MenuButton);
             if (view is MenuWorkArea menuWorkArea)
             {
+                StatusbarMain.Statusbar.SetNotification();
+
                 string name = e.MenuButton.ToDescription();
                 this.WorkContent = menuWorkArea.WorkContent;
                 this.WorkContent.VerticalAlignment = VerticalAlignment.Stretch;
@@ -189,6 +214,12 @@
                     this.IsAppSettings = true;
                     this.IsLogoff = true;
                     this.IsWorkPassword = true;
+                }
+                else if (this.WorkContent.GetType() == typeof(ChangePasswordUC))
+                {
+                    this.IsAppSettings = false;
+                    this.IsLogoff = false;
+                    this.IsWorkPassword = false;
                 }
             }
 

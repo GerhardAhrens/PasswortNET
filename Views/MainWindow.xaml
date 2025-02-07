@@ -42,7 +42,7 @@
                         <MenuItem Header="Neuer Eintrag (Webseite, F2)" />
                         <MenuItem Header="Neuer Eintrag (Passwort, F3)" />
                         <MenuItem Header="Neuer Eintrag (Pin, F4)" />
-                        <MenuItem Header="Neuer Eintrag (Lizenzen, F4)" />
+                        <MenuItem Header="Neuer Eintrag (Lizenzen, F5)" />
                         <Separator />
                         <MenuItem Header="Auswahl löschen (Entf)" />
                         <MenuItem Header="Auswahl kopieren" />
@@ -65,6 +65,13 @@
                         IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Separator />
+
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[ChangePasswordCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.ChangePassword}"
+                        Header="Passwort ändern"
+                        Icon="{StaticResource ResourceKey=MenuItemChangePassword}"
+                        IsEnabled="{Binding Path=IsLogoff, UpdateSourceTrigger=PropertyChanged}" />
 
                     <MenuItem
                         Command="{Binding Path=CmdAgg[LogoffCommand]}"
@@ -119,7 +126,7 @@
                     <TextBlock
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{Binding Path=CurrentUser, Source={x:Static localStatic:StatusbarContent.Statusbar}}" />
+                        Text="{Binding Path=CurrentUser, Source={x:Static localStatic:StatusbarMain.Statusbar}}" />
                 </StackPanel>
             </StatusBarItem>
 
@@ -129,7 +136,7 @@
                     <TextBlock
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{Binding Path=CurrentDate, Source={x:Static localStatic:StatusbarContent.Statusbar}}" />
+                        Text="{Binding Path=CurrentDate, Source={x:Static localStatic:StatusbarMain.Statusbar}}" />
                 </StackPanel>
             </StatusBarItem>
 
@@ -147,7 +154,7 @@
                     <TextBlock
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{Binding Path=Notification, Source={x:Static localStatic:StatusbarContent.Statusbar}}" />
+                        Text="{Binding Path=Notification, Source={x:Static localStatic:StatusbarMain.Statusbar}}" />
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>

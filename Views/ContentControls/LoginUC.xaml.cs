@@ -2,6 +2,7 @@
 {
     using System;
     using System.Security;
+    using System.Security.Policy;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Ribbon;
@@ -52,6 +53,15 @@
             set => base.SetValue(value);
         }
 
+        public bool IsPasswordRepeat
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
+        private int MaxTryLogin { get; set; } = 3;
+
+
         public override void InitCommands()
         {
             base.CmdAgg.AddOrSetCommand("LoginCommand", new RelayCommand(p1 => this.LoginHandler(p1), p2 => true));
@@ -61,7 +71,8 @@
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            this.Titel = "An PasswortNET anmelden";
+            this.Titel = "Anmeldedialog";
+            StatusbarMain.Statusbar.SetNotification("Geben Sie einen Benutzer und ein  Passwort an.");
 
             using (ApplicationSettings settings = new ApplicationSettings())
             {
@@ -72,6 +83,7 @@
                     settings.RunEnvironment = "dev";
                     settings.ExitApplicationQuestion = false;
                     settings.SaveLastWindowsPosition = false;
+                    settings.Hash = string.Empty;
                     settings.Save();
                 }
 
@@ -80,16 +92,35 @@
                 App.ExitApplicationQuestion = settings.ExitApplicationQuestion;
                 App.SaveLastWindowsPosition = settings.SaveLastWindowsPosition;
                 App.RunEnvironment = settings.RunEnvironment;
+            }
 
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtBenutzername.Focus(); }));
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtBenutzername.Focus(); }));
+
+            using (ApplicationSettings settings = new ApplicationSettings())
+            {
+                if (settings.IsExitSettings() == true)
+                {
+                    settings.Load();
+
+                    if (string.IsNullOrEmpty(settings.Hash) == true)
+                    {
+                        this.IsPasswordRepeat = true;
+                    }
+                    else
+                    {
+                        this.IsPasswordRepeat = false;
+                    }
+                }
             }
         }
 
         private void LoginHandler(object p1)
         {
+            const int MAXLOGIN = 3;
+            bool isFirstStart = false;
             string userName = this.LoginUser;
-            string passwort = this.passwordBox.Password;
-
+            string passwort = this.TxtPassword.Password;
+            string passwortRepeat = this.TxtPasswordRepeat.Password;
             string hash = $"{userName}{passwort}".ToMD5(false);
             string encryptHash = hash.Encrypt();
             string compareHash = string.Empty;
@@ -102,19 +133,39 @@
 
                     if (string.IsNullOrEmpty(settings.Hash) == true)
                     {
+                        isFirstStart = true;
                         settings.Hash = encryptHash;
                         settings.Save();
+                        compareHash = settings.Hash.Decrypt();
                     }
                     else
                     {
+                        isFirstStart = false;
                         compareHash = settings.Hash.Decrypt();
                     }
                 }
             }
 
+            if (isFirstStart == true)
+            {
+                if (string.Equals(passwort, passwortRepeat) == false)
+                {
+                    this.notificationService.PasswortRepeatWrong();
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtPassword.Focus(); }));
+                    return;
+                }
+            }
+
             if (string.Equals(hash,compareHash) == false)
             {
-                NotificationBoxButton result = this.notificationService.BenutzerPasswortFalsch();
+                this.MaxTryLogin--;
+                if (this.MaxTryLogin == 0)
+                {
+                    this.notificationService.MaxTryLogin(MAXLOGIN);
+                    this.CloseWindowHandler(null);
+                }
+
+                NotificationBoxButton result = this.notificationService.BenutzerPasswortFalsch(this.MaxTryLogin);
                 if (result == NotificationBoxButton.Yes)
                 {
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtBenutzername.Focus(); }));
@@ -146,7 +197,7 @@
         private void InputLoginHandler(object p1)
         {
             this.LoginUser = "lifeprojects";
-            this.passwordBox.Text = "beate.2019";
+            this.TxtPassword.Text = "beate.2019";
         }
     }
 }

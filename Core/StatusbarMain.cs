@@ -4,7 +4,7 @@ namespace PasswortNET.Core
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public static class StatusbarContent
+    public static class StatusbarMain
     {
         private static StatusbarModel _StatusbarModel = new StatusbarModel();
         public static StatusbarModel Statusbar
@@ -97,6 +97,18 @@ namespace PasswortNET.Core
             {
                 this.runEnvironment = value;
                 this.OnPropertyChanged();
+            }
+        }
+
+        public void SetNotification(string notification = null)
+        {
+            if (string.IsNullOrEmpty(notification) == true)
+            {
+                this.Notification = string.Empty;
+            }
+            else
+            {
+                this.Notification = notification;
             }
         }
 

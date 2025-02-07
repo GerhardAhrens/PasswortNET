@@ -29,11 +29,13 @@ namespace PasswortNET.Core
         Login = 2,
         [Description("Logoff")]
         Logoff = 3,
+        [Description("Passwort ändern")]
+        ChangePassword = 4,
         [Description("Einstellungen")]
-        AppSettings = 4,
+        AppSettings = 5,
         [Description("Über ...")]
-        About = 5,
+        About = 6,
         [Description("Zurück")]
-        Back = 6,
+        Back = 7,
     }
 }
