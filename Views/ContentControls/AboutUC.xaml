@@ -37,5 +37,47 @@
                 Text="{Binding Path=Titel, UpdateSourceTrigger=PropertyChanged, FallbackValue=TitelUC}" />
         </StackPanel>
 
+        <ModernUI:MTabControl
+            x:Name="tcSettings"
+            Grid.Row="1"
+            Grid.Column="0"
+            Focusable="True"
+            FrameworkElement.Loaded="TabControl_Loaded"
+            Grid.IsSharedSizeScope="True"
+            SelectionChanged="tcSettings_SelectionChanged"
+            TabStripPlacement="Top"
+            Type="Card">
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="HeaderTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <ContentPresenter Content="{TemplateBinding Content}" />
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Padding" Value="3" />
+                </Style>
+            </TabControl.Resources>
+
+            <TabItem Header="Allgemein">
+                <Border>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="TabItem1" />
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Statistik">
+                <Border>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="TabItem2" />
+                </Border>
+            </TabItem>
+        </ModernUI:MTabControl>
+
     </ModernUI:SimpleGrid>
 </base:UserControlBase>

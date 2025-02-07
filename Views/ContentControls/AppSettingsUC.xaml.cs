@@ -39,6 +39,20 @@
             StatusbarMain.Statusbar.SetNotification("Ändern Sie verschieden Einstellungen.");
         }
 
+        private void TabControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private static void item_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e, TabControl tabControl)
+        {
+        }
+
+        private void tcSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
         private void BackHandler(object p1)
         {
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
