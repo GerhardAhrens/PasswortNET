@@ -135,6 +135,8 @@
                     {
                         isFirstStart = true;
                         settings.Hash = encryptHash;
+                        string ctrlHash = $"{userName}|{passwort}";
+                        settings.ControlHash = ctrlHash.Encrypt();
                         settings.Save();
                         compareHash = settings.Hash.Decrypt();
                     }
@@ -196,8 +198,13 @@
 
         private void InputLoginHandler(object p1)
         {
-            this.LoginUser = "lifeprojects";
-            this.TxtPassword.Text = "beate.2019";
+            using (ApplicationSettings settings = new ApplicationSettings())
+            {
+                settings.Load();
+                string ctrlHash = settings.ControlHash.Decrypt();
+                this.LoginUser = ctrlHash.Split('|').FirstOrDefault();
+                this.TxtPassword.Text = ctrlHash.Split('|').LastOrDefault();
+            }
         }
     }
 }

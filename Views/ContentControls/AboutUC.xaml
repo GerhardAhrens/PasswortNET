@@ -30,11 +30,11 @@
                 PressedBackground="Gray" />
 
             <TextBlock
-                Margin="10,0,0,0"
+                Margin="5,0,0,0"
                 VerticalAlignment="Center"
                 FontSize="14"
                 FontWeight="Bold"
-                Text="Über ... Dialog" />
+                Text="{Binding Path=Titel, UpdateSourceTrigger=PropertyChanged, FallbackValue=TitelUC}" />
         </StackPanel>
 
     </ModernUI:SimpleGrid>

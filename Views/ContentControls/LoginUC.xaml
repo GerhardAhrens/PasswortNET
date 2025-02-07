@@ -8,6 +8,7 @@
     xmlns:base="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
+    xmlns:localConverter="clr-namespace:PasswortNET.Views.Converter"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -19,6 +20,7 @@
         <ModernWPF:CommandKeyReference x:Key="InputLoginCmdKey" Command="{Binding Path=CmdAgg[InputLoginCommand]}" />
 
         <ModernConverter:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter" />
+        <localConverter:PasswordStrengthConverter x:Key="PasswordStrengthConverter" />
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -50,43 +52,54 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" VerticalAlignment="Center">
-            <ModernUI:IconTextBox
-                x:Name="TxtBenutzername"
-                Width="350"
-                Height="30"
-                BorderThickness="1"
-                CornerRadius="3"
-                IconBackground="AliceBlue"
-                IconForeground="Gray"
-                IconPlacement="Left"
-                IconWidth="18"
-                Text="{Binding Path=LoginUser, UpdateSourceTrigger=PropertyChanged}"
-                Watermark="Benutzername" />
+            <ModernUI:MGroupBox
+                Width="400"
+                Margin="5"
+                Padding="20"
+                Header="Benutzerinformationen">
+                <StackPanel Orientation="Vertical">
+                    <ModernUI:IconTextBox
+                        x:Name="TxtBenutzername"
+                        Width="350"
+                        Height="30"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IconBackground="AliceBlue"
+                        IconForeground="Gray"
+                        IconPlacement="Left"
+                        IconWidth="18"
+                        Text="{Binding Path=LoginUser, UpdateSourceTrigger=PropertyChanged}"
+                        Watermark="Benutzername" />
 
-            <ModernUI:MPasswordBox
-                x:Name="TxtPassword"
-                Width="350"
-                Height="30"
-                BorderThickness="1"
-                CornerRadius="3"
-                IconBackground="AliceBlue"
-                IconForeground="Gray"
-                IconWidth="18"
-                IsCanSeePassword="True"
-                Watermark="Bitte geben Sie Ihr Passwort ein" />
+                    <ModernUI:MPasswordBox
+                        x:Name="TxtPassword"
+                        Width="350"
+                        Height="30"
+                        Background="{Binding Path=Password, ElementName=TxtPassword, Converter={StaticResource ResourceKey=PasswordStrengthConverter}}"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IconBackground="AliceBlue"
+                        IconForeground="Gray"
+                        IconWidth="18"
+                        IsCanSeePassword="True"
+                        Watermark="Bitte geben Sie Ihr Passwort ein" />
 
-            <ModernUI:MPasswordBox
-                x:Name="TxtPasswordRepeat"
-                Width="350"
-                Height="30"
-                BorderThickness="1"
-                CornerRadius="3"
-                IconBackground="AliceBlue"
-                IconForeground="Gray"
-                IconWidth="18"
-                IsCanSeePassword="True"
-                Visibility="{Binding Path=IsPasswordRepeat, Converter={StaticResource ResourceKey=BooleanToVisibleConverter}}"
-                Watermark="Bitte geben Sie Ihr Passwort zur Wiederholung ein" />
+                    <ModernUI:MPasswordBox
+                        x:Name="TxtPasswordRepeat"
+                        Width="350"
+                        Height="30"
+                        Background="{Binding Path=Password, ElementName=TxtPasswordRepeat, Converter={StaticResource ResourceKey=PasswordStrengthConverter}}"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IconBackground="AliceBlue"
+                        IconForeground="Gray"
+                        IconWidth="18"
+                        IsCanSeePassword="True"
+                        Visibility="{Binding Path=IsPasswordRepeat, Converter={StaticResource ResourceKey=BooleanToVisibleConverter}}"
+                        Watermark="Bitte geben Sie Ihr Passwort zur Wiederholung ein" />
+                </StackPanel>
+            </ModernUI:MGroupBox>
+
         </StackPanel>
 
         <DockPanel

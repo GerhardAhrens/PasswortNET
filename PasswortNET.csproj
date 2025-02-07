@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <Folder Include="Core\Settings\" />
+    <Folder Include="Views\Converter\" />
     <Folder Include="Views\NotificationContent\" />
   </ItemGroup>
 

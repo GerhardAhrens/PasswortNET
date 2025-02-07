@@ -60,6 +60,12 @@
             set => base.SetValue(value);
         }
 
+        public bool IsAbout
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
         public bool IsLogoff
         {
             get => base.GetValue<bool>();
@@ -194,30 +200,35 @@
                 if (this.WorkContent.GetType() == typeof(LoginUC))
                 {
                     this.IsAppSettings = false;
+                    this.IsAbout = false;
                     this.IsLogoff = false;
                     this.IsWorkPassword = false;
                 }
                 else if (this.WorkContent.GetType() == typeof(AppSettingsUC))
                 {
                     this.IsAppSettings = false;
+                    this.IsAbout = true;
                     this.IsWorkPassword = false;
                     this.IsLogoff = true;
                 }
                 else if (this.WorkContent.GetType() == typeof(AboutUC))
                 {
-                    this.IsAppSettings = false;
+                    this.IsAppSettings = true;
+                    this.IsAbout = false;
                     this.IsWorkPassword = false;
                     this.IsLogoff = true;
                 }
                 else if (this.WorkContent.GetType() == typeof(HomeUC))
                 {
                     this.IsAppSettings = true;
+                    this.IsAbout = true;
                     this.IsLogoff = true;
                     this.IsWorkPassword = true;
                 }
                 else if (this.WorkContent.GetType() == typeof(ChangePasswordUC))
                 {
                     this.IsAppSettings = false;
+                    this.IsAbout = false;
                     this.IsLogoff = false;
                     this.IsWorkPassword = false;
                 }

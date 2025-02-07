@@ -133,6 +133,50 @@ namespace PasswortNET.Core
 
             return resultOK.Item1;
         }
+
+        public static NotificationBoxButton ChangeLoginData(this INotificationService @this)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:black;\">Ihre Logindaten wurden geändert.</h2>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Sie müssen sich mit den neuen Logindaten wieder anmelden.</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Ändern Benutzer/Passwort", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+
+        public static NotificationBoxButton ChangeLoginDataWrong(this INotificationService @this)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:black;\">bei der Änderung der Logindaten ist ein Fehler aufgetreten.</h2>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Überprüfen Sie ihre Eingaben.</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Ändern Benutzer/Passwort", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
         #endregion Login und Change Password
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
+    using System.Windows;
     using System.Windows.Controls;
 
     using ModernUI.MVVM.Base;
@@ -14,13 +15,28 @@
         public AppSettingsUC() : base(typeof(AppSettingsUC))
         {
             this.InitializeComponent();
+
+            WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
+
             this.InitCommands();
             this.DataContext = this;
+        }
+
+        public string Titel
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
         }
 
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("BackSettingsCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            this.Titel = "Einstellungen zur Anwendung ändern";
+            StatusbarMain.Statusbar.SetNotification("Ändern Sie verschieden Einstellungen.");
         }
 
         private void BackHandler(object p1)

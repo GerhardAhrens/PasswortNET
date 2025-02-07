@@ -62,7 +62,7 @@
                         CommandParameter="{x:Static localStatic:MainButton.About}"
                         Header="Über ..."
                         Icon="{StaticResource ResourceKey=MenuItemAbout}"
-                        IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}" />
+                        IsEnabled="{Binding Path=IsAbout, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Separator />
 

@@ -25,5 +25,6 @@ namespace PasswortNET.Core
 
         public string Hash { get; set; }
 
+        public string ControlHash { get; set; }
     }
 }
