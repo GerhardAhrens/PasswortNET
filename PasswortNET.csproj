@@ -7,6 +7,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\Picture\ApplicationIcon.ico</ApplicationIcon>
+    <Title>PasswordNET</Title>
+    <Authors>Gerhard Ahrens</Authors>
+    <Company>Lifeprojects.de</Company>
+    <Copyright>(c) Lifeprojects.de 2025</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,6 +37,7 @@
 
   <ItemGroup>
     <Folder Include="Core\Settings\" />
+    <Folder Include="AssemblyInfo\" />
     <Folder Include="Views\Converter\" />
     <Folder Include="Views\NotificationContent\" />
   </ItemGroup>

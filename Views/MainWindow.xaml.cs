@@ -1,11 +1,9 @@
 ﻿namespace PasswortNET.Views
 {
-    using System;
     using System.ComponentModel;
     using System.Runtime.Versioning;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Threading;
 
     using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
@@ -36,6 +34,7 @@
             this.DataContext = this;
         }
 
+        #region Properties
         public string DialogDescription
         {
             get => base.GetValue<string>();
@@ -83,6 +82,7 @@
             get => base.GetValue<bool>();
             set => base.SetValue(value);
         }
+        #endregion Properties
 
         public override void InitCommands()
         {
