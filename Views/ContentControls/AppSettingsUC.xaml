@@ -6,6 +6,7 @@
     xmlns:base="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
+    xmlns:localControls="clr-namespace:PasswortNET.Views.TabAppSettings"
     xmlns:localStatic="clr-namespace:PasswortNET.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
@@ -126,6 +127,7 @@
                         </TextBlock>
                     </StackPanel>
                 </TabItem.Header>
+                <localControls:TabAppSettingsAllgemein />
             </TabItem>
 
             <TabItem Width="100">

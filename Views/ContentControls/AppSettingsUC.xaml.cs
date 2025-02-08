@@ -28,6 +28,18 @@
             set => base.SetValue(value);
         }
 
+        public bool ExitQuestion
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
+        public bool ApplicationPosition
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("BackSettingsCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
