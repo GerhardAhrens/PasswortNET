@@ -61,9 +61,18 @@
     <Compile Update="Views\ContentControls\ChangePasswordUC.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\TabAbout\TabAboutStatistik.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\TabAppSettings\TabAppSettingsAllgemein.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\TabAbout\TabAboutStatistik.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

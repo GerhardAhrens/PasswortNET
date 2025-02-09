@@ -1,5 +1,6 @@
 ﻿namespace PasswortNET.Views.TabAppSettings
 {
+    using System.Windows;
     using System.Windows.Controls;
 
     /// <summary>
@@ -10,6 +11,11 @@
         public TabAppSettingsAllgemein()
         {
             this.InitializeComponent();
+            WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

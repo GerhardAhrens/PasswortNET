@@ -99,12 +99,11 @@
         </StackPanel>
 
         <TabControl
+            x:Name="tcSettings"
             Grid.Row="1"
             Grid.Column="0"
             Focusable="True"
-            FrameworkElement.Loaded="TabControl_Loaded"
             Grid.IsSharedSizeScope="True"
-            SelectionChanged="tcSettings_SelectionChanged"
             TabStripPlacement="Left">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabItem}">
