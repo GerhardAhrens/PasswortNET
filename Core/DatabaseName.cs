@@ -18,6 +18,7 @@ namespace PasswortNET.Core
     using System;
     using System.IO;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
 
     using ModernBaseLibrary.CoreBase;
 
@@ -30,14 +31,25 @@ namespace PasswortNET.Core
         {
         }
 
-        public static string PathName => CurrentSettingsPath() + "\\";
+        public static string PathDatabaseName => CurrentSettingsPath() + "\\";
+        public static string PathBackupName => CurrentSettingsPath(true) + "\\";
 
         public static string FullDatabaseName
         {
             get
             {
                 string path = CurrentSettingsPath();
-                string name = "PasswortNET.db";
+                string name = Filename;
+                return Path.Combine(path, name);
+            }
+        }
+
+        public static string FullBackupName
+        {
+            get
+            {
+                string path = CurrentSettingsPath(true);
+                string name = BackupFilename;
                 return Path.Combine(path, name);
             }
         }
@@ -50,7 +62,40 @@ namespace PasswortNET.Core
             }
         }
 
+        public static string BackupFilename
+        {
+            get
+            {
+                return "PasswortNET.db";
+            }
+        }
+
+        public static string BuildBackupName()
+        {
+            return GetNextFileName(FullBackupName);
+        }
+
         private static SettingsLocation SettingsLocation { get; set; } = SettingsLocation.ProgramData;
+
+        private static string GetNextFileName(string fileName, int maxFiles = 5)
+        {
+            string extension = Path.GetExtension(fileName);
+
+            int i = 0;
+            while (File.Exists(fileName))
+            {
+                if (i == 0)
+                {
+                    fileName = fileName.Replace(extension, $"({++i}){extension}");
+                }
+                else
+                {
+                    fileName = fileName.Replace($"({i}){extension}", $"({++i}){extension}");
+                }
+            }
+
+            return fileName;
+        }
 
         private static string CurrentSettingsPath(bool isbackupPath = false)
         {

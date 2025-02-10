@@ -1,18 +1,16 @@
-﻿using System.Collections;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Windows;
-using System.Windows.Markup;
-using System.Windows.Threading;
-
-using PasswortNET.Core;
-
-namespace PasswortNET
+﻿namespace PasswortNET
 {
+    using System.Collections;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Text;
+    using System.Windows;
+    using System.Windows.Markup;
+    using System.Windows.Threading;
+
+    using PasswortNET.Core;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -29,7 +27,7 @@ namespace PasswortNET
         {
             try
             {
-                var aa = DatabaseName.Filename;
+                /*var aa = DatabaseName.BuildBackupName();*/
 
                 /* Name der EXE Datei*/
                 exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
