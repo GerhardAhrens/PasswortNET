@@ -26,5 +26,11 @@ namespace PasswortNET.Core
         public string Hash { get; set; }
 
         public string ControlHash { get; set; }
+
+        public string DatabaseFullname { get; set; }
+
+        public bool DatabaseBackup { get; set; } = false;
+
+        public int MaxBackupFile { get; set; } = 5;
     }
 }

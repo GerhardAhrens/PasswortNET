@@ -9,6 +9,8 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Threading;
 
+using PasswortNET.Core;
+
 namespace PasswortNET
 {
     /// <summary>
@@ -27,6 +29,8 @@ namespace PasswortNET
         {
             try
             {
+                var aa = DatabaseName.Filename;
+
                 /* Name der EXE Datei*/
                 exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
                 /* Pfad der EXE-Datei*/
