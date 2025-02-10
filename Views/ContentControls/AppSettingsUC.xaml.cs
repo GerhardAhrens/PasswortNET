@@ -3,6 +3,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using ModernBaseLibrary.Core;
+    using ModernBaseLibrary.Extension;
 
     using ModernUI.MVVM.Base;
 
@@ -41,20 +42,28 @@
             set => base.SetValue(value);
         }
 
+        public Dictionary<int,string> RunEnvironmentSelectionSource
+        {
+            get => base.GetValue<Dictionary<int, string>>();
+            set => base.SetValue(value);
+        }
+
         public string RunEnvironmentSelectionChanged
         {
             get => base.GetValue<string>();
             set => base.SetValue(value);
         }
 
+        public bool IsUCLoaded { get; set; } = false;
+
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("BackSettingsCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("SelectionChangedCommand", new RelayCommand(p1 => this.OnSelectionChanged(p1), p2 => true));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            WeakEventManager<TabControl, SelectionChangedEventArgs>.AddHandler(this.tcSettings, "SelectionChanged", this.OnSelectionChanged);
             this.Titel = "Einstellungen zur Anwendung ändern";
             StatusbarMain.Statusbar.SetNotification("Ändern Sie verschieden Einstellungen.");
 
@@ -70,16 +79,23 @@
                     this.ApplicationPosition = settings.SaveLastWindowsPosition;
                 }
             }
+
+            this.RunEnvironmentSelectionSource = RunEnvironments.None.ToDictionary<RunEnvironments>();
+
+            this.IsUCLoaded = true;
         }
 
-        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnSelectionChanged(object e)
         {
-            SaveSettings();
+            if (this.IsUCLoaded == true)
+            {
+                this.SaveSettings();
+            }
         }
 
         private void BackHandler(object p1)
         {
-            SaveSettings();
+            this.SaveSettings();
 
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
             {

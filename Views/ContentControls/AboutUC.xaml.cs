@@ -31,6 +31,7 @@
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("BackAboutCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
+
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -39,18 +40,8 @@
             StatusbarMain.Statusbar.SetNotification("Informationen zur Anwendung.");
         }
 
-        private void TabControl_Loaded(object sender, RoutedEventArgs e)
+        private void SelectionChangedClick(object e)
         {
-
-        }
-
-        private static void item_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e, TabControl tabControl)
-        {
-        }
-
-        private void tcSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
 
         private void BackHandler(object p1)

@@ -58,7 +58,8 @@
         <ModernUI:LeftTabControl
             x:Name="tcSettings"
             Grid.Row="1"
-            Grid.Column="0">
+            Grid.Column="0"
+            SelectionChangedCommand="{Binding Path=CmdAgg[SelectionChangedCommand]}">
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabItem}">
                     <Setter Property="HeaderTemplate">
@@ -80,6 +81,7 @@
                         </TextBlock>
                     </StackPanel>
                 </TabItem.Header>
+
                 <localControls:TabAppSettingsAllgemein />
             </TabItem>
 
@@ -91,6 +93,8 @@
                         </TextBlock>
                     </StackPanel>
                 </TabItem.Header>
+
+                <localControls:TabAppSettingsDatabase />
             </TabItem>
 
             <TabItem Width="100">
@@ -101,6 +105,8 @@
                         </TextBlock>
                     </StackPanel>
                 </TabItem.Header>
+
+                <localControls:TabAppSettingsTag />
             </TabItem>
         </ModernUI:LeftTabControl>
 

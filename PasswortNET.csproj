@@ -64,6 +64,12 @@
     <Compile Update="Views\TabAbout\TabAboutStatistik.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\TabAppSettings\TabAppSettingsTag.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\TabAppSettings\TabAppSettingsDatabase.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\TabAppSettings\TabAppSettingsAllgemein.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
