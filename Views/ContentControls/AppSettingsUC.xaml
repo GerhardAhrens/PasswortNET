@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ModernUI="clr-namespace:ModernIU.Controls;assembly=ModernUILibrary"
+    xmlns:ModernWPF="clr-namespace:ModernIU.WPF.Base;assembly=ModernUILibrary"
     xmlns:base="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
@@ -14,6 +15,8 @@
     mc:Ignorable="d">
 
     <UserControl.Resources>
+        <ModernWPF:CommandKeyReference x:Key="BackCloseCmdKey" Command="{Binding Path=CmdAgg[BackSettingsCommand]}" />
+
         <Style x:Key="TabHeaderTextBlockStyle" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -27,6 +30,10 @@
         </Style>
     </UserControl.Resources>
 
+    <UserControl.InputBindings>
+        <KeyBinding Key="Esc" Command="{StaticResource ResourceKey=BackCloseCmdKey}" />
+    </UserControl.InputBindings>
+
     <ModernUI:SimpleGrid Columns="*" Rows="Auto,*,30">
         <StackPanel
             Grid.Row="0"
@@ -38,7 +45,7 @@
                 Width="100"
                 Height="25"
                 Background="SteelBlue"
-                Command="{Binding Path=CmdAgg[BackSettingsCommand]}"
+                Command="{StaticResource ResourceKey=BackCloseCmdKey}"
                 CommandParameter="{x:Static localStatic:MainButton.Back}"
                 Content="Zurück"
                 CornerRadius="2"
@@ -76,9 +83,10 @@
             <TabItem Width="100">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource ResourceKey=TabHeaderTextBlockStyle}">
-                            <Run Text="Allgemein" />
-                        </TextBlock>
+                        <TextBlock
+                            x:Name="TbAllgemein"
+                            Style="{StaticResource ResourceKey=TabHeaderTextBlockStyle}"
+                            Text="Allgemein" />
                     </StackPanel>
                 </TabItem.Header>
 
@@ -88,9 +96,10 @@
             <TabItem Width="100">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource ResourceKey=TabHeaderTextBlockStyle}">
-                            <Run Text="Datenbank" />
-                        </TextBlock>
+                        <TextBlock
+                            x:Name="TbDatenbank"
+                            Style="{StaticResource ResourceKey=TabHeaderTextBlockStyle}"
+                            Text="Datenbank" />
                     </StackPanel>
                 </TabItem.Header>
 

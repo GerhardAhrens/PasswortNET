@@ -2,6 +2,8 @@
 {
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+
     using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
 
@@ -54,7 +56,7 @@
             set => base.SetValue(value);
         }
 
-        public bool IsUCLoaded { get; set; } = false;
+        private bool IsUCLoaded { get; set; } = false;
 
         public override void InitCommands()
         {
@@ -64,6 +66,7 @@
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            this.Focus();
             this.Titel = "Einstellungen zur Anwendung ändern";
             StatusbarMain.Statusbar.SetNotification("Ändern Sie verschieden Einstellungen.");
 
@@ -90,6 +93,20 @@
             if (this.IsUCLoaded == true)
             {
                 this.SaveSettings();
+
+                int index = ((Selector)(((FrameworkElement)e).Parent)).SelectedIndex;
+                if (index == 0)
+                {
+                    StatusbarMain.Statusbar.SetNotification("Ändern Sie verschieden Einstellungen.");
+                }
+                else if (index == 1)
+                {
+                    StatusbarMain.Statusbar.SetNotification("Einstellungen zur Datenbank, Backup, Verzeichnisse.");
+                }
+                else if (index == 2)
+                {
+                    StatusbarMain.Statusbar.SetNotification("Tag zum markieren und zusammenfassen von Gruppen.");
+                }
             }
         }
 
