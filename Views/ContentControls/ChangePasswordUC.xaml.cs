@@ -1,5 +1,6 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
+    using System.IO;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Threading;
@@ -11,6 +12,7 @@
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Core;
+    using PasswortNET.DataRepository;
 
     /// <summary>
     /// Interaktionslogik für ChangePasswordUC.xaml
@@ -64,11 +66,12 @@
 
         private void ChangeLoginHandler(object p1)
         {
-            const int MAXLOGIN = 3;
+            string dataBaseFile = string.Empty;
             string userName = this.LoginUser;
             string passwort = this.TxtPassword.Password;
             string passwortRepeat = this.TxtPasswordRepeat.Password;
             string hash = $"{userName}{passwort}".ToMD5(false);
+            string encryptHash = hash.Encrypt();
             string compareHash = string.Empty;
 
             using (ApplicationSettings settings = new ApplicationSettings())
@@ -76,8 +79,21 @@
                 if (settings.IsExitSettings() == true)
                 {
                     settings.Load();
-                    compareHash = settings.Hash.Decrypt();
+                    compareHash = settings.ControlHash.Decrypt().Replace("|",string.Empty).ToMD5(false);
+                    if (string.IsNullOrEmpty(settings.DatabaseFullname) == false)
+                    {
+                        settings.DatabaseFullname = DatabaseName.FullDatabaseName;
+                    }
+
+                    dataBaseFile = DatabaseName.FullDatabaseName;
                 }
+            }
+
+            if (File.Exists(dataBaseFile) == false)
+            {
+                this.notificationService.DatebaseNotExist(dataBaseFile);
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtPassword.Focus(); }));
+                return;
             }
 
             if (string.Equals(passwort, passwortRepeat) == false)
@@ -94,10 +110,33 @@
                 return;
             }
 
+            NotificationBoxButton saveYN = this.notificationService.SaveNewPasswortYN();
+            if (saveYN == NotificationBoxButton.Yes)
+            {
+                using (ApplicationSettings settings = new ApplicationSettings())
+                {
+                    if (settings.IsExitSettings() == true)
+                    {
+                        settings.Load();
+                        settings.Hash = encryptHash;
+                        string ctrlHash = $"{userName}|{passwort}";
+                        settings.ControlHash = ctrlHash.Encrypt();
+                        settings.DatabaseFullname = DatabaseName.FullDatabaseName;
+                        settings.Save();
+                    }
+                }
+
+                using (DatabaseManager dm = new DatabaseManager(dataBaseFile, compareHash))
+                {
+                    dm.ChangePassword(hash);
+                }
+            }
+
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
             {
                 Sender = this.GetType().Name,
                 MenuButton = MainButton.Home,
+                LoginHash = hash,
             });
         }
 

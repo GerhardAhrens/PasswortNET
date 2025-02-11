@@ -1,4 +1,4 @@
-﻿namespace SimplePasswordManager.BaseClass
+﻿namespace PasswortNET.DataRepository
 {
     using System;
     using System.Collections.Generic;

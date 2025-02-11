@@ -64,6 +64,28 @@ namespace PasswortNET.Core
         }
 
         #region Login und Change Password
+        public static NotificationBoxButton DatebaseNotExist(this INotificationService @this, string fileName)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:red;\">Die Passwort Datenbank wurde nicht gefunden!</h2>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Datenbank Datei: {fileName}</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Benutzer/Passwort", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+
         public static NotificationBoxButton BenutzerPasswortFalsch(this INotificationService @this, int maxCount = 3)
         {
             string countMsg = FormatMessage.Get("Sie noch [ein/{0}] [Versuch/Versuche]", maxCount);
@@ -199,6 +221,28 @@ namespace PasswortNET.Core
 
             return resultOK.Item1;
         }
+
+        public static NotificationBoxButton SaveNewPasswortYN(this INotificationService @this)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:black;\">Wollen Sie das neue Passwort speichern?</h2>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Ändern Benutzer/Passwort", htmlContent.ToString(), 0);
+            NotificationBoxButton questionResult = NotificationBoxButton.None;
+
+            @this.ShowDialog<QuestionHtmlYesNo>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    questionResult = ((System.Tuple<ModernIU.Controls.NotificationBoxButton>)tag).Item1;
+                }
+            });
+
+            return questionResult;
+        }
+
         #endregion Login und Change Password
     }
 }

@@ -17,6 +17,7 @@
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Core;
+    using PasswortNET.DataRepository;
 
     /// <summary>
     /// Interaktionslogik für LoginUC.xaml
@@ -77,6 +78,7 @@
                     settings.ExitApplicationQuestion = false;
                     settings.SaveLastWindowsPosition = false;
                     settings.Hash = string.Empty;
+                    settings.DatabaseFullname = DatabaseName.FullDatabaseName;
                     settings.Save();
                 }
 
@@ -110,6 +112,7 @@
         private void LoginHandler(object p1)
         {
             const int MAXLOGIN = 3;
+            string databaseFile = string.Empty;
             bool isFirstStart = false;
             string userName = this.LoginUser;
             string passwort = this.TxtPassword.Password;
@@ -130,6 +133,7 @@
                         settings.Hash = encryptHash;
                         string ctrlHash = $"{userName}|{passwort}";
                         settings.ControlHash = ctrlHash.Encrypt();
+                        settings.DatabaseFullname = DatabaseName.FullDatabaseName;
                         settings.Save();
                         compareHash = settings.Hash.Decrypt();
                     }
@@ -138,6 +142,8 @@
                         isFirstStart = false;
                         compareHash = settings.Hash.Decrypt();
                     }
+
+                    databaseFile = settings.DatabaseFullname;
                 }
             }
 
@@ -170,6 +176,11 @@
                 {
                     this.CloseWindowHandler(null);
                 }
+            }
+
+            using (DatabaseManager dm = new DatabaseManager(databaseFile, compareHash))
+            {
+                dm.CheckDatabase();
             }
 
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
