@@ -11,6 +11,20 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <ModernUI:SimpleGrid Columns="*" Rows="30,*,30">
-        <TextBlock Text="Home Dialog" />
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="0"
+            Height="Auto"
+            Background="LightBlue"
+            Orientation="Horizontal">
+
+            <TextBlock
+                x:Name="TbTitelUC"
+                Margin="5,0,0,0"
+                VerticalAlignment="Center"
+                FontSize="14"
+                Text="TbTitelUC"
+                FontWeight="Bold" />
+        </StackPanel>
     </ModernUI:SimpleGrid>
 </base:UserControlBase>

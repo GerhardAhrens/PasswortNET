@@ -26,12 +26,6 @@
             this.DataContext = this;
         }
 
-        public string Titel
-        {
-            get => base.GetValue<string>();
-            set => base.SetValue(value);
-        }
-
         public bool ExitQuestion
         {
             get => base.GetValue<bool>();
@@ -56,8 +50,6 @@
             set => base.SetValue(value);
         }
 
-        private bool IsUCLoaded { get; set; } = false;
-
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("BackSettingsCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
@@ -67,7 +59,6 @@
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             this.Focus();
-            this.Titel = "Einstellungen zur Anwendung ändern";
             StatusbarMain.Statusbar.SetNotification("Ändern Sie verschieden Einstellungen.");
 
             using (ApplicationSettings settings = new ApplicationSettings())

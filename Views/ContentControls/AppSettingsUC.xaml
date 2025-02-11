@@ -55,11 +55,12 @@
                 PressedBackground="Gray" />
 
             <TextBlock
+                x:Name="TbTitelUC"
                 Margin="5,0,0,0"
                 VerticalAlignment="Center"
                 FontSize="14"
                 FontWeight="Bold"
-                Text="{Binding Path=Titel, UpdateSourceTrigger=PropertyChanged, FallbackValue=TitelUC}" />
+                Text="TbTitelUC" />
         </StackPanel>
 
         <ModernUI:LeftTabControl

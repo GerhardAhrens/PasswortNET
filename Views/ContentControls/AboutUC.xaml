@@ -17,6 +17,18 @@
 
     <UserControl.Resources>
         <ModernWPF:CommandKeyReference x:Key="BackCloseCmdKey" Command="{Binding Path=CmdAgg[BackAboutCommand]}" />
+
+        <Style x:Key="TabHeaderTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="Normal" />
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -42,11 +54,12 @@
                 PressedBackground="Gray" />
 
             <TextBlock
+                x:Name="TbTitelUC"
                 Margin="5,0,0,0"
                 VerticalAlignment="Center"
                 FontSize="14"
                 FontWeight="Bold"
-                Text="{Binding Path=Titel, UpdateSourceTrigger=PropertyChanged, FallbackValue=TitelUC}" />
+                Text="TbTitelUC" />
         </StackPanel>
 
         <ModernUI:LeftTabControl
@@ -71,9 +84,10 @@
             <TabItem Width="100">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock>
-                            <Run Text="Allgemein" />
-                        </TextBlock>
+                        <TextBlock
+                            x:Name="TbAllgemein"
+                            Style="{StaticResource ResourceKey=TabHeaderTextBlockStyle}"
+                            Text="Allgemein" />
                     </StackPanel>
                 </TabItem.Header>
                 <localControls:TabAboutAllgemein />
@@ -82,9 +96,10 @@
             <TabItem Width="100">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock>
-                            <Run Text="Statistik" />
-                        </TextBlock>
+                        <TextBlock
+                            x:Name="TbStatistik"
+                            Style="{StaticResource ResourceKey=TabHeaderTextBlockStyle}"
+                            Text="Statistik" />
                     </StackPanel>
                 </TabItem.Header>
                 <localControls:TabAboutStatistik />

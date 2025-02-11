@@ -23,17 +23,17 @@ namespace PasswortNET.Core
     {
         [Description("Keine Auswahl")]
         None = 0,
-        [Description("Home")]
+        [Description("Home Dialog ohne Funktion")]
         Home = 1,
-        [Description("Login")]
+        [Description("Anmeldung durchführen, um PasswortNET verwenden zu können.")]
         Login = 2,
-        [Description("Logoff")]
+        [Description("Aktueller Benutzer abmelden")]
         Logoff = 3,
-        [Description("Passwort ändern")]
+        [Description("Benutzer und/oder Passwort ändern")]
         ChangePassword = 4,
-        [Description("Einstellungen")]
+        [Description("Programmeinstellungen, Passwortdatenbank, Tag")]
         AppSettings = 5,
-        [Description("Über ...")]
+        [Description("Programminformationen und Statistik")]
         About = 6,
         [Description("Zurück")]
         Back = 7,

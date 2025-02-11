@@ -35,12 +35,6 @@
             this.DataContext = this;
         }
 
-        public string Titel
-        {
-            get => base.GetValue<string>();
-            set => base.SetValue(value);
-        }
-
         public string LoginUser
         {
             get => base.GetValue<string>();
@@ -71,7 +65,6 @@
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            this.Titel = "Anmeldedialog";
             StatusbarMain.Statusbar.SetNotification("Geben Sie einen Benutzer und ein  Passwort an.");
 
             using (ApplicationSettings settings = new ApplicationSettings())

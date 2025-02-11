@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Reflection;
 
+    using ModernBaseLibrary.Extension;
+
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Views.ContentControls;
@@ -27,6 +29,7 @@
                 {
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
+
                     if (Views.ContainsKey(mainButton) == true)
                     {
                         menuWorkArea = new MenuWorkArea(CreateInstanceContent(mainButton));
@@ -37,6 +40,7 @@
                     if (menuWorkArea != null)
                     {
                         menuWorkArea.UsedTime = lvt.Result();
+                        menuWorkArea.ButtonDescription = mainButton.ToDescription();
                     }
                 }
             }

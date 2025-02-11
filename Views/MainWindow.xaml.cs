@@ -194,9 +194,16 @@
             {
                 StatusbarMain.Statusbar.SetNotification();
 
-                string name = e.MenuButton.ToDescription();
+                string titelUC = e.MenuButton.ToDescription();
                 this.WorkContent = menuWorkArea.WorkContent;
                 this.WorkContent.VerticalAlignment = VerticalAlignment.Stretch;
+
+                TextBlock textBlock = UIHelper.FindByName<TextBlock>(this.WorkContent, "TbTitelUC");
+                if (textBlock != null)
+                {
+                    textBlock.Text = titelUC;
+                }
+
                 if (this.WorkContent.GetType() == typeof(LoginUC))
                 {
                     this.IsAppSettings = false;
@@ -233,8 +240,6 @@
                     this.IsWorkPassword = false;
                 }
             }
-
-            this.IsDropDownOpen = false;
         }
     }
 }

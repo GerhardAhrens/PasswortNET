@@ -27,8 +27,6 @@
         {
             try
             {
-                /*var aa = DatabaseName.BuildBackupName();*/
-
                 /* Name der EXE Datei*/
                 exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
                 /* Pfad der EXE-Datei*/

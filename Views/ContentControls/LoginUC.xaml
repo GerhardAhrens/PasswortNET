@@ -44,11 +44,12 @@
             Orientation="Horizontal">
 
             <TextBlock
+                x:Name="TbTitelUC"
                 Margin="5,0,0,0"
                 VerticalAlignment="Center"
                 FontSize="14"
                 FontWeight="Bold"
-                Text="{Binding Path=Titel, UpdateSourceTrigger=PropertyChanged, FallbackValue=TitelUC}" />
+                Text="TbTitelUC" />
         </StackPanel>
 
         <StackPanel Grid.Row="1" VerticalAlignment="Center">
@@ -68,6 +69,7 @@
                         IconForeground="Gray"
                         IconPlacement="Left"
                         IconWidth="18"
+                        KeyboardNavigation.TabIndex="1"
                         Text="{Binding Path=LoginUser, UpdateSourceTrigger=PropertyChanged}"
                         Watermark="Benutzername" />
 
@@ -82,6 +84,7 @@
                         IconForeground="Gray"
                         IconWidth="18"
                         IsCanSeePassword="True"
+                        KeyboardNavigation.TabIndex="2"
                         Watermark="Bitte geben Sie Ihr Passwort ein" />
 
                     <ModernUI:MPasswordBox
@@ -95,6 +98,7 @@
                         IconForeground="Gray"
                         IconWidth="18"
                         IsCanSeePassword="True"
+                        KeyboardNavigation.TabIndex="3"
                         Visibility="{Binding Path=IsPasswordRepeat, Converter={StaticResource ResourceKey=BooleanToVisibleConverter}}"
                         Watermark="Bitte geben Sie Ihr Passwort zur Wiederholung ein" />
                 </StackPanel>

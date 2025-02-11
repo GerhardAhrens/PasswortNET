@@ -17,5 +17,7 @@ namespace PasswortNET.Core
         public UserControl WorkContent { get; private set; }
 
         public string UsedTime { get; set; }
+
+        public string ButtonDescription { get; set; }
     }
 }

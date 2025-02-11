@@ -19,6 +19,7 @@
         <StackPanel
             Margin="0,0,10,0"
             HorizontalAlignment="Left"
+            KeyboardNavigation.IsTabStop="False"
             Orientation="Horizontal">
 
             <Menu

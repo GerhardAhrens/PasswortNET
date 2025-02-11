@@ -23,14 +23,6 @@
             this.DataContext = this;
         }
 
-        public string Titel
-        {
-            get => base.GetValue<string>();
-            set => base.SetValue(value);
-        }
-
-        private bool IsUCLoaded { get; set; } = false;
-
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("BackAboutCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
@@ -39,7 +31,6 @@
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            this.Titel = "Anwendungs Information und Statistik";
             this.Focus();
             this.IsUCLoaded = true;
         }
