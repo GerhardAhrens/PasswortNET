@@ -1,12 +1,16 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
+    using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
 
+    using ModernBaseLibrary.Core;
+
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Core;
+    using PasswortNET.DataRepository;
 
     /// <summary>
     /// Interaktionslogik für AboutUC.xaml
@@ -23,6 +27,42 @@
             this.DataContext = this;
         }
 
+        public int CountAll
+        {
+            get => base.GetValue<int>();
+            set => base.SetValue(value);
+        }
+
+        public int CountWebsite
+        {
+            get => base.GetValue<int>();
+            set => base.SetValue(value);
+        }
+
+        public int CountPasswort
+        {
+            get => base.GetValue<int>();
+            set => base.SetValue(value);
+        }
+
+        public int CountPin
+        {
+            get => base.GetValue<int>();
+            set => base.SetValue(value);
+        }
+
+        public int CountLicense
+        {
+            get => base.GetValue<int>();
+            set => base.SetValue(value);
+        }
+
+        public DateTime LastAccess
+        {
+            get => base.GetValue<DateTime>();
+            set => base.SetValue(value);
+        }
+
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("BackAboutCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
@@ -33,12 +73,11 @@
         {
             this.Focus();
             this.IsUCLoaded = true;
+            AssemblyMetaInfo ami = new AssemblyMetaInfo();
         }
 
         private void OnSelectionChanged(object e)
         {
-            StatusbarMain.Statusbar.SetNotification("Informationen zur Anwendung.");
-
             if (this.IsUCLoaded == true)
             {
                 int index = ((Selector)(((FrameworkElement)e).Parent)).SelectedIndex;
@@ -48,7 +87,21 @@
                 }
                 else if (index == 1)
                 {
-                    StatusbarMain.Statusbar.SetNotification("Informationen zur Statistik der Datenbank Einträge.");
+                    using (StatistikRepository repository = new StatistikRepository())
+                    {
+                        Result<bool> result = repository.GetStatistic();
+                        if (result.Success == true)
+                        {
+                            this.CountAll = repository.CountAll;
+                            this.CountWebsite = repository.CountWebsite;
+                            this.CountPasswort = repository.CountPasswort;
+                            this.CountPin = repository.CountPin;
+                            this.CountLicense = repository.CountLicense;
+                            this.LastAccess = repository.LastAccess;
+                        }
+
+                        StatusbarMain.Statusbar.SetNotification($"Bereit: {result.ElapsedMilliseconds}ms");
+                    }
                 }
             }
         }

@@ -43,7 +43,7 @@ namespace PasswortNET.DataRepository
         public Result<bool> ExistDatabase()
         {
             bool result = false;
-            long ticks = 0;
+            long milliSeconds = 0;
 
             try
             {
@@ -55,7 +55,7 @@ namespace PasswortNET.DataRepository
                         result = true;
                     }
 
-                    ticks = objectRuntime.ResultMilliseconds();
+                    milliSeconds = objectRuntime.ResultMilliseconds();
                 }
             }
             catch (Exception ex)
@@ -63,13 +63,13 @@ namespace PasswortNET.DataRepository
                 return Result<bool>.FailureResult(ex);
             }
 
-            return Result<bool>.SuccessResult(result, true, ticks);
+            return Result<bool>.SuccessResult(result, true, milliSeconds);
         }
 
         public Result<DatabaseInfo> CheckDatabase()
         {
             DatabaseInfo result = null;
-            long ticks = 0;
+            long milliSeconds = 0;
 
             try
             {
@@ -97,7 +97,7 @@ namespace PasswortNET.DataRepository
                             result = entityCollectionX.FindAll().FirstOrDefault();
                         }
 
-                        ticks = objectRuntime.ResultMilliseconds();
+                        milliSeconds = objectRuntime.ResultMilliseconds();
                     }
                 }
             }
@@ -106,7 +106,7 @@ namespace PasswortNET.DataRepository
                 return Result<DatabaseInfo>.FailureResult(ex);
             }
 
-            return Result<DatabaseInfo>.SuccessResult(result, true, ticks);
+            return Result<DatabaseInfo>.SuccessResult(result, true, milliSeconds);
         }
 
         public void ChangePassword(string password)

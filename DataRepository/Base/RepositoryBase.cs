@@ -16,28 +16,20 @@
     public abstract class RepositoryBase<TEntity> : IDisposable
     {
         private bool classIsDisposed = false;
-        private string password = null;
 
+        protected RepositoryBase(string databaseFile = "") : this(databaseFile, string.Empty) {}
 
-        protected RepositoryBase(string databaseFile) : this(databaseFile, string.Empty) {}
-
-        protected RepositoryBase(string databaseFile, string password)
+        protected RepositoryBase(string databaseFile, string password = "")
         {
-            databaseFile.IsArgumentNullOrEmpty("databaseFile");
+            password = "222e5937065d2151f760731fef54b0f6";
 
-            if (string.IsNullOrEmpty(password) == true)
+            using (ApplicationSettings settings = new ApplicationSettings())
             {
-                using (ApplicationSettings sm = new ApplicationSettings())
-                {
-                    this.password = sm.Hash.Decrypt();
-                }
-            }
-            else
-            {
-                this.password = password;
+                settings.Load();
+                databaseFile = settings.DatabaseFullname;
             }
 
-            this.ConnectionDB = this.Connection(databaseFile, this.password);
+            this.ConnectionDB = this.Connection(databaseFile, password);
 
             string collectionName = typeof(TEntity).Name;
 
@@ -350,7 +342,7 @@
             return this.Connection(databaseFile, string.Empty);
         }
 
-        private ConnectionString Connection(string databaseFile, string password)
+        private ConnectionString Connection(string databaseFile, string password = "222e5937065d2151f760731fef54b0f6")
         {
             ConnectionString conn = new ConnectionString(databaseFile);
             conn.Connection = ConnectionType.Shared;

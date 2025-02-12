@@ -11,6 +11,8 @@
     <Authors>Gerhard Ahrens</Authors>
     <Company>Lifeprojects.de</Company>
     <Copyright>(c) Lifeprojects.de 2025</Copyright>
+    <AssemblyVersion>1.0.2025.1</AssemblyVersion>
+    <FileVersion>1.0.2025.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Core\Enums\" />
     <Folder Include="Core\Settings\" />
     <Folder Include="AssemblyInfo\" />
     <Folder Include="DataRepository\Base\" />

@@ -3,6 +3,7 @@
     using System.IO;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
     using System.Windows.Threading;
 
     using ModernBaseLibrary.Core;
@@ -61,6 +62,10 @@
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            WeakEventManager<IconTextBox, KeyEventArgs>.AddHandler(this.TxtBenutzername, "KeyDown", this.OnKeyDown);
+            WeakEventManager<MPasswordBox, KeyEventArgs>.AddHandler(this.TxtPassword, "KeyDown", this.OnKeyDown);
+            WeakEventManager<MPasswordBox, KeyEventArgs>.AddHandler(this.TxtPasswordRepeat, "KeyDown", this.OnKeyDown);
+
             this.Focus();
             StatusbarMain.Statusbar.SetNotification("Geben Sie einen neuen Benutzer und/oder ein neues Passwort an.");
 
@@ -155,6 +160,35 @@
                 Sender = this.GetType().Name,
                 MenuButton = MainButton.Home,
             });
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            IconTextBox it = sender as IconTextBox;
+            if (it != null)
+            {
+                if (it.Name == "TxtBenutzername" && e.Key == Key.Tab)
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtPassword.Focus(); }));
+                }
+            }
+
+            MPasswordBox mp = sender as MPasswordBox;
+            if (mp != null)
+            {
+                if (mp.Name == "TxtPassword" && e.Key == Key.Tab && IsPasswordRepeat == true)
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtPasswordRepeat.Focus(); }));
+                }
+                else if (mp.Name == "TxtPassword" && e.Key == Key.Tab && IsPasswordRepeat == false)
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtBenutzername.Focus(); }));
+                }
+                else if (mp.Name == "TxtPasswordRepeat" && e.Key == Key.Tab)
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtBenutzername.Focus(); }));
+                }
+            }
         }
     }
 }

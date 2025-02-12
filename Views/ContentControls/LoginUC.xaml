@@ -69,6 +69,7 @@
                         IconForeground="Gray"
                         IconPlacement="Left"
                         IconWidth="18"
+                        KeyboardNavigation.IsTabStop="True"
                         KeyboardNavigation.TabIndex="1"
                         Text="{Binding Path=LoginUser, UpdateSourceTrigger=PropertyChanged}"
                         Watermark="Benutzername" />
@@ -84,6 +85,7 @@
                         IconForeground="Gray"
                         IconWidth="18"
                         IsCanSeePassword="True"
+                        KeyboardNavigation.IsTabStop="True"
                         KeyboardNavigation.TabIndex="2"
                         Watermark="Bitte geben Sie Ihr Passwort ein" />
 
@@ -98,6 +100,7 @@
                         IconForeground="Gray"
                         IconWidth="18"
                         IsCanSeePassword="True"
+                        KeyboardNavigation.IsTabStop="True"
                         KeyboardNavigation.TabIndex="3"
                         Visibility="{Binding Path=IsPasswordRepeat, Converter={StaticResource ResourceKey=BooleanToVisibleConverter}}"
                         Watermark="Bitte geben Sie Ihr Passwort zur Wiederholung ein" />
