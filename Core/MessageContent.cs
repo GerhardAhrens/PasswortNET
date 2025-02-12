@@ -178,6 +178,27 @@ namespace PasswortNET.Core
             return resultOK.Item1;
         }
 
+        public static NotificationBoxButton NoteForLogoff(this INotificationService @this)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:red;\">Nach der erfolgreichen &Auml;nderung des Passwort muss sich neu angemeldet werden.</h2>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Benutzer/Passwort", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+
         public static NotificationBoxButton ChangeLoginData(this INotificationService @this)
         {
             StringBuilder htmlContent = new StringBuilder();

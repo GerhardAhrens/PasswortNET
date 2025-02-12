@@ -18,6 +18,7 @@
 
     using PasswortNET.Core;
     using PasswortNET.DataRepository;
+    using PasswortNET.Model;
 
     /// <summary>
     /// Interaktionslogik für LoginUC.xaml
@@ -141,9 +142,17 @@
                     {
                         isFirstStart = false;
                         compareHash = settings.Hash.Decrypt();
+                        if (string.IsNullOrEmpty(settings.DatabaseFullname) == false)
+                        {
+                            databaseFile = settings.DatabaseFullname;
+                        }
+                        else
+                        {
+                            settings.DatabaseFullname = DatabaseName.FullDatabaseName;
+                            settings.Save();
+                            databaseFile = DatabaseName.FullDatabaseName;
+                        }
                     }
-
-                    databaseFile = settings.DatabaseFullname;
                 }
             }
 
@@ -178,9 +187,10 @@
                 }
             }
 
-            using (DatabaseManager dm = new DatabaseManager(databaseFile, compareHash))
+            using (DatabaseManager dm = new DatabaseManager(databaseFile))
             {
-                dm.CheckDatabase();
+                Result<DatabaseInfo> dbi = dm.CheckDatabase();
+                StatusbarMain.Statusbar.Notification = $"Bereit: {dbi.ElapsedTime}ms";
             }
 
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs

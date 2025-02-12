@@ -28,10 +28,10 @@ namespace PasswortNET.DataRepository
 
     public sealed class DatabaseManager : DisposableCoreBase
     {
-        public DatabaseManager(string databaseFile, string password)
+        public DatabaseManager(string databaseFile)
         {
             this.DatabaseFile = databaseFile;
-            this.ConnectionDB = this.Connection(databaseFile, password);
+            this.ConnectionDB = this.Connection(databaseFile, "222e5937065d2151f760731fef54b0f6");
         }
 
         private string DatabaseFile { get; set; }
@@ -66,22 +66,47 @@ namespace PasswortNET.DataRepository
             return Result<bool>.SuccessResult(result, true, ticks);
         }
 
-        public void CheckDatabase()
+        public Result<DatabaseInfo> CheckDatabase()
         {
+            DatabaseInfo result = null;
+            long ticks = 0;
+
             try
             {
-                this.DatabaseIntern = new LiteDatabase(this.ConnectionDB);
-
-                if (this.DatabaseIntern != null)
+                using (ObjectRuntime objectRuntime = new ObjectRuntime())
                 {
-                    ILiteCollection<Region> entityCollection = this.DatabaseIntern.GetCollection<Region>(typeof(Region).Name);
+                    this.DatabaseIntern = new LiteDatabase(this.ConnectionDB);
+
+                    if (this.DatabaseIntern != null)
+                    {
+                        ILiteCollection<DatabaseInfo> entityCollection = this.DatabaseIntern.GetCollection<DatabaseInfo>(typeof(DatabaseInfo).Name);
+                        if (entityCollection.Count() == 0)
+                        {
+                            DatabaseInfo entity = new();
+                            entity.Name = "PasswortNET";
+                            entity.Description = "verwaltung von Passworten, Zugänge, PIN, Lizenzen";
+                            entity.Version = 1;
+                            entity.CreatedBy = UserInfo.TS().CurrentDomainUser;
+                            entity.CreatedOn = UserInfo.TS().CurrentTime;
+                            BsonValue resultEntity = entityCollection.Insert(entity);
+                            result = entityCollection.FindAll().FirstOrDefault();
+                        }
+                        else
+                        {
+                            ILiteCollection<DatabaseInfo> entityCollectionX = this.DatabaseIntern.GetCollection<DatabaseInfo>(typeof(DatabaseInfo).Name);
+                            result = entityCollectionX.FindAll().FirstOrDefault();
+                        }
+
+                        ticks = objectRuntime.ResultMilliseconds();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                string errorText = ex.Message;
-                throw;
+                return Result<DatabaseInfo>.FailureResult(ex);
             }
+
+            return Result<DatabaseInfo>.SuccessResult(result, true, ticks);
         }
 
         public void ChangePassword(string password)

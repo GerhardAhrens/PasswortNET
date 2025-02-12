@@ -192,52 +192,58 @@
             MenuWorkArea view = DialogFactory.Get(e.MenuButton);
             if (view is MenuWorkArea menuWorkArea)
             {
-                StatusbarMain.Statusbar.SetNotification();
+                long milliSeconds = 0;
+                using (ObjectRuntime objectRuntime = new ObjectRuntime())
+                {
+                    StatusbarMain.Statusbar.SetNotification();
+                    string titelUC = e.MenuButton.ToDescription();
+                    this.WorkContent = menuWorkArea.WorkContent;
+                    this.WorkContent.VerticalAlignment = VerticalAlignment.Stretch;
 
-                string titelUC = e.MenuButton.ToDescription();
-                this.WorkContent = menuWorkArea.WorkContent;
-                this.WorkContent.VerticalAlignment = VerticalAlignment.Stretch;
+                    TextBlock textBlock = UIHelper.FindByName<TextBlock>(this.WorkContent, "TbTitelUC");
+                    if (textBlock != null)
+                    {
+                        textBlock.Text = titelUC;
+                    }
 
-                TextBlock textBlock = UIHelper.FindByName<TextBlock>(this.WorkContent, "TbTitelUC");
-                if (textBlock != null)
-                {
-                    textBlock.Text = titelUC;
-                }
+                    if (this.WorkContent.GetType() == typeof(LoginUC))
+                    {
+                        this.IsAppSettings = false;
+                        this.IsAbout = false;
+                        this.IsLogoff = false;
+                        this.IsWorkPassword = false;
+                    }
+                    else if (this.WorkContent.GetType() == typeof(AppSettingsUC))
+                    {
+                        this.IsAppSettings = false;
+                        this.IsAbout = true;
+                        this.IsWorkPassword = false;
+                        this.IsLogoff = true;
+                    }
+                    else if (this.WorkContent.GetType() == typeof(AboutUC))
+                    {
+                        this.IsAppSettings = true;
+                        this.IsAbout = false;
+                        this.IsWorkPassword = false;
+                        this.IsLogoff = true;
+                    }
+                    else if (this.WorkContent.GetType() == typeof(HomeUC))
+                    {
+                        this.IsAppSettings = true;
+                        this.IsAbout = true;
+                        this.IsLogoff = true;
+                        this.IsWorkPassword = true;
+                    }
+                    else if (this.WorkContent.GetType() == typeof(ChangePasswordUC))
+                    {
+                        this.IsAppSettings = false;
+                        this.IsAbout = false;
+                        this.IsLogoff = false;
+                        this.IsWorkPassword = false;
+                    }
 
-                if (this.WorkContent.GetType() == typeof(LoginUC))
-                {
-                    this.IsAppSettings = false;
-                    this.IsAbout = false;
-                    this.IsLogoff = false;
-                    this.IsWorkPassword = false;
-                }
-                else if (this.WorkContent.GetType() == typeof(AppSettingsUC))
-                {
-                    this.IsAppSettings = false;
-                    this.IsAbout = true;
-                    this.IsWorkPassword = false;
-                    this.IsLogoff = true;
-                }
-                else if (this.WorkContent.GetType() == typeof(AboutUC))
-                {
-                    this.IsAppSettings = true;
-                    this.IsAbout = false;
-                    this.IsWorkPassword = false;
-                    this.IsLogoff = true;
-                }
-                else if (this.WorkContent.GetType() == typeof(HomeUC))
-                {
-                    this.IsAppSettings = true;
-                    this.IsAbout = true;
-                    this.IsLogoff = true;
-                    this.IsWorkPassword = true;
-                }
-                else if (this.WorkContent.GetType() == typeof(ChangePasswordUC))
-                {
-                    this.IsAppSettings = false;
-                    this.IsAbout = false;
-                    this.IsLogoff = false;
-                    this.IsWorkPassword = false;
+                    milliSeconds = objectRuntime.ResultMilliseconds();
+                    StatusbarMain.Statusbar.SetNotification($"Bereit: {milliSeconds}ms");
                 }
             }
         }

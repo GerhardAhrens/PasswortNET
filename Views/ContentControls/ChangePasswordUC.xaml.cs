@@ -5,6 +5,7 @@
     using System.Windows.Controls;
     using System.Windows.Threading;
 
+    using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
 
     using ModernIU.Controls;
@@ -13,6 +14,7 @@
 
     using PasswortNET.Core;
     using PasswortNET.DataRepository;
+    using PasswortNET.Model;
 
     /// <summary>
     /// Interaktionslogik für ChangePasswordUC.xaml
@@ -66,7 +68,7 @@
 
         private void ChangeLoginHandler(object p1)
         {
-            string dataBaseFile = string.Empty;
+            string databaseFile = string.Empty;
             string userName = this.LoginUser;
             string passwort = this.TxtPassword.Password;
             string passwortRepeat = this.TxtPasswordRepeat.Password;
@@ -80,18 +82,22 @@
                 {
                     settings.Load();
                     compareHash = settings.ControlHash.Decrypt().Replace("|",string.Empty).ToMD5(false);
-                    if (string.IsNullOrEmpty(settings.DatabaseFullname) == false)
+                    if (string.IsNullOrEmpty(settings.DatabaseFullname) == true)
                     {
                         settings.DatabaseFullname = DatabaseName.FullDatabaseName;
+                        settings.Save();
+                        databaseFile = settings.DatabaseFullname;
                     }
-
-                    dataBaseFile = DatabaseName.FullDatabaseName;
+                    else
+                    {
+                        databaseFile = settings.DatabaseFullname;
+                    }
                 }
             }
 
-            if (File.Exists(dataBaseFile) == false)
+            if (File.Exists(databaseFile) == false)
             {
-                this.notificationService.DatebaseNotExist(dataBaseFile);
+                this.notificationService.DatebaseNotExist(databaseFile);
                 this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtPassword.Focus(); }));
                 return;
             }
@@ -121,21 +127,23 @@
                         settings.Hash = encryptHash;
                         string ctrlHash = $"{userName}|{passwort}";
                         settings.ControlHash = ctrlHash.Encrypt();
-                        settings.DatabaseFullname = DatabaseName.FullDatabaseName;
                         settings.Save();
                     }
                 }
 
-                using (DatabaseManager dm = new DatabaseManager(dataBaseFile, compareHash))
+                using (DatabaseManager dm = new DatabaseManager(databaseFile))
                 {
-                    dm.ChangePassword(hash);
+                    Result<DatabaseInfo> dbi = dm.CheckDatabase();
+                    StatusbarMain.Statusbar.Notification = $"Bereit: {dbi.ElapsedTime}ms";
                 }
             }
+
+            this.notificationService.NoteForLogoff();
 
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
             {
                 Sender = this.GetType().Name,
-                MenuButton = MainButton.Home,
+                MenuButton = MainButton.Login,
                 LoginHash = hash,
             });
         }
