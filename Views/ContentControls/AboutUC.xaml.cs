@@ -27,6 +27,7 @@
             this.DataContext = this;
         }
 
+        #region Properties
         public int CountAll
         {
             get => base.GetValue<int>();
@@ -63,6 +64,49 @@
             set => base.SetValue(value);
         }
 
+        public string Product
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+
+        public string ProductVersion
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+
+        public string Description
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+
+        public string Copyright
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+
+        public string GitRepository
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+
+        public string FrameworkVersion
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+
+        public string OSEnvironment
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+        #endregion Properties
+
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("BackAboutCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
@@ -73,17 +117,34 @@
         {
             this.Focus();
             this.IsUCLoaded = true;
-            AssemblyMetaInfo ami = new AssemblyMetaInfo();
+            this.OnSelectionChanged(null);
         }
 
         private void OnSelectionChanged(object e)
         {
             if (this.IsUCLoaded == true)
             {
-                int index = ((Selector)(((FrameworkElement)e).Parent)).SelectedIndex;
+                int index = -1;
+
+                if (e == null)
+                {
+                    index = 0;
+                }
+                else
+                {
+                    index = ((Selector)(((FrameworkElement)e).Parent)).SelectedIndex;
+                }
+
                 if (index == 0)
                 {
-                    StatusbarMain.Statusbar.SetNotification("Informationen zur Anwendung.");
+                    AssemblyMetaInfo ami = new AssemblyMetaInfo();
+                    this.Product = ami.AssemblyName;
+                    this.ProductVersion = ami.AssemblyVersion.ToString();
+                    this.Description = ami.Description;
+                    this.Copyright = ami.Copyright;
+                    this.GitRepository = ami.GitRepository;
+                    this.FrameworkVersion = ami.FrameworkVersion;
+                    this.OSEnvironment = $"{ami.RuntimeIdentifier} / {ami.OSPlatform}";
                 }
                 else if (index == 1)
                 {

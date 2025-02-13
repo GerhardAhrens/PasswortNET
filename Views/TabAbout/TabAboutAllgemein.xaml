@@ -12,7 +12,7 @@
     <ModernUI:SimpleGrid
         Margin="5"
         Columns="120,300,160,*"
-        Rows="Auto,Auto,Auto, 30, 30">
+        Rows="Auto,Auto,Auto, Auto, Auto, Auto, Auto,Auto">
         <TextBlock
             Grid.Row="0"
             Grid.Column="1"
@@ -21,5 +21,132 @@
             VerticalAlignment="Center"
             FontWeight="Bold"
             Text="Informationen zum Programm PasswortNET" />
+
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="5,0,0,5"
+            VerticalAlignment="Center"
+            FontWeight="Medium"
+            Text="Produkt"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontWeight="Medium"
+            Foreground="Blue"
+            Text="{Binding Path=Product, UpdateSourceTrigger=PropertyChanged, FallbackValue=N/A}" />
+
+        <TextBlock
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="5,0,0,5"
+            VerticalAlignment="Center"
+            FontWeight="Medium"
+            Text="Version"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            Grid.Row="2"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontWeight="Medium"
+            Foreground="Blue"
+            Text="{Binding Path=ProductVersion, UpdateSourceTrigger=PropertyChanged, FallbackValue=0.0.0.0}" />
+
+        <TextBlock
+            Grid.Row="3"
+            Grid.Column="0"
+            Margin="5,0,0,5"
+            VerticalAlignment="Center"
+            FontWeight="Medium"
+            Text="Beschreibung"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            Grid.Row="3"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontWeight="Medium"
+            Foreground="Blue"
+            Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged, FallbackValue=N/A}"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            Grid.Row="4"
+            Grid.Column="0"
+            Margin="5,0,0,5"
+            VerticalAlignment="Center"
+            FontWeight="Medium"
+            Text="Copyright/Autor"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            Grid.Row="4"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontWeight="Medium"
+            Foreground="Blue"
+            Text="{Binding Path=Copyright, UpdateSourceTrigger=PropertyChanged, FallbackValue=N/A}" />
+
+        <TextBlock
+            Grid.Row="5"
+            Grid.Column="0"
+            Margin="5,0,0,5"
+            VerticalAlignment="Center"
+            FontWeight="Medium"
+            Text="Git Repository"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            Grid.Row="5"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontWeight="Medium"
+            Foreground="Blue"
+            Text="{Binding Path=GitRepository, UpdateSourceTrigger=PropertyChanged, FallbackValue=N/A}" />
+
+        <TextBlock
+            Grid.Row="6"
+            Grid.Column="0"
+            Margin="5,0,0,5"
+            VerticalAlignment="Center"
+            FontWeight="Medium"
+            Text="Frameworkversion"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            Grid.Row="6"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontWeight="Medium"
+            Foreground="Blue"
+            Text="{Binding Path=FrameworkVersion, UpdateSourceTrigger=PropertyChanged, FallbackValue=N/A}" />
+
+        <TextBlock
+            Grid.Row="7"
+            Grid.Column="0"
+            Margin="5,0,0,0"
+            VerticalAlignment="Center"
+            FontWeight="Medium"
+            Text="Betriebssystem"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            Grid.Row="7"
+            Grid.Column="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontWeight="Medium"
+            Foreground="Blue"
+            Text="{Binding Path=OSEnvironment, UpdateSourceTrigger=PropertyChanged, FallbackValue=N/A}" />
     </ModernUI:SimpleGrid>
 </UserControl>

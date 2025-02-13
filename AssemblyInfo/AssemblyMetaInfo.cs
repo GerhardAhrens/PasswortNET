@@ -32,7 +32,7 @@ namespace PasswortNET.Core
 
         public Version AssemblyVersion => new Version(1,0,2025,1);
 
-        public string Description => "Passwortverwaltung";
+        public string Description => "Passwortverwaltung für Web-Zupänge, Passwörter, PIN, Lizenzen";
 
         public string Unternehmen => "Lifeprojects.de";
 
