@@ -104,13 +104,15 @@
             Text="Git Repository"
             TextWrapping="Wrap" />
 
-        <TextBlock
+        <ModernUI:LinkTextBlock
             Grid.Row="5"
             Grid.Column="1"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             FontWeight="Medium"
             Foreground="Blue"
+            IsExtern="False"
+            LinkText="{Binding Path=GitRepository, UpdateSourceTrigger=PropertyChanged, FallbackValue=N/A}"
             Text="{Binding Path=GitRepository, UpdateSourceTrigger=PropertyChanged, FallbackValue=N/A}" />
 
         <TextBlock
