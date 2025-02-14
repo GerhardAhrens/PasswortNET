@@ -75,7 +75,6 @@
             }
 
             this.RunEnvironmentSelectionSource = RunEnvironments.None.ToDictionary<RunEnvironments>();
-
             this.IsUCLoaded = true;
         }
 

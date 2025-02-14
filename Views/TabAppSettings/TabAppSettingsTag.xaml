@@ -5,24 +5,158 @@
     xmlns:ModernUI="clr-namespace:ModernIU.Controls;assembly=ModernUILibrary"
     xmlns:ModernUIWPF="clr-namespace:ModernIU.WPF.Base;assembly=ModernUILibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:PasswortNET.Views.TabAbout"
     xmlns:localStatic="clr-namespace:PasswortNET.Core"
+    xmlns:localUI="clr-namespace:PasswortNET.Core.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ObjectDataProvider
+            x:Key="ListOfColors"
+            MethodName="GetProperties"
+            ObjectInstance="{x:Type Brushes}" />
+
+        <DataTemplate x:Key="ColorTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Width="18"
+                    Height="18"
+                    Background="{Binding Path=Name}"
+                    BorderBrush="Black" />
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="2"
+                    Text="{Binding Path=Name}" />
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <ModernUI:SimpleGrid
         Margin="5"
-        Columns="120,300,160,*"
-        Rows="Auto,Auto,Auto,Auto, 30, 30">
+        Columns="340,10,170, *"
+        Rows="Auto,Auto,Auto,*">
         <TextBlock
             Grid.Row="0"
-            Grid.Column="1"
+            Grid.Column="0"
             Grid.ColumnSpan="2"
             Margin="5,0,0,10"
             VerticalAlignment="Center"
             FontWeight="Bold"
-            Text="Bearbeiten Tags" />
+            Text="Auswahlfelder für Regionen bearbeiten" />
+
+        <ModernUI:ListBoxEx
+            x:Name="lbRegion"
+            Grid.Row="2"
+            Grid.Column="0"
+            Width="330"
+            Height="330"
+            HorizontalAlignment="Left"
+            ItemsSource="{Binding Path=RegionSource, UpdateSourceTrigger=PropertyChanged}"
+            SelectedIndex="0"
+            SelectedValuePath="Id">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAgg[SelectedItemChangedCommand], RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding ElementName=lbRegion, Path=SelectedItem}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="270" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{Binding Path=Name}" />
+                        <Button
+                            Grid.Column="1"
+                            Width="25"
+                            Height="25"
+                            HorizontalAlignment="Center"
+                            Command="{Binding Path=DataContext.CmdAgg[DeleteTagCommand], RelativeSource={RelativeSource AncestorType=ListBox}}"
+                            CommandParameter="{Binding Path=SelectedItem, ElementName=lbRegion}"
+                            Content="X"
+                            FontSize="18"
+                            FontWeight="ExtraBold"
+                            Foreground="Red" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <i:Interaction.Behaviors>
+                <localUI:ScrollIntoViewForListBox />
+            </i:Interaction.Behaviors>
+        </ModernUI:ListBoxEx>
+
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="2"
+            Orientation="Vertical">
+            <ModernUI:TextBoxAll
+                Width="160"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                CharacterCasing="Normal"
+                Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" />
+
+            <ComboBox
+                x:Name="cbBackgroundColor"
+                Width="160"
+                Height="30"
+                Margin="2,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                ItemTemplate="{StaticResource ResourceKey=ColorTemplate}"
+                ItemsSource="{Binding Source={StaticResource ResourceKey=ListOfColors}}"
+                KeyboardNavigation.IsTabStop="False"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                SelectedIndex="{Binding Path=BackgroundColorSelected, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="3"
+            Orientation="Vertical">
+            <ModernUI:FlatButton
+                x:Name="BtnAdd"
+                Width="60"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Command="{Binding Path=CmdAgg[AddCommand]}"
+                CommandParameter="{Binding Path=SelectedItem, ElementName=lbRegion}"
+                Content="Add"
+                FontSize="18"
+                FontWeight="Bold"
+                IsDefault="False"
+                KeyboardNavigation.IsTabStop="False"
+                ToolTip="Eintrag hinzufügen"
+                Visibility="Visible" />
+
+            <ModernUI:FlatButton
+                x:Name="BtnUpdate"
+                Width="60"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Command="{Binding Path=CmdAgg[UpdateCommand]}"
+                CommandParameter="{Binding Path=SelectedItem, ElementName=lbRegion}"
+                Content="Update"
+                FontSize="18"
+                FontWeight="Bold"
+                IsDefault="False"
+                KeyboardNavigation.IsTabStop="False"
+                ToolTip="Eintrag hinzufügen"
+                Visibility="Visible" />
+        </StackPanel>
 
     </ModernUI:SimpleGrid>
 </UserControl>

@@ -265,5 +265,50 @@ namespace PasswortNET.Core
         }
 
         #endregion Login und Change Password
+
+        #region Working Region Tag
+        public static NotificationBoxButton DeleteRegionItem(this INotificationService @this, string msg = "")
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:black;\">Soll der Tag {msg} gelöscht werden?</h2>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Bearbeiten Tag", htmlContent.ToString(), 0);
+            NotificationBoxButton questionResult = NotificationBoxButton.None;
+
+            @this.ShowDialog<QuestionHtmlYesNo>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    questionResult = ((System.Tuple<ModernIU.Controls.NotificationBoxButton>)tag).Item1;
+                }
+            });
+
+            return questionResult;
+        }
+
+        public static NotificationBoxButton DefaultValueNotDelete(this INotificationService @this)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:black;\">Standardwerte können nicht gelöscht werden!</h2>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Überprüfen Sie ihre Auswahl.</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Bearbeiten Tag", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+        #endregion Working Region Tag
     }
 }
