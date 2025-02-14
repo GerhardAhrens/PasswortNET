@@ -60,7 +60,7 @@
         /// <summary>
         /// Festlegung für die aktuelle Laufzeitumgebung der Applikation
         /// </summary>
-        public static string RunEnvironment { get; set; }
+        public static int RunEnvironment { get; set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {

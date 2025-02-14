@@ -21,7 +21,7 @@ namespace PasswortNET.Core
 
         public bool SaveLastWindowsPosition { get; set; } = true;
 
-        public string RunEnvironment { get; set; } = "dev";
+        public int RunEnvironment { get; set; } = 0;
 
         public string Hash { get; set; }
 

@@ -44,9 +44,9 @@
             set => base.SetValue(value);
         }
 
-        public string RunEnvironmentSelectionChanged
+        public int RunEnvironmentSelectionChanged
         {
-            get => base.GetValue<string>();
+            get => base.GetValue<int>();
             set => base.SetValue(value);
         }
 

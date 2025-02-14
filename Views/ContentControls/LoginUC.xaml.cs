@@ -79,7 +79,7 @@
                 {
                     settings.LastAccess = DateTime.Now;
                     settings.LastUser = UserInfo.TS().CurrentDomainUser;
-                    settings.RunEnvironment = "dev";
+                    settings.RunEnvironment = 0;
                     settings.ExitApplicationQuestion = false;
                     settings.SaveLastWindowsPosition = false;
                     settings.Hash = string.Empty;
