@@ -64,6 +64,7 @@
                     Views.Add(MainButton.ChangePassword, typeof(ChangePasswordUC));
                     Views.Add(MainButton.AppSettings, typeof(AppSettingsUC));
                     Views.Add(MainButton.About, typeof(AboutUC));
+                    Views.Add(MainButton.MainOverview, typeof(MainOverviewUC));
                 }
             }
             catch (Exception ex)

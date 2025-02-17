@@ -37,5 +37,7 @@ namespace PasswortNET.Core
         About = 6,
         [Description("Zurück")]
         Back = 7,
+        [Description("Übersicht Passwort/Zugänge/Pin/Lizenzen")]
+        MainOverview = 8,
     }
 }
