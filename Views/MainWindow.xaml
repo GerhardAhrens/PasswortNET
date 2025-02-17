@@ -143,8 +143,15 @@
 
             <Separator Background="Black" />
 
-            <StatusBarItem DockPanel.Dock="Left">
-                <Label Content="{StaticResource ResourceKey=IconStatusbarDatabase}" />
+            <StatusBarItem DockPanel.Dock="Left" ToolTip="{Binding Path=DatabaseInfoTooltip, Source={x:Static localStatic:StatusbarMain.Statusbar}}">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{StaticResource ResourceKey=IconStatusbarDatabase}" />
+
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=DatabaseInfo, Source={x:Static localStatic:StatusbarMain.Statusbar}}" />
+                </StackPanel>
             </StatusBarItem>
 
             <Separator Background="Black" />

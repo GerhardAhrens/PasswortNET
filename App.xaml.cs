@@ -10,6 +10,7 @@
     using System.Windows.Threading;
 
     using PasswortNET.Core;
+    using PasswortNET.DataRepository;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -27,6 +28,11 @@
         {
             try
             {
+                using (DatabaseBackup db = new DatabaseBackup())
+                {
+                    db.CheckAndRun();
+                }
+
                 /* Name der EXE Datei*/
                 exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
                 /* Pfad der EXE-Datei*/

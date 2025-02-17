@@ -24,15 +24,182 @@
 
 namespace PasswortNET.DataRepository
 {
+    using System.IO;
+    using System.Linq;
+
     using ModernBaseLibrary.Core;
+    using ModernBaseLibrary.Extension;
+
+    using PasswortNET.Core;
 
     public class DatabaseBackup : DisposableCoreBase
     {
-		/// <summary>
-		/// Initializes a new instance of the <see cref="DatabaseBackup"/> class.
-		/// </summary>
-		public DatabaseBackup()
-		{
-		}
-	}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DatabaseBackup"/> class.
+        /// </summary>
+        public DatabaseBackup()
+        {
+            this.BackupFolder = Path.GetDirectoryName(this.CreateBackupFolder());
+
+            using (ApplicationSettings settings = new ApplicationSettings())
+            {
+                if (settings.IsExitSettings() == true)
+                {
+                    settings.Load();
+                    this.Fullname = settings.DatabaseFullname;
+                    this.DatabaseFileBackup = settings.DatabaseBackup;
+                    this.MaxBackupFile = settings.MaxBackupFile;
+                }
+            }
+        }
+
+        private string Fullname { get; set; }
+
+        private string BackupFolder { get; set; }
+
+        private bool DatabaseFileBackup { get; set; }
+
+        private int MaxBackupFile { get; set; }
+
+        public void CheckAndRun()
+        {
+            if (this.DatabaseFileBackup == false)
+            {
+                return;
+            }
+
+            try
+            {
+                if (Path.IsPathRooted(this.BackupFolder) == true)
+                {
+                    this.BackupFolder = Path.GetDirectoryName(this.BackupFolder);
+                }
+
+                DirectoryInfo directory = new DirectoryInfo(Path.GetDirectoryName(this.BackupFolder));
+                if (directory.EqualsAny() == false)
+                {
+                    IEnumerable<FileInfo> files = directory.EnumerateFiles("*.db");
+                    if (files.IsNullOrEmpty() == false)
+                    {
+                        if (files.Count() > this.MaxBackupFile)
+                        {
+                            this.CopyDatabase(this.Fullname, directory);
+                            this.DeleteDatabase(files);
+                        }
+                        else
+                        {
+                            this.CopyDatabase(this.Fullname, directory);
+                        }
+                    }
+                    else
+                    {
+                        this.CopyDatabase(this.Fullname, directory);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
+        }
+
+        public string BackupInfo()
+        {
+            string result = string.Empty;
+
+            if (string.IsNullOrEmpty(this.BackupFolder) == true)
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                DirectoryInfo directory = new DirectoryInfo(this.BackupFolder);
+                if (directory.IsNullOrEmpty() == false)
+                {
+                    IEnumerable<FileInfo> files = directory.EnumerateFiles("*.db");
+                    if (files.IsNullOrEmpty() == false)
+                    {
+                        IEnumerable<FileInfo> filesSort = files.OrderBy(f => f.LastAccessTime);
+                        FileInfo lastFile = filesSort.FirstOrDefault();
+                        result = $"{lastFile.LastAccessTime}, {lastFile.FullName}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
+
+            if (string.IsNullOrEmpty(result) == true)
+            {
+                result = "Keine Backupdatei gefunden.";
+            }
+
+            return result;
+        }
+
+        private void CopyDatabase(string databaseName, DirectoryInfo backupDirectory)
+        {
+            if (File.Exists(databaseName) == true)
+            {
+                string tempBackupName = this.CreateBackupFile(databaseName, backupDirectory);
+                File.Copy(databaseName, tempBackupName);
+            }
+        }
+
+        private void DeleteDatabase(IEnumerable<FileInfo> files)
+        {
+            IEnumerable<FileInfo> filesSort = files.OrderBy(f => f.LastWriteTime);
+            IEnumerable<FileInfo> filesMax = filesSort.Take(files.Count() - this.MaxBackupFile);
+            foreach (FileInfo file in filesMax)
+            {
+                File.Delete(file.FullName);
+            }
+        }
+
+        private string CreateBackupFile(string databaseName, DirectoryInfo backupDirectory)
+        {
+            this.BackupFolder = $"{this.BackupFolder}\\{Path.GetFileName(databaseName)}";
+            DecomposedFilePath testPath = new DecomposedFilePath(this.BackupFolder);
+            IEnumerable<FileInfo> files = backupDirectory.EnumerateFiles("*.db");
+            DecomposedFilePath nextFile = testPath.GetFirstFreeFilePath(files);
+
+            return nextFile.FullFilePath;
+        }
+
+
+        private string CreateBackupFolder()
+        {
+            string backupPath = string.Empty;
+
+            using (ApplicationSettings settings = new ApplicationSettings())
+            {
+                if (settings.IsExitSettings() == true)
+                {
+                    settings.Load();
+                    backupPath = settings.DatabaseBackupFullname;
+                }
+            }
+
+            if (string.IsNullOrEmpty(Path.GetDirectoryName(backupPath)) == false)
+            {
+                try
+                {
+                    if (Directory.Exists(Path.GetDirectoryName(backupPath)) == false)
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            return backupPath;
+        }
+    }
 }

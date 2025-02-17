@@ -83,6 +83,7 @@
                     settings.ExitApplicationQuestion = false;
                     settings.SaveLastWindowsPosition = false;
                     settings.Hash = string.Empty;
+                    settings.DatabaseBackupFullname = DatabaseName.FullBackupName;
                     settings.DatabaseFullname = DatabaseName.FullDatabaseName;
                     settings.Save();
                 }
@@ -118,6 +119,7 @@
         {
             const int MAXLOGIN = 3;
             string databaseFile = string.Empty;
+            RunEnvironments runEnvironment = RunEnvironments.None;
             bool isFirstStart = false;
             string userName = this.LoginUser;
             string passwort = this.TxtPassword.Password;
@@ -139,8 +141,11 @@
                         string ctrlHash = $"{userName}|{passwort}";
                         settings.ControlHash = ctrlHash.Encrypt();
                         settings.DatabaseFullname = DatabaseName.FullDatabaseName;
+                        settings.RunEnvironment = (int)runEnvironment;
                         settings.Save();
                         compareHash = settings.Hash.Decrypt();
+                        databaseFile = settings.DatabaseFullname;
+                        runEnvironment = settings.RunEnvironment.ToEnum<RunEnvironments>();
                     }
                     else
                     {
@@ -149,12 +154,16 @@
                         if (string.IsNullOrEmpty(settings.DatabaseFullname) == false)
                         {
                             databaseFile = settings.DatabaseFullname;
+                            runEnvironment = settings.RunEnvironment.ToEnum<RunEnvironments>();
                         }
                         else
                         {
                             settings.DatabaseFullname = DatabaseName.FullDatabaseName;
+                            settings.RunEnvironment = (int)runEnvironment;
                             settings.Save();
+
                             databaseFile = DatabaseName.FullDatabaseName;
+                            runEnvironment = settings.RunEnvironment.ToEnum<RunEnvironments>();
                         }
                     }
                 }
@@ -195,6 +204,7 @@
             {
                 Result<DatabaseInfo> dbi = dm.CheckDatabase();
                 StatusbarMain.Statusbar.Notification = $"Bereit: {dbi.ElapsedTime}ms";
+                StatusbarMain.Statusbar.SetDatabaeInfo(databaseFile, runEnvironment);
             }
 
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs

@@ -118,6 +118,7 @@
             this.ChangeControl(arg);
 
             StatusbarMain.Statusbar.Notification = "Anwendung wird gestartet ...";
+            StatusbarMain.Statusbar.SetDatabaeInfo();
         }
 
 
@@ -212,6 +213,7 @@
                         this.IsAbout = false;
                         this.IsLogoff = false;
                         this.IsWorkPassword = false;
+                        StatusbarMain.Statusbar.SetDatabaeInfo();
                     }
                     else if (this.WorkContent.GetType() == typeof(AppSettingsUC))
                     {
@@ -240,6 +242,7 @@
                         this.IsAbout = false;
                         this.IsLogoff = false;
                         this.IsWorkPassword = false;
+                        StatusbarMain.Statusbar.SetDatabaeInfo();
                     }
 
                     milliSeconds = objectRuntime.ResultMilliseconds();

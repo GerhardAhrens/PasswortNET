@@ -2,6 +2,7 @@ namespace PasswortNET.Core
 {
     using System;
     using System.ComponentModel;
+    using System.IO;
     using System.Runtime.CompilerServices;
 
     public static class StatusbarMain
@@ -109,6 +110,20 @@ namespace PasswortNET.Core
             else
             {
                 this.Notification = notification;
+            }
+        }
+
+        public void SetDatabaeInfo(string databaseInfo = null, RunEnvironments runEnvironment = RunEnvironments.None)
+        {
+            if (string.IsNullOrEmpty(databaseInfo) == true)
+            {
+                this.DatabaseInfo = "Keine";
+                this.DatabaseInfoTooltip = string.Empty;
+            }
+            else
+            {
+                this.DatabaseInfo = $"{Path.GetFileName(databaseInfo)} ({runEnvironment})";
+                this.DatabaseInfoTooltip = $"{databaseInfo} ({runEnvironment})";
             }
         }
 

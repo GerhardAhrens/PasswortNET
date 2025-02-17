@@ -74,6 +74,7 @@
         private void ChangeLoginHandler(object p1)
         {
             string databaseFile = string.Empty;
+            RunEnvironments runEnvironment = RunEnvironments.None;
             string userName = this.LoginUser;
             string passwort = this.TxtPassword.Password;
             string passwortRepeat = this.TxtPasswordRepeat.Password;
@@ -92,10 +93,12 @@
                         settings.DatabaseFullname = DatabaseName.FullDatabaseName;
                         settings.Save();
                         databaseFile = settings.DatabaseFullname;
+                        runEnvironment = settings.RunEnvironment.ToEnum<RunEnvironments>();
                     }
                     else
                     {
                         databaseFile = settings.DatabaseFullname;
+                        runEnvironment = settings.RunEnvironment.ToEnum<RunEnvironments>();
                     }
                 }
             }
@@ -140,6 +143,7 @@
                 {
                     Result<DatabaseInfo> dbi = dm.CheckDatabase();
                     StatusbarMain.Statusbar.Notification = $"Bereit: {dbi.ElapsedTime}ms";
+                    StatusbarMain.Statusbar.SetDatabaeInfo(databaseFile, runEnvironment);
                 }
             }
 
