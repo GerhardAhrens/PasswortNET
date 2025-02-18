@@ -1,9 +1,10 @@
-﻿<UserControl
+﻿<base:UserControlBase
     x:Class="PasswortNET.Views.TabAppSettings.TabAppSettingsDatabase"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ModernUI="clr-namespace:ModernIU.Controls;assembly=ModernUILibrary"
     xmlns:ModernUIWPF="clr-namespace:ModernIU.WPF.Base;assembly=ModernUILibrary"
+    xmlns:base="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PasswortNET.Views.TabAbout"
     xmlns:localStatic="clr-namespace:PasswortNET.Core"
@@ -27,8 +28,9 @@
         <ModernUI:ContentElements
             Grid.Row="1"
             Grid.Column="0"
-            BorderBrush="Black"
-            BorderThickness="1"
+            HorizontalAlignment="Stretch"
+            BorderBrush="Transparent"
+            BorderThickness="0"
             KeyboardNavigation.DirectionalNavigation="Contained">
             <ModernUI:ContentFrame
                 Title="Soll eine Sicherung der Datenbank erstellt werden?"
@@ -70,4 +72,4 @@
 
 
     </ModernUI:SimpleGrid>
-</UserControl>
+</base:UserControlBase>

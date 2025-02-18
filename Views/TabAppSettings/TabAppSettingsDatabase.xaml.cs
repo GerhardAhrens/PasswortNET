@@ -3,10 +3,12 @@
     using System.Windows;
     using System.Windows.Controls;
 
+    using ModernUI.MVVM.Base;
+
     /// <summary>
     /// Interaktionslogik für TabAppSettingsDatabase.xaml
     /// </summary>
-    public partial class TabAppSettingsDatabase : UserControl
+    public partial class TabAppSettingsDatabase : UserControlBase
     {
         public TabAppSettingsDatabase()
         {

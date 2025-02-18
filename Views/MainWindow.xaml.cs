@@ -1,5 +1,6 @@
 ﻿namespace PasswortNET.Views
 {
+    using System;
     using System.ComponentModel;
     using System.Runtime.Versioning;
     using System.Windows;
@@ -82,6 +83,12 @@
             get => base.GetValue<bool>();
             set => base.SetValue(value);
         }
+
+        public bool IsImportExport
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
         #endregion Properties
 
         public override void InitCommands()
@@ -91,6 +98,8 @@
             base.CmdAgg.AddOrSetCommand("ChangePasswordCommand", new RelayCommand(p1 => this.ChangePasswordHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("AppSettingsCommand", new RelayCommand(p1 => this.AppSettingsHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("AboutCommand", new RelayCommand(p1 => this.AboutHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("ExportCommand", new RelayCommand(p1 => this.ExportHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("DataSyncCommand", new RelayCommand(p1 => this.DataSyncHandler(p1), p2 => true));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -155,6 +164,14 @@
             this.ChangeControl(arg);
         }
 
+        private void ExportHandler(object p1)
+        {
+        }
+
+        private void DataSyncHandler(object p1)
+        {
+        }
+
         public override void OnViewIsClosing(CancelEventArgs e)
         {
             Window window = Application.Current.MainWindow;
@@ -213,6 +230,7 @@
                         this.IsAbout = false;
                         this.IsLogoff = false;
                         this.IsWorkPassword = false;
+                        this.IsImportExport = false;
                         StatusbarMain.Statusbar.SetDatabaeInfo();
                     }
                     else if (this.WorkContent.GetType() == typeof(AppSettingsUC))
@@ -221,6 +239,7 @@
                         this.IsAbout = true;
                         this.IsWorkPassword = false;
                         this.IsLogoff = true;
+                        this.IsImportExport = false;
                     }
                     else if (this.WorkContent.GetType() == typeof(AboutUC))
                     {
@@ -228,6 +247,7 @@
                         this.IsAbout = false;
                         this.IsWorkPassword = false;
                         this.IsLogoff = true;
+                        this.IsImportExport = false;
                     }
                     else if (this.WorkContent.GetType() == typeof(HomeUC))
                     {
@@ -235,6 +255,7 @@
                         this.IsAbout = true;
                         this.IsLogoff = true;
                         this.IsWorkPassword = true;
+                        this.IsImportExport = true;
                     }
                     else if (this.WorkContent.GetType() == typeof(ChangePasswordUC))
                     {
@@ -242,6 +263,7 @@
                         this.IsAbout = false;
                         this.IsLogoff = false;
                         this.IsWorkPassword = false;
+                        this.IsImportExport = false;
                         StatusbarMain.Statusbar.SetDatabaeInfo();
                     }
 

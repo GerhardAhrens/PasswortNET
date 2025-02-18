@@ -73,6 +73,29 @@
                     <Separator />
 
                     <MenuItem
+                        Command="{Binding Path=CmdAgg[ExportCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.Export}"
+                        Header="Export"
+                        Icon="{StaticResource ResourceKey=MenuItemExport}"
+                        IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[ImportSyncCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.ImportSync}"
+                        Header="Import Sync"
+                        Icon="{StaticResource ResourceKey=MenuItemImportDataSync}"
+                        IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[ExportSyncCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.ExportSync}"
+                        Header="Export Sync"
+                        Icon="{StaticResource ResourceKey=MenuItemExportDataSync}"
+                        IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Separator />
+
+                    <MenuItem
                         Command="{Binding Path=CmdAgg[ChangePasswordCommand]}"
                         CommandParameter="{x:Static localStatic:MainButton.ChangePassword}"
                         Header="Passwort ändern"
