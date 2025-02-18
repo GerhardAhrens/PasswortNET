@@ -28,10 +28,12 @@
         {
             try
             {
+                /*
                 using (DatabaseBackup db = new DatabaseBackup())
                 {
                     db.CheckAndRun();
                 }
+                */
 
                 /* Name der EXE Datei*/
                 exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);

@@ -13,7 +13,7 @@
     mc:Ignorable="d">
     <ModernUI:SimpleGrid
         Margin="5"
-        Columns="120,300,160,*"
+        Columns="*"
         Rows="Auto,Auto,Auto,Auto, 30, 30">
         <TextBlock
             Grid.Row="0"
@@ -23,6 +23,51 @@
             VerticalAlignment="Center"
             FontWeight="Bold"
             Text="Datenbank Einstellungen" />
+
+        <ModernUI:ContentElements
+            Grid.Row="1"
+            Grid.Column="0"
+            BorderBrush="Black"
+            BorderThickness="1"
+            KeyboardNavigation.DirectionalNavigation="Contained">
+            <ModernUI:ContentFrame
+                Title="Soll eine Sicherung der Datenbank erstellt werden?"
+                HorizontalAlignment="Left"
+                TitleWidth="150">
+                <ModernUI:MCheckBoxEx Width="50" IsChecked="True" />
+            </ModernUI:ContentFrame>
+
+            <ModernUI:ContentFrame
+                Title="Häufigkeit der Sicherung?"
+                HorizontalAlignment="Left"
+                TitleMargin="0,5"
+                TitleWidth="150" />
+
+            <ModernUI:ContentFrame
+                Title="Wieviel Kopien sollen erghalten werden? Ältere Kopien werden automatisch gelöscht."
+                HorizontalAlignment="Left"
+                TitleMargin="0,5"
+                TitleWidth="150" />
+
+            <ModernUI:ContentFrame
+                Title="Letzte Sicherung am."
+                HorizontalAlignment="Left"
+                TitleMargin="0,5"
+                TitleWidth="150" />
+
+            <ModernUI:ContentFrame
+                Title="Datenbank gespeichert unter"
+                HorizontalAlignment="Left"
+                TitleMargin="0,5"
+                TitleWidth="150" />
+
+            <ModernUI:ContentFrame
+                Title="Backup Datenbank gespeichert unter"
+                HorizontalAlignment="Left"
+                TitleMargin="0,5"
+                TitleWidth="150" />
+        </ModernUI:ContentElements>
+
 
     </ModernUI:SimpleGrid>
 </UserControl>

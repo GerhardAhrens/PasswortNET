@@ -47,7 +47,7 @@ namespace PasswortNET.DataRepository
                 {
                     settings.Load();
                     this.Fullname = settings.DatabaseFullname;
-                    this.DatabaseFileBackup = settings.DatabaseBackup;
+                    this.DatabaseFileBackup = settings.IsDatabaseBackup;
                     this.MaxBackupFile = settings.MaxBackupFile;
                 }
             }

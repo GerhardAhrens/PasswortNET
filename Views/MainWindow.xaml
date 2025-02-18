@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ModernUI="clr-namespace:ModernIU.Controls;assembly=ModernUILibrary"
+    xmlns:ModernWPF="clr-namespace:ModernIU.WPF.Base;assembly=ModernUILibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PasswortNET"
     xmlns:localStatic="clr-namespace:PasswortNET.Core"
@@ -14,6 +15,10 @@
     winbase:DialogClosing.IsClosing="True"
     Icon="/Resources/Picture/ApplicationIcon.ico"
     mc:Ignorable="d">
+
+    <Window.Resources>
+        <ModernWPF:CommandKeyReference x:Key="LogoffCmdKey" Command="{Binding Path=CmdAgg[LogoffCommand]}" />
+    </Window.Resources>
 
     <ModernUI:MWindow.MoreOnTitle>
         <StackPanel
@@ -75,7 +80,7 @@
                         IsEnabled="{Binding Path=IsLogoff, UpdateSourceTrigger=PropertyChanged}" />
 
                     <MenuItem
-                        Command="{Binding Path=CmdAgg[LogoffCommand]}"
+                        Command="{StaticResource ResourceKey=LogoffCmdKey}"
                         CommandParameter="{x:Static localStatic:MainButton.Logoff}"
                         Header="Abmelden"
                         Icon="{StaticResource ResourceKey=MenuItemLogoff}"
@@ -90,6 +95,7 @@
 
         </StackPanel>
     </ModernUI:MWindow.MoreOnTitle>
+
 
     <ModernUI:SimpleGrid Columns="*" Rows="*,40">
         <!--#region Contentbereich-->
