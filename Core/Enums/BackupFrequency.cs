@@ -25,11 +25,15 @@
 namespace PasswortNET.Core
 {
     using System;
+    using System.ComponentModel;
 
     public enum BackupFrequency : int
     {
+        [Description("Keine Auswahl")]
         None = 0,
+        [Description("Einmal Täglich")]
         OnceDaily = 1,
+        [Description("Bei jedem Login")]
         WithEveryLogin = 2,
     }
 }

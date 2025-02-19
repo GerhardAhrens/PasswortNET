@@ -11,10 +11,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+        <ModernWPF:CommandKeyReference x:Key="LogoffCmdKey" Command="{Binding Path=CmdAgg[LogoffCommand]}" />
+
         <ModernConverter:BooleanToVisibleConverter x:Key="BooleanToVisibilityConverter" />
         <ModernConverter:BooleanToNotVisibleConverter x:Key="BooleanToNotVisibilityConverter" />
         <ModernConverter:VisibilityToBoolConverter x:Key="VisibilityToBoolConverter" />
     </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <KeyBinding
+            Key="L"
+            Command="{StaticResource ResourceKey=LogoffCmdKey}"
+            Modifiers="Ctrl" />
+    </UserControl.InputBindings>
 
     <Grid>
             

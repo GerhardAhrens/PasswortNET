@@ -166,6 +166,9 @@
 
         private void ExportHandler(object p1)
         {
+            ChangeViewEventArgs arg = new ChangeViewEventArgs();
+            arg.MenuButton = MainButton.Export;
+            this.ChangeControl(arg);
         }
 
         private void DataSyncHandler(object p1)
@@ -265,6 +268,14 @@
                         this.IsWorkPassword = false;
                         this.IsImportExport = false;
                         StatusbarMain.Statusbar.SetDatabaeInfo();
+                    }
+                    else if (this.WorkContent.GetType() == typeof(ExcelExportUC))
+                    {
+                        this.IsAppSettings = true;
+                        this.IsAbout = true;
+                        this.IsLogoff = true;
+                        this.IsWorkPassword = true;
+                        this.IsImportExport = true;
                     }
 
                     milliSeconds = objectRuntime.ResultMilliseconds();

@@ -8,11 +8,11 @@
     using PasswortNET.Core;
 
     /// <summary>
-    /// Interaktionslogik für MainOverviewUC.xaml
+    /// Interaktionslogik für ExcelExportUC.xaml
     /// </summary>
-    public partial class MainOverviewUC : UserControlBase
+    public partial class ExcelExportUC : UserControlBase
     {
-        public MainOverviewUC()
+        public ExcelExportUC() : base(typeof(ExcelExportUC))
         {
             this.InitializeComponent();
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);

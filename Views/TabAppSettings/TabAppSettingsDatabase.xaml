@@ -36,26 +36,44 @@
                 Title="Soll eine Sicherung der Datenbank erstellt werden?"
                 HorizontalAlignment="Left"
                 TitleWidth="150">
-                <ModernUI:MCheckBoxEx Width="50" IsChecked="True" />
+                <ModernUI:MCheckBoxEx Width="50" IsChecked="{Binding Path=IsDatabaseBackup, UpdateSourceTrigger=PropertyChanged}" />
             </ModernUI:ContentFrame>
 
             <ModernUI:ContentFrame
                 Title="Häufigkeit der Sicherung?"
                 HorizontalAlignment="Left"
                 TitleMargin="0,5"
-                TitleWidth="150" />
+                TitleWidth="150">
+                <ModernUI:MComboBox
+                    Width="200"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    DisplayMemberPath="Value"
+                    ItemsSource="{Binding Path=BackupFrequencySource, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedValue="{Binding Path=BackupFrequencySelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    SelectedValuePath="Key" />
+            </ModernUI:ContentFrame>
 
             <ModernUI:ContentFrame
                 Title="Wieviel Kopien sollen erghalten werden? Ältere Kopien werden automatisch gelöscht."
                 HorizontalAlignment="Left"
                 TitleMargin="0,5"
-                TitleWidth="150" />
+                TitleWidth="150">
+                <ModernUI:ListIntegerUpDown
+                    Width="100"
+                    ItemsSource="{Binding Path=MaxBackupFileSource, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    WidthContent="80"
+                    Value="{Binding Path=MaxBackupFile, UpdateSourceTrigger=PropertyChanged}" />
+            </ModernUI:ContentFrame>
 
             <ModernUI:ContentFrame
                 Title="Letzte Sicherung am."
                 HorizontalAlignment="Left"
                 TitleMargin="0,5"
-                TitleWidth="150" />
+                TitleWidth="150">
+                <TextBlock FontWeight="Medium" Text="{Binding Path=BackupInfo, FallbackValue=N/A}" />
+            </ModernUI:ContentFrame>
 
             <ModernUI:ContentFrame
                 Title="Datenbank gespeichert unter"
