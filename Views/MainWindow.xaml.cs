@@ -269,7 +269,7 @@
                         this.IsImportExport = false;
                         StatusbarMain.Statusbar.SetDatabaeInfo();
                     }
-                    else if (this.WorkContent.GetType() == typeof(ExcelExportUC))
+                    else if (this.WorkContent.GetType() == typeof(ExcelXMLExportUC))
                     {
                         this.IsAppSettings = true;
                         this.IsAbout = true;
