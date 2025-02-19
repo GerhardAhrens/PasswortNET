@@ -39,7 +39,7 @@ namespace PasswortNET.DataRepository
         /// </summary>
         public DatabaseBackup()
         {
-            this.BackupFolder = Path.GetDirectoryName(this.CreateBackupFolder());
+            this.BackupFolder = this.CreateBackupFolder();
 
             using (ApplicationSettings settings = new ApplicationSettings())
             {
@@ -49,6 +49,7 @@ namespace PasswortNET.DataRepository
                     this.Fullname = settings.DatabaseFullname;
                     this.DatabaseFileBackup = settings.IsDatabaseBackup;
                     this.MaxBackupFile = settings.MaxBackupFile;
+                    this.BackupFrequency = settings.BackupFrequency.ToEnum<BackupFrequency>();
                 }
             }
         }
@@ -61,6 +62,8 @@ namespace PasswortNET.DataRepository
 
         private int MaxBackupFile { get; set; }
 
+        private BackupFrequency BackupFrequency { get; set; }
+
         public void CheckAndRun()
         {
             if (this.DatabaseFileBackup == false)
@@ -68,14 +71,17 @@ namespace PasswortNET.DataRepository
                 return;
             }
 
+            if (this.BackupFrequency == BackupFrequency.OnceDaily)
+            {
+                if (LastBackup() == DateTime.Now.Date)
+                {
+                    return;
+                }
+            }
+
             try
             {
-                if (Path.IsPathRooted(this.BackupFolder) == true)
-                {
-                    this.BackupFolder = Path.GetDirectoryName(this.BackupFolder);
-                }
-
-                DirectoryInfo directory = new DirectoryInfo(Path.GetDirectoryName(this.BackupFolder));
+                DirectoryInfo directory = new DirectoryInfo(this.BackupFolder);
                 if (directory.EqualsAny() == false)
                 {
                     IEnumerable<FileInfo> files = directory.EnumerateFiles("*.db");
@@ -104,13 +110,18 @@ namespace PasswortNET.DataRepository
             }
         }
 
-        public string BackupInfo()
+        public DateTime LastBackup()
         {
-            string result = string.Empty;
+            DateTime result = DateTime.Now.DefaultDate();
 
             if (string.IsNullOrEmpty(this.BackupFolder) == true)
             {
-                return string.Empty;
+                return result; ;
+            }
+
+            if (Path.HasExtension(this.BackupFolder) == true)
+            {
+                this.BackupFolder = Path.GetDirectoryName(this.BackupFolder);
             }
 
             try
@@ -121,9 +132,47 @@ namespace PasswortNET.DataRepository
                     IEnumerable<FileInfo> files = directory.EnumerateFiles("*.db");
                     if (files.IsNullOrEmpty() == false)
                     {
-                        IEnumerable<FileInfo> filesSort = files.OrderBy(f => f.LastAccessTime);
-                        FileInfo lastFile = filesSort.FirstOrDefault();
-                        result = $"{lastFile.LastAccessTime}, {lastFile.FullName}";
+                        DateTime lastFile = files.Max(f => f.LastAccessTime);
+                        result = lastFile;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
+
+            return result.Date;
+        }
+
+        public string BackupInfo()
+        {
+            string result = string.Empty;
+
+            if (string.IsNullOrEmpty(this.BackupFolder) == true)
+            {
+                return string.Empty;
+            }
+
+            if (Path.HasExtension(this.BackupFolder) == true)
+            {
+                this.BackupFolder = Path.GetDirectoryName(this.BackupFolder);
+            }
+
+            try
+            {
+                DirectoryInfo directory = new DirectoryInfo(this.BackupFolder);
+                if (directory.IsNullOrEmpty() == false)
+                {
+                    IEnumerable<FileInfo> files = directory.EnumerateFiles("*.db");
+                    if (files.IsNullOrEmpty() == false)
+                    {
+                        IEnumerable<FileInfo> filesSort = files.OrderByDescending(f => f.LastAccessTime);
+                        int CountBackup = files.Count();
+                        FileInfo lastFile = files.MaxBy(f => f.LastAccessTime);
+                        string sizeInfo = string.Format(new FileSizeFormatTo(), "Dateigröße: {0:fs}", lastFile.Length);
+                        result = $"{lastFile.LastAccessTime}, {lastFile.FullName}; Anzahl: {CountBackup}; {sizeInfo}";
                     }
                 }
             }
@@ -199,7 +248,7 @@ namespace PasswortNET.DataRepository
                 }
             }
 
-            return backupPath;
+            return Path.GetDirectoryName(backupPath);
         }
     }
 }
