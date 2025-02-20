@@ -173,6 +173,9 @@
 
         private void DataSyncHandler(object p1)
         {
+            ChangeViewEventArgs arg = new ChangeViewEventArgs();
+            arg.MenuButton = MainButton.DataSync;
+            this.ChangeControl(arg);
         }
 
         public override void OnViewIsClosing(CancelEventArgs e)
@@ -270,6 +273,14 @@
                         StatusbarMain.Statusbar.SetDatabaeInfo();
                     }
                     else if (this.WorkContent.GetType() == typeof(ExcelXMLExportUC))
+                    {
+                        this.IsAppSettings = true;
+                        this.IsAbout = true;
+                        this.IsLogoff = true;
+                        this.IsWorkPassword = true;
+                        this.IsImportExport = true;
+                    }
+                    else if (this.WorkContent.GetType() == typeof(DataSyncUC))
                     {
                         this.IsAppSettings = true;
                         this.IsAbout = true;

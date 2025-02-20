@@ -80,19 +80,11 @@
                         IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
 
                     <MenuItem
-                        Command="{Binding Path=CmdAgg[ImportSyncCommand]}"
-                        CommandParameter="{x:Static localStatic:MainButton.ImportSync}"
-                        Header="Import Sync"
-                        Icon="{StaticResource ResourceKey=MenuItemImportDataSync}"
+                        Command="{Binding Path=CmdAgg[DataSyncCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.DataSync}"
+                        Header="Datenbank synchronisieren"
+                        Icon="{StaticResource ResourceKey=MenuItemDataSync}"
                         IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <MenuItem
-                        Command="{Binding Path=CmdAgg[ExportSyncCommand]}"
-                        CommandParameter="{x:Static localStatic:MainButton.ExportSync}"
-                        Header="Export Sync"
-                        Icon="{StaticResource ResourceKey=MenuItemExportDataSync}"
-                        IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
-
                     <Separator />
 
                     <MenuItem

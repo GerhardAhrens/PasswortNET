@@ -1,11 +1,13 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
     using System;
+    using System.Diagnostics;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Threading;
 
     using ModernBaseLibrary.Core;
+    using ModernBaseLibrary.Extension;
 
     using ModernUI.MVVM.Base;
 
@@ -31,9 +33,21 @@
             set => base.SetValue(value);
         }
 
+        public bool IsAllRows
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
         public double ProgressBarValue
         {
             get => base.GetValue<double>();
+            set => base.SetValue(value);
+        }
+
+        public string ProgressBarText
+        {
+            get => base.GetValue<string>();
             set => base.SetValue(value);
         }
 
@@ -58,7 +72,7 @@
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
-            this.CmdAgg.AddOrSetCommand("ExportCommand", new RelayCommand(p1 => this.ExportHandler(), p2 => true));
+            this.CmdAgg.AddOrSetCommand("ExportCommand", new RelayCommand(p1 => this.ExportHandler(), p2 => this.CanExportHandler()));
 
         }
 
@@ -75,6 +89,8 @@
             {
                 return;
             }
+
+            this.IsAllRows = true;
             this.IsBusyIndicator = false;
             this.FormatSelected = ExportImportFormat.None;
             this.FormatSource = new EnumDescripionToDictionary<ExportImportFormat>();
@@ -88,25 +104,64 @@
             }
             else
             {
-                this.ExportFile = $"Export.{format}";
+                this.ExportFile = $"Export_{DateTime.Now.ToString("yyyyMMdd")}.{format}";
             }
         }
 
-        private void ExportHandler()
+        private bool CanExportHandler()
         {
-            this.ProgressBarValue = 0;
-
-            for (int i = 0; i < 1000000; i++)
+            if (string.IsNullOrEmpty(this.ExportFile) == false)
             {
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Input,
-                    new Action(() =>
-                    {
-                        System.Threading.Thread.Sleep(100);
-                        this.ProgressBarValue = i/10000;
-                    }));
+                if (this.ExportFile.ToLower().ContainsAll(".xml", ".xlsx") == true)
+                {
+                    return true;
+                }
             }
 
+            return false;
+        }
+
+        private async void ExportHandler()
+        {
+            this.IsBusyIndicator = true;
             this.ProgressBarValue = 0;
+            IProgress<double> progress = new Progress<double>(this.UpdateProgressText);
+            _ = await GenerateItems((a) => this.BuildExport(progress), progress);
+            this.ProgressBarValue = 0;
+            this.IsBusyIndicator = false;
+        }
+
+        private void BuildExport(IProgress<double> progress)
+        {
+            int maxRecords = 10_000_000;
+
+            List<String> listOfStrings = new List<string>();
+            for (int i = 0; i < maxRecords; i++)
+            {
+                if (i % 1000 == 0)
+                {
+                    double percentage = (double)i / maxRecords;
+                    progress.Report(percentage);
+                }
+
+                listOfStrings.Add(String.Format($"Item: {i}"));
+            }
+        }
+
+        private Task<bool> GenerateItems(Action<IProgress<double>> buildExport, IProgress<double> progress)
+        {
+            return Task.Run(() =>
+            {
+                buildExport(progress);
+                return true;
+            });
+        }
+
+        private void UpdateProgressText(double percentage)
+        {
+            this.ProgressBarValue = percentage * 100;
+            this.ProgressBarText = (percentage).ToString("0%");
+
         }
 
         private void LogoffHandler(object p1)

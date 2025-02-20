@@ -39,11 +39,9 @@ namespace PasswortNET.Core
         Back = 7,
         [Description("Übersicht Passwort/Zugänge/Pin/Lizenzen")]
         MainOverview = 8,
-        [Description("Import Sync Passwortdaten")]
-        ImportSync = 9,
-        [Description("Export Sync Passwortdaten")]
-        ExportSync = 10,
+        [Description("Datenbank synchronisieren")]
+        DataSync = 9,
         [Description("Export Passwortdaten")]
-        Export = 11,
+        Export = 10,
     }
 }

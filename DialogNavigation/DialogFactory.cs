@@ -66,6 +66,7 @@
                     Views.Add(MainButton.About, typeof(AboutUC));
                     Views.Add(MainButton.MainOverview, typeof(MainOverviewUC));
                     Views.Add(MainButton.Export, typeof(ExcelXMLExportUC));
+                    Views.Add(MainButton.DataSync, typeof(DataSyncUC));
                 }
             }
             catch (Exception ex)
