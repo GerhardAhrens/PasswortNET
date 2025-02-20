@@ -7,6 +7,7 @@
     using System.Text;
     using System.Windows;
     using System.Windows.Markup;
+    using System.Windows.Media;
     using System.Windows.Threading;
 
     using PasswortNET.Core;
@@ -28,13 +29,6 @@
         {
             try
             {
-                /*
-                using (DatabaseBackup db = new DatabaseBackup())
-                {
-                    db.CheckAndRun();
-                }
-                */
-
                 /* Name der EXE Datei*/
                 exeName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
                 /* Pfad der EXE-Datei*/
