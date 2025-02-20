@@ -27,9 +27,12 @@ namespace PasswortNET.DataRepository
     {
         public RegionRepository(string databaseFile = "") : base(databaseFile)
         {
-            this.Database = base.DatabaseIntern;
-            this.Collection = base.CollectionIntern;
-            this.Collection.EnsureIndex(e => e.Id);
+            if (base.DatabaseIntern != null)
+            {
+                this.Database = base.DatabaseIntern;
+                this.Collection = base.CollectionIntern;
+                this.Collection.EnsureIndex(e => e.Id);
+            }
         }
 
         public LiteDatabase Database { get; private set; }

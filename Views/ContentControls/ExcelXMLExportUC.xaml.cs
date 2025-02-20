@@ -1,7 +1,9 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
     using System;
+    using System.Data;
     using System.Diagnostics;
+    using System.IO;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Threading;
@@ -13,6 +15,8 @@
 
     using PasswortNET.Core;
     using PasswortNET.Core.Enums;
+    using PasswortNET.DataRepository;
+    using PasswortNET.Model;
 
     /// <summary>
     /// Interaktionslogik für ExcelXMLExportUC.xaml
@@ -71,6 +75,7 @@
 
         public override void InitCommands()
         {
+            this.CmdAgg.AddOrSetCommand("BackAboutCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("ExportCommand", new RelayCommand(p1 => this.ExportHandler(), p2 => this.CanExportHandler()));
 
@@ -124,15 +129,102 @@
         private async void ExportHandler()
         {
             this.IsBusyIndicator = true;
-            this.ProgressBarValue = 0;
+
             IProgress<double> progress = new Progress<double>(this.UpdateProgressText);
             _ = await GenerateItems((a) => this.BuildExport(progress), progress);
-            this.ProgressBarValue = 0;
+
             this.IsBusyIndicator = false;
         }
 
         private void BuildExport(IProgress<double> progress)
         {
+            try
+            {
+                progress.Report(0);
+                using (PasswordPinRepository repository = new PasswordPinRepository())
+                {
+                    IEnumerable<PasswordPin> overviewSource = repository.List();
+                    if (overviewSource.Count() > 0)
+                    {
+                        DataTable dtPassword = overviewSource.Cast<PasswordPin>().ToDataTable<PasswordPin>();
+                        dtPassword.TableName = nameof(PasswordPin);
+                        dtPassword.Columns.Add("AccessTypText", typeof(string)).SetOrdinal(0);
+                        dtPassword.Columns.Remove("Id");
+                        dtPassword.Columns.Remove("ShowDescription");
+                        dtPassword.Columns.Remove("Symbol");
+                        dtPassword.Columns.Remove("Background");
+                        dtPassword.Columns.Remove("CompanyId");
+                        dtPassword.Columns.Remove("SyncItemStatus");
+                        dtPassword.Columns.Remove("LastExport");
+                        dtPassword.Columns.Remove("ShowLast");
+                        dtPassword.Columns.Remove("IsShowLast");
+                        dtPassword.Columns.Remove("CreatedBy");
+                        dtPassword.Columns.Remove("CreatedOn");
+                        dtPassword.Columns.Remove("ModifiedBy");
+                        dtPassword.Columns.Remove("ModifiedOn");
+                        dtPassword.Columns.Remove("Timestamp");
+                        dtPassword.Columns.Remove("Fullname");
+
+                        if (Path.GetExtension(this.ExportFile.ToLower()) == ".xml")
+                        {
+                            this.BuildExportXML(dtPassword, progress);
+                        }
+                        else if (Path.GetExtension(this.ExportFile.ToLower()) == ".xlsx")
+                        {
+                            this.BuildExportExcel(dtPassword, progress);
+                        }
+                    }
+                }
+
+                progress.Report(1);
+            }
+            catch (FileLockException ex)
+            {
+                App.ErrorMessage(ex, ex.Message);
+                App.Current.Shutdown(0);
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
+        }
+
+        private void BuildExportXML(DataTable dtPassword, IProgress<double> progress)
+        {
+            int maxRecords = dtPassword.Rows.Count;
+            for (int rowIndex = 0; rowIndex < maxRecords; rowIndex++)
+            {
+                double percentage = (double)rowIndex / maxRecords;
+                progress.Report(percentage);
+
+                AccessTyp accessTyp = dtPassword.Rows[rowIndex]["AccessTyp"].ToInt().ToEnum<AccessTyp>();
+                dtPassword.Rows[rowIndex]["AccessTypText"] = accessTyp.ToDescription();
+                Thread.Sleep(100);
+            }
+
+           dtPassword.Columns.Remove("AccessTyp");
+        }
+
+        private void BuildExportExcel(DataTable dtPassword, IProgress<double> progress)
+        {
+            int maxRecords = dtPassword.Rows.Count;
+            for (int rowIndex = 0; rowIndex < maxRecords; rowIndex++)
+            {
+                double percentage = (double)rowIndex / maxRecords;
+                progress.Report(percentage);
+
+                AccessTyp accessTyp = dtPassword.Rows[rowIndex]["AccessTyp"].ToInt().ToEnum<AccessTyp>();
+                dtPassword.Rows[rowIndex]["AccessTypText"] = accessTyp.ToDescription();
+                Thread.Sleep(100);
+            }
+
+            dtPassword.Columns.Remove("AccessTyp");
+        }
+
+        private void BuildExportTest(IProgress<double> progress)
+        {
+            progress.Report(0);
             int maxRecords = 10_000_000;
 
             List<String> listOfStrings = new List<string>();
@@ -170,6 +262,15 @@
             {
                 Sender = this.GetType().Name,
                 MenuButton = MainButton.Login,
+            });
+        }
+
+        private void BackHandler(object p1)
+        {
+            base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
+            {
+                Sender = this.GetType().Name,
+                MenuButton = MainButton.Home,
             });
         }
     }

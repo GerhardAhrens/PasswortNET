@@ -1,5 +1,6 @@
 ﻿namespace PasswortNET.Views.TabAppSettings
 {
+    using System.ComponentModel;
     using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
@@ -82,7 +83,10 @@
             this.Focus();
             this.IsUCLoaded = true;
 
-            this.LoadDataHandler();
+            if ((bool)(DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue) == false)
+            {
+                this.LoadDataHandler();
+            }
         }
 
         #region Load and Filter Data
@@ -97,6 +101,11 @@
             {
                 using (RegionRepository repository = new RegionRepository())
                 {
+                    if (repository == null)
+                    {
+                        return;
+                    }
+
                     this.RegionCount = repository.Count();
                     this.RegionSource = repository.List().ToList().OrderBy(o => o.Name);
                 }

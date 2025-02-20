@@ -16,14 +16,21 @@
 namespace PasswortNET.Core
 {
     using System;
+    using System.ComponentModel;
 
     public enum AccessTyp : int
     {
+        [Description("Keine Auswahl")]
         None = 0,
+        [Description("Pin")]
         Pin = 1,
+        [Description("Webseitenzugang")]
         Website = 2,
+        [Description("Passwort")]
         Passwort = 3,
+        [Description("Softwarelizenz")]
         License = 4,
+        [Description("Unspezifisch")]
         All = 99
     }
 }

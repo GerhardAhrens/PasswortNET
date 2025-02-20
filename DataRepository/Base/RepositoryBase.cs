@@ -19,7 +19,7 @@
 
         protected RepositoryBase(string databaseFile = "") : this(databaseFile, string.Empty) {}
 
-        protected RepositoryBase(string databaseFile, string password = "")
+        protected RepositoryBase(string databaseFile = "", string password = "")
         {
             password = "222e5937065d2151f760731fef54b0f6";
 
@@ -35,15 +35,18 @@
 
             try
             {
-                this.DatabaseIntern = new LiteDatabase(this.ConnectionDB);
-                this.DatabaseIntern.UserVersion = 3;
-                if (this.DatabaseIntern != null)
+                if (this.ConnectionDB != null)
                 {
-                    this.CollectionIntern = this.DatabaseIntern.GetCollection<TEntity>(collectionName);
-                    if (this.CollectionIntern != null)
+                    this.DatabaseIntern = new LiteDatabase(this.ConnectionDB);
+                    this.DatabaseIntern.UserVersion = 3;
+                    if (this.DatabaseIntern != null)
                     {
-                        this.IsDatabaseOpen = true;
-                        this.DatabaseName = databaseFile;
+                        this.CollectionIntern = this.DatabaseIntern.GetCollection<TEntity>(collectionName);
+                        if (this.CollectionIntern != null)
+                        {
+                            this.IsDatabaseOpen = true;
+                            this.DatabaseName = databaseFile;
+                        }
                     }
                 }
             }
@@ -344,6 +347,11 @@
 
         private ConnectionString Connection(string databaseFile, string password = "222e5937065d2151f760731fef54b0f6")
         {
+            if (string.IsNullOrEmpty(databaseFile) == true)
+            {
+                return null;
+            }
+
             ConnectionString conn = new ConnectionString(databaseFile);
             conn.Connection = ConnectionType.Shared;
             conn.Password = password;

@@ -23,6 +23,7 @@
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("BackAboutCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -37,6 +38,15 @@
             {
                 Sender = this.GetType().Name,
                 MenuButton = MainButton.Login,
+            });
+        }
+
+        private void BackHandler(object p1)
+        {
+            base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
+            {
+                Sender = this.GetType().Name,
+                MenuButton = MainButton.Home,
             });
         }
     }
