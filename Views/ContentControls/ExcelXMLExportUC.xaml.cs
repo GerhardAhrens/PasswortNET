@@ -145,39 +145,13 @@
             try
             {
                 progress.Report(0);
-                using (PasswordPinRepository repository = new PasswordPinRepository())
+                if (this.IsAllRows == false)
                 {
-                    IEnumerable<PasswordPin> overviewSource = repository.List();
-                    if (overviewSource.Count() > 0)
-                    {
-                        DataTable dtPassword = overviewSource.Cast<PasswordPin>().ToDataTable<PasswordPin>();
-                        dtPassword.TableName = nameof(PasswordPin);
-                        dtPassword.Columns.Add("AccessTypText", typeof(string)).SetOrdinal(0);
-                        dtPassword.Columns.Remove("Id");
-                        dtPassword.Columns.Remove("ShowDescription");
-                        dtPassword.Columns.Remove("Symbol");
-                        dtPassword.Columns.Remove("Background");
-                        dtPassword.Columns.Remove("CompanyId");
-                        dtPassword.Columns.Remove("SyncItemStatus");
-                        dtPassword.Columns.Remove("LastExport");
-                        dtPassword.Columns.Remove("ShowLast");
-                        dtPassword.Columns.Remove("IsShowLast");
-                        dtPassword.Columns.Remove("CreatedBy");
-                        dtPassword.Columns.Remove("CreatedOn");
-                        dtPassword.Columns.Remove("ModifiedBy");
-                        dtPassword.Columns.Remove("ModifiedOn");
-                        dtPassword.Columns.Remove("Timestamp");
-                        dtPassword.Columns.Remove("Fullname");
 
-                        if (Path.GetExtension(this.ExportFile.ToLower()) == ".xml")
-                        {
-                            this.BuildExportXML(dtPassword, progress);
-                        }
-                        else if (Path.GetExtension(this.ExportFile.ToLower()) == ".xlsx")
-                        {
-                            this.BuildExportExcel(dtPassword, progress);
-                        }
-                    }
+                }
+                else
+                {
+                    this.CreateAllRows(progress);
                 }
 
                 progress.Report(1);
@@ -331,6 +305,44 @@
             this.ProgressBarValue = percentage * 100;
             this.ProgressBarText = (percentage).ToString("0%");
 
+        }
+
+        private void CreateAllRows(IProgress<double> progress)
+        {
+            using (PasswordPinRepository repository = new PasswordPinRepository())
+            {
+                IEnumerable<PasswordPin> overviewSource = repository.List();
+                if (overviewSource.Count() > 0)
+                {
+                    DataTable dtPassword = overviewSource.Cast<PasswordPin>().ToDataTable<PasswordPin>();
+                    dtPassword.TableName = nameof(PasswordPin);
+                    dtPassword.Columns.Add("AccessTypText", typeof(string)).SetOrdinal(0);
+                    dtPassword.Columns.Remove("Id");
+                    dtPassword.Columns.Remove("ShowDescription");
+                    dtPassword.Columns.Remove("Symbol");
+                    dtPassword.Columns.Remove("Background");
+                    dtPassword.Columns.Remove("CompanyId");
+                    dtPassword.Columns.Remove("SyncItemStatus");
+                    dtPassword.Columns.Remove("LastExport");
+                    dtPassword.Columns.Remove("ShowLast");
+                    dtPassword.Columns.Remove("IsShowLast");
+                    dtPassword.Columns.Remove("CreatedBy");
+                    dtPassword.Columns.Remove("CreatedOn");
+                    dtPassword.Columns.Remove("ModifiedBy");
+                    dtPassword.Columns.Remove("ModifiedOn");
+                    dtPassword.Columns.Remove("Timestamp");
+                    dtPassword.Columns.Remove("Fullname");
+
+                    if (Path.GetExtension(this.ExportFile.ToLower()) == ".xml")
+                    {
+                        this.BuildExportXML(dtPassword, progress);
+                    }
+                    else if (Path.GetExtension(this.ExportFile.ToLower()) == ".xlsx")
+                    {
+                        this.BuildExportExcel(dtPassword, progress);
+                    }
+                }
+            }
         }
 
         private void LogoffHandler(object p1)
