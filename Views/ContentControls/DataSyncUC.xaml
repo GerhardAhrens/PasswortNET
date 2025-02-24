@@ -56,10 +56,10 @@
                 Text="TbTitelUC" />
         </StackPanel>
 
-        <ModernUI:MGroupBox
-            Grid.Row="1"
-            Grid.Column="0"
-            Header="Datenbank synchronisieren Export">
+        <ModernUI:MGroupBox Grid.Row="1" Grid.Column="0">
+            <ModernUI:MGroupBox.Header>
+                <TextBlock FontWeight="Bold" Text="Datenbank synchronisieren Export" />
+            </ModernUI:MGroupBox.Header>
             <StackPanel Orientation="Vertical">
                 <TextBlock FontWeight="Medium" Text="Mit dem Export der Datenbank mit einer weiteren PasswortNET Datenbank synchronisieren" />
                 <ModernUI:ContentElements
@@ -72,11 +72,17 @@
                         Title="Passwortdatenbank als Datei exportieren"
                         HorizontalAlignment="Left"
                         TitleWidth="150">
-                        <TextBlock Text="" />
+                        <ModernUI:ChooseBox
+                            Title="Sync-Datei speichern"
+                            Width="500"
+                            Height="28"
+                            Margin="10,0,0,0"
+                            ChooseBoxType="Folder"
+                            Text="{Binding Path=ExportFolder, UpdateSourceTrigger=PropertyChanged}" />
                     </ModernUI:ContentFrame>
 
                     <ModernUI:ContentFrame
-                        Title="Export wie gewählt starten"
+                        Title="Export  zum synchronisieren starten"
                         Margin="0,5,0,0"
                         HorizontalAlignment="Left"
                         TitleWidth="150">
@@ -86,9 +92,9 @@
                                 Height="30"
                                 Margin="10,0,0,0"
                                 HorizontalAlignment="Left"
-                                Command="{Binding Path=CmdAgg[ExportCommand]}"
-                                Content="Export erstellen"
-                                PathData="{StaticResource ResourceKey=IconExportX}"
+                                Command="{Binding Path=CmdAgg[ExportSyncCommand]}"
+                                Content="Export starten"
+                                PathData="{StaticResource ResourceKey=IconDataSync}"
                                 PathWidth="24" />
 
                             <Grid>
@@ -118,12 +124,73 @@
             </StackPanel>
         </ModernUI:MGroupBox>
 
-        <ModernUI:MGroupBox
-            Grid.Row="2"
-            Grid.Column="0"
-            Header="Datenbank synchronisieren Import">
+        <ModernUI:MGroupBox Grid.Row="2" Grid.Column="0">
+            <ModernUI:MGroupBox.Header>
+                <TextBlock FontWeight="Bold" Text="Datenbank synchronisieren Import" />
+            </ModernUI:MGroupBox.Header>
+
             <StackPanel Orientation="Vertical">
                 <TextBlock FontWeight="Medium" Text="Mit dem Import der Dateien aus einer anderen PasswortNET Datenbank, kann diese Version synchronisiert werden." />
+
+                <ModernUI:ContentElements
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Stretch"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    KeyboardNavigation.DirectionalNavigation="Contained">
+                    <ModernUI:ContentFrame
+                        Title="Passwortdatenbank als Datei importiren"
+                        HorizontalAlignment="Left"
+                        TitleWidth="150">
+                        <ModernUI:ChooseBox
+                            Title="Sync-Datei lesen"
+                            Width="500"
+                            Height="28"
+                            Margin="10,0,0,0"
+                            ChooseBoxType="Folder"
+                            Text="{Binding Path=ImportFolder, UpdateSourceTrigger=PropertyChanged}" />
+                    </ModernUI:ContentFrame>
+
+                    <ModernUI:ContentFrame
+                        Title="Import zum synchronisieren starten"
+                        Margin="0,5,0,0"
+                        HorizontalAlignment="Left"
+                        TitleWidth="150">
+                        <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
+                            <ModernUI:PathButton
+                                Width="150"
+                                Height="30"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Left"
+                                Command="{Binding Path=CmdAgg[ExportSyncCommand]}"
+                                Content="Import starten"
+                                PathData="{StaticResource ResourceKey=IconDataSync}"
+                                PathWidth="24" />
+
+                            <Grid>
+                                <ModernUI:FlatProgressBar
+                                    Width="500"
+                                    Height="20"
+                                    Margin="10,5,0,0"
+                                    BorderBrush="LightGray"
+                                    BorderThickness="1"
+                                    Foreground="#2B85E9"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    Skin="Rectangle"
+                                    Value="{Binding Path=ProgressBarValue, Mode=OneWay}" />
+
+                                <TextBlock
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontWeight="Medium"
+                                    Text="{Binding Path=ProgressBarText, StringFormat={}{0:0}, FallbackValue=0%}" />
+                            </Grid>
+                        </StackPanel>
+                    </ModernUI:ContentFrame>
+
+                </ModernUI:ContentElements>
             </StackPanel>
         </ModernUI:MGroupBox>
     </ModernUI:SimpleGrid>

@@ -36,5 +36,7 @@ namespace PasswortNET.Core
         public string DatabaseBackupFullname { get; set; }
 
         public int MaxBackupFile { get; set; } = 5;
+
+        public string DatabaseSyncFolder { get; set; }
     }
 }
