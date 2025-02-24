@@ -266,6 +266,30 @@ namespace PasswortNET.Core
 
         #endregion Login und Change Password
 
+        #region Export, Data Sync
+        public static NotificationBoxButton NoDataForSync(this INotificationService @this)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            htmlContent.Append($"<h2 style=\"color:red;\">Es sind keine Daten zum synchronisieren vorhanden.</h2>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Es werden keine Daten exportiert.</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Datenbank Synchronisieren", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+        #endregion Export, Data Sync
+
         #region Working Region Tag
         public static NotificationBoxButton DeleteRegionItem(this INotificationService @this, string msg = "")
         {

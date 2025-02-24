@@ -187,9 +187,21 @@
                                     FontWeight="Medium"
                                     Text="{Binding Path=ProgressBarText, StringFormat={}{0:0}, FallbackValue=0%}" />
                             </Grid>
+
+                            <StackPanel Margin="10,5,0,0" Orientation="Horizontal">
+                                <ModernUI:GeometryLabel
+                                    HorizontalAlignment="Left"
+                                    PathData="{StaticResource ResourceKey=IconCounterNew}"
+                                    Text="{Binding Path=NeuCount, FallbackValue=Neu-xxx}" />
+
+                                <ModernUI:GeometryLabel
+                                    Margin="50,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    PathData="{StaticResource ResourceKey=IconCounterEdit}"
+                                    Text="{Binding Path=GeaendertCount, FallbackValue=Geändert-xxx}" />
+                            </StackPanel>
                         </StackPanel>
                     </ModernUI:ContentFrame>
-
                 </ModernUI:ContentElements>
             </StackPanel>
         </ModernUI:MGroupBox>
