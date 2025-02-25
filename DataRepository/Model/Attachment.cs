@@ -18,6 +18,7 @@ namespace PasswortNET.Model
     using System;
 
     using ModernBaseLibrary.Core;
+    using PasswortNET.Core;
 
     public sealed partial class Attachment 
     {
@@ -46,6 +47,8 @@ namespace PasswortNET.Model
         public DateTime FileDateTime { get; set; }
 
         public long FileSize { get; set; }
+
+        public SyncItemStatus SyncItemStatus { get; set; }
 
         public string CreatedBy { get; set; }
 

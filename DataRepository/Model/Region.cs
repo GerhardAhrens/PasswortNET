@@ -19,6 +19,7 @@ namespace PasswortNET.Model
     using System.Diagnostics;
 
     using ModernBaseLibrary.Extension;
+    using PasswortNET.Core;
 
     [DebuggerDisplay("Name={this.Name}")]
     public partial class Region 
@@ -42,6 +43,8 @@ namespace PasswortNET.Model
         public int Symbol { get; set; }
 
         public DateTime LastExport { get; set; }
+
+        public SyncItemStatus SyncItemStatus { get; set; }
 
         public string CreatedBy { get; set; }
 

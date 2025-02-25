@@ -56,8 +56,10 @@
             <ModernUI:MGroupBox
                 Width="400"
                 Margin="5"
-                Padding="20"
-                Header="Benutzerinformationen">
+                Padding="20">
+                <ModernUI:MGroupBox.Header>
+                    <TextBlock FontWeight="Bold" Text="Benutzerinformationen" />
+                </ModernUI:MGroupBox.Header>
                 <StackPanel Orientation="Vertical">
                     <ModernUI:IconTextBox
                         x:Name="TxtBenutzername"

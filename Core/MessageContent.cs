@@ -267,6 +267,36 @@ namespace PasswortNET.Core
         #endregion Login und Change Password
 
         #region Export, Data Sync
+        public static NotificationBoxButton NoFolderForSync(this INotificationService @this, SyncDirection syncDirection)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"no\">");
+            if (syncDirection == SyncDirection.SyncExport)
+            {
+                htmlContent.Append($"<h2 style=\"color:red;\">Es wurde keine Verzeichnis zum Export der Datenbank ausgewählt.</h2>");
+            }
+            else if (syncDirection == SyncDirection.SyncExport)
+            {
+                htmlContent.Append($"<h2 style=\"color:red;\">Es wurde keine Verzeichnis zum Import der Datenbank ausgewählt.</h2>");
+            }
+
+            htmlContent.Append($"<h3 style=\"color:black;\">Es werden keine Daten exportiert.</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Datenbank Synchronisieren", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+
         public static NotificationBoxButton NoDataForSync(this INotificationService @this)
         {
             StringBuilder htmlContent = new StringBuilder();
