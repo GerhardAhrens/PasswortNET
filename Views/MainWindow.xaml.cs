@@ -209,6 +209,11 @@
                 }
                 else
                 {
+                    using (UserPreferences userPrefs = new UserPreferences(this))
+                    {
+                        userPrefs.Save();
+                    }
+
                     e.Cancel = false;
                     Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                     Application.Current.Shutdown();

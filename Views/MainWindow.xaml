@@ -11,7 +11,8 @@
     xmlns:winbase="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
     Title="{Binding Path=DialogDescription}"
     Width="900"
-    Height="600"
+    Height="500"
+    MinHeight="500"
     winbase:DialogClosing.IsClosing="True"
     Icon="/Resources/Picture/ApplicationIcon.ico"
     mc:Ignorable="d">
@@ -124,7 +125,7 @@
         <Border
             Grid.Row="0"
             Grid.Column="0"
-            Margin="0,10,0,0"
+            Margin="0,5,0,0"
             Background="Snow"
             BorderBrush="Black"
             BorderThickness="0,1,0,1">

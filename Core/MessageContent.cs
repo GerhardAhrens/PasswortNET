@@ -266,7 +266,7 @@ namespace PasswortNET.Core
 
         #endregion Login und Change Password
 
-        #region Export, Data Sync
+        #region Export, Import, Data Sync
         public static NotificationBoxButton NoFolderForSync(this INotificationService @this, SyncDirection syncDirection)
         {
             StringBuilder htmlContent = new StringBuilder();
@@ -318,7 +318,7 @@ namespace PasswortNET.Core
 
             return resultOK.Item1;
         }
-        #endregion Export, Data Sync
+        #endregion Export, Import, Data Sync
 
         #region Working Region Tag
         public static NotificationBoxButton DeleteRegionItem(this INotificationService @this, string msg = "")

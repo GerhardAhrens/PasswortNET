@@ -32,7 +32,7 @@
     <ModernUI:SimpleGrid
         Columns="*"
         IsEnabled="{Binding Path=IsBusyIndicator, UpdateSourceTrigger=PropertyChanged, FallbackValue=true, Converter={StaticResource ResourceKey=BoolReverseConverter}}"
-        Rows="30,*,*">
+        Rows="30,170,*">
         <StackPanel
             Grid.Row="0"
             Grid.Column="0"
@@ -125,7 +125,6 @@
                             </Grid>
                         </StackPanel>
                     </ModernUI:ContentFrame>
-
                 </ModernUI:ContentElements>
             </StackPanel>
         </ModernUI:MGroupBox>
@@ -162,7 +161,7 @@
                         Margin="0,5,0,0"
                         HorizontalAlignment="Left"
                         TitleWidth="150">
-                        <ModernUI:FlatCheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsAllRows, UpdateSourceTrigger=PropertyChanged}" />
+                        <ModernUI:FlatCheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsImportAllRows, UpdateSourceTrigger=PropertyChanged}" />
                     </ModernUI:ContentFrame>
 
                     <ModernUI:ContentFrame
