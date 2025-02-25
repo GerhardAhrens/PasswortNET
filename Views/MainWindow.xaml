@@ -80,6 +80,13 @@
                         IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
 
                     <MenuItem
+                        Command="{Binding Path=CmdAgg[PrintCommand]}"
+                        CommandParameter="{x:Static localStatic:MainButton.Print}"
+                        Header="Drucken"
+                        Icon="{StaticResource ResourceKey=MenuItemPrint}"
+                        IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <MenuItem
                         Command="{Binding Path=CmdAgg[DataSyncCommand]}"
                         CommandParameter="{x:Static localStatic:MainButton.DataSync}"
                         Header="Datenbank synchronisieren"

@@ -304,7 +304,6 @@
         {
             this.ProgressBarValue = percentage * 100;
             this.ProgressBarText = (percentage).ToString("0%");
-
         }
 
         private void CreateAllRows(IProgress<double> progress)

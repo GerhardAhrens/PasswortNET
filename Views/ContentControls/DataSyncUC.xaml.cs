@@ -30,15 +30,39 @@
             this.DataContext = this;
         }
 
-        public double ProgressBarValue
+        public bool IsBusyIndicator
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
+        public double ProgressBarValueExport
         {
             get => base.GetValue<double>();
             set => base.SetValue(value);
         }
 
-        public string ProgressBarText
+        public string ProgressBarTextExport
         {
             get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+
+        public double ProgressBarValueImport
+        {
+            get => base.GetValue<double>();
+            set => base.SetValue(value);
+        }
+
+        public string ProgressBarTextImport
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+
+        public bool IsAllRows
+        {
+            get => base.GetValue<bool>();
             set => base.SetValue(value);
         }
 
@@ -101,6 +125,10 @@
 
             try
             {
+                this.IsBusyIndicator = true;
+                IProgress<double> progress = new Progress<double>(this.UpdateProgressTextExport);
+                progress.Report(0);
+
                 exportSyncFile = $"{this.ExportFolder}\\PasswortSync.Tag";
                 using (RegionRepository repository = new RegionRepository())
                 {
@@ -125,6 +153,8 @@
                     dtRegion = this.GetNullFilledDataTableForXML(dtRegion);
                     dtRegion.WriteXml(exportSyncFile);
                 }
+
+                progress.Report(0.25);
 
                 exportSyncFile = $"{this.ExportFolder}\\PasswortSync.Passwort";
                 using (PasswordPinRepository repository = new PasswordPinRepository())
@@ -151,11 +181,14 @@
                     dtPasswort.WriteXml(exportSyncFile);
                 }
 
+                progress.Report(0.5);
+
                 exportSyncFile = $"{this.ExportFolder}\\PasswortSync.Attachment";
                 using (AttachmentRepository repository = new AttachmentRepository())
                 {
                     if (repository == null || repository.List().Count() == 0)
                     {
+                        progress.Report(0);
                         return;
                     }
 
@@ -174,6 +207,10 @@
                     dtAttachment = this.GetNullFilledDataTableForXML(dtAttachment);
                     dtAttachment.WriteXml(exportSyncFile);
                 }
+
+                progress.Report(0.75);
+
+                this.IsBusyIndicator = false;
             }
             catch (Exception ex)
             {
@@ -198,6 +235,39 @@
             {
                 this.notificationService.NoFolderForSync(SyncDirection.SyncImport);
                 return;
+            }
+
+            if (this.IsAllRows == true)
+            {
+                this.ImportSyncAllRows();
+            }
+            else
+            {
+                this.ImportSyncChangedRows();
+            }
+        }
+
+        private void ImportSyncAllRows()
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
+        }
+
+        private void ImportSyncChangedRows()
+        {
+            try
+            {
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
             }
         }
 
@@ -257,6 +327,12 @@
             }
 
             return dtTarget;
+        }
+
+        private void UpdateProgressTextExport(double percentage)
+        {
+            this.ProgressBarValueExport = percentage * 100;
+            this.ProgressBarTextExport = (percentage).ToString("0%");
         }
     }
 }

@@ -43,5 +43,7 @@ namespace PasswortNET.Core
         DataSync = 9,
         [Description("Export Passwortdaten")]
         Export = 10,
+        [Description("Drucken Passwortdaten")]
+        Print = 11,
     }
 }

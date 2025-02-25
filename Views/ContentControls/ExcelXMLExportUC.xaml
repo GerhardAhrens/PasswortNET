@@ -112,9 +112,7 @@
                 HorizontalAlignment="Left"
                 TitleWidth="150">
                 <ModernUI:FlatCheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsAllRows, UpdateSourceTrigger=PropertyChanged}" />
-
             </ModernUI:ContentFrame>
-
 
             <ModernUI:ContentFrame
                 Title="Export wie gewählt starten"

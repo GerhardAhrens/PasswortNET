@@ -100,6 +100,7 @@
             base.CmdAgg.AddOrSetCommand("AboutCommand", new RelayCommand(p1 => this.AboutHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("ExportCommand", new RelayCommand(p1 => this.ExportHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("DataSyncCommand", new RelayCommand(p1 => this.DataSyncHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("PrintCommand", new RelayCommand(p1 => this.PrintHandler(p1), p2 => true));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -169,6 +170,10 @@
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
             arg.MenuButton = MainButton.Export;
             this.ChangeControl(arg);
+        }
+
+        private void PrintHandler(object p1)
+        {
         }
 
         private void DataSyncHandler(object p1)
