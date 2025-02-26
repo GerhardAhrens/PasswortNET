@@ -16,12 +16,14 @@
 namespace PasswortNET.Model
 {
     using System.Diagnostics;
+    using System.Text.Json.Serialization;
 
     using ModernBaseLibrary.Core;
 
     [DebuggerDisplay("Name={this.Name}")]
     public partial class Region 
     {
+        [JsonIgnore]
         public string FullName
         {
             get
@@ -30,6 +32,7 @@ namespace PasswortNET.Model
             }
         }
 
+        [JsonIgnore]
         public string Timestamp
         {
             get

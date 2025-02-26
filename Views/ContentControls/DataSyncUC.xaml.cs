@@ -1,6 +1,7 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
     using System;
+    using System.ComponentModel;
     using System.Data;
     using System.Globalization;
     using System.IO;
@@ -144,20 +145,14 @@
                         return;
                     }
 
-                    DataTable dtRegion = repository.List().ToDataTable<Region>();
-                    dtRegion.TableName = nameof(Region);
-                    dtRegion.Columns.Remove("Timestamp");
-                    dtRegion.Columns.Remove("Fullname");
-                    dtRegion.Columns.Add("Hash", typeof(string));
-                    foreach (DataRow row in dtRegion.Rows)
+                    List<Region> source = repository.List().ToList();
+                    foreach (Region row in source)
                     {
-                        row.SetField<int>("SyncItemStatus", 0);
-                        string fieldHash = this.RegionExportHash(row);
-                        row.SetField<string>("Hash", fieldHash);
+                        row.SyncItemStatus = 0;
+                        row.SyncHash = this.RegionExportHash(row);
                     }
 
-                    dtRegion = this.GetNullFilledDataTableForXML(dtRegion);
-                    dtRegion.WriteXml(exportSyncFile);
+                    source.ToJson<Region>(exportSyncFile);
                 }
 
                 progress.Report(0.25);
@@ -185,8 +180,11 @@
                         row.SetField<string>("Hash", fieldHash);
                     }
 
+                    /*
                     dtPasswort = this.GetNullFilledDataTableForXML(dtPasswort);
                     dtPasswort.WriteXml(exportSyncFile);
+                    */
+                    dtPasswort.ToJson(exportSyncFile);
                 }
 
                 progress.Report(0.5);
@@ -213,8 +211,11 @@
                         row.SetField<string>("Hash", fieldHash);
                     }
 
+                    /*
                     dtAttachment = this.GetNullFilledDataTableForXML(dtAttachment);
                     dtAttachment.WriteXml(exportSyncFile);
+                    */
+                    dtAttachment.ToJson(exportSyncFile);
                 }
 
                 progress.Report(0.75);
@@ -376,9 +377,9 @@
             });
         }
 
-        private string RegionExportHash(DataRow row)
+        private string RegionExportHash(Region row)
         {
-            string fieldHash = $"{row.Field<string>("Name")}|{row.Field<string>("Description")}|{row.Field<string>("Background")}|{row.Field<int>("Symbol")}";
+            string fieldHash = $"{row.Name}|{row.Description}|{row.Background}|{row.Symbol}";
             return fieldHash.RemoveWhitespace().ToMD5();
         }
 
@@ -404,16 +405,6 @@
 
                 for (int ctr = 0; ctr < colCountInTarget; ctr++)
                 {
-                    /*
-                    DataColumn col = targetRow.Table.Columns[ctr];
-                    if (targetRow[ctr] != DBNull.Value)
-                    {
-                        if (col.DataType == typeof(DateTime))
-                        {
-
-                        }
-                    }
-                    */
                     if (targetRow[ctr] == DBNull.Value)
                     {
                         targetRow[ctr] = string.Empty;
@@ -436,12 +427,17 @@
         {
             file.IsArgumentNullOrEmpty("Das Argument 'file' darf nicht leer sein.");
 
-            DataTable table = new DataTable(nameof(Region));
+            DataTable table = null;
 
             try
             {
                 if (File.Exists(file) == true)
                 {
+                    string jsonText = File.ReadAllText(file);
+                    table = jsonText.JsonToDataTable<Region>(nameof(Region));
+                    return table;
+
+                    /*
                     using (Stream stream = new FileStream(file, FileMode.Open, FileAccess.Read))
                     {
                         table.Columns.Add("Id", typeof(Guid));
@@ -461,6 +457,7 @@
 
                         return table;
                     }
+                    */
                 }
                 else
                 {

@@ -15,10 +15,13 @@
 
 namespace PasswortNET.Model
 {
+    using System.Text.Json.Serialization;
+
     using ModernBaseLibrary.Core;
 
     public sealed partial class Attachment 
     {
+        [JsonIgnore]
         public string FullName
         {
             get
@@ -27,6 +30,7 @@ namespace PasswortNET.Model
             }
         }
 
+        [JsonIgnore]
         public string Timestamp
         {
             get
