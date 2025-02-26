@@ -113,7 +113,10 @@
         {
             if (string.IsNullOrEmpty(this.ExportFolder) == false)
             {
-                return true;
+                if (Directory.Exists(this.ExportFolder) == true)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -168,23 +171,14 @@
                         return;
                     }
 
-                    DataTable dtPasswort = repository.List().ToDataTable<PasswordPin>();
-                    dtPasswort.TableName = nameof(PasswordPin);
-                    dtPasswort.Columns.Remove("Timestamp");
-                    dtPasswort.Columns.Remove("Fullname");
-                    dtPasswort.Columns.Add("Hash", typeof(string));
-                    foreach (DataRow row in dtPasswort.Rows)
+                    List<PasswordPin> source = repository.List().ToList();
+                    foreach (PasswordPin row in source)
                     {
-                        row.SetField<int>("SyncItemStatus", 0);
-                        string fieldHash = this.PasswordPinExportHash(row);
-                        row.SetField<string>("Hash", fieldHash);
+                        row.SyncItemStatus = 0;
+                        row.SyncHash = this.PasswordPinExportHash(row);
                     }
 
-                    /*
-                    dtPasswort = this.GetNullFilledDataTableForXML(dtPasswort);
-                    dtPasswort.WriteXml(exportSyncFile);
-                    */
-                    dtPasswort.ToJson(exportSyncFile);
+                    source.ToJson<PasswordPin>(exportSyncFile);
                 }
 
                 progress.Report(0.5);
@@ -199,23 +193,14 @@
                         return;
                     }
 
-                    DataTable dtAttachment = repository.List().ToDataTable<Attachment>();
-                    dtAttachment.TableName = nameof(Attachment);
-                    dtAttachment.Columns.Remove("Timestamp");
-                    dtAttachment.Columns.Remove("Fullname");
-                    dtAttachment.Columns.Add("Hash", typeof(string));
-                    foreach (DataRow row in dtAttachment.Rows)
+                    List<Attachment> source = repository.List().ToList();
+                    foreach (Attachment row in source)
                     {
-                        row.SetField<int>("SyncItemStatus", 0);
-                        string fieldHash = this.PasswordPinExportHash(row);
-                        row.SetField<string>("Hash", fieldHash);
+                        row.SyncItemStatus = 0;
+                        row.SyncHash = this.AttachmentExportHash(row);
                     }
 
-                    /*
-                    dtAttachment = this.GetNullFilledDataTableForXML(dtAttachment);
-                    dtAttachment.WriteXml(exportSyncFile);
-                    */
-                    dtAttachment.ToJson(exportSyncFile);
+                    source.ToJson<Attachment>(exportSyncFile);
                 }
 
                 progress.Report(0.75);
@@ -233,7 +218,10 @@
         {
             if (string.IsNullOrEmpty(this.ImportFolder) == false)
             {
-                return true;
+                if (Directory.Exists(this.ImportFolder) == true)
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -269,26 +257,25 @@
                     return;
                 }
 
-                DataTable importRegion = this.ReadXMLFromRegion(importSyncFile);
+                string jsonText = File.ReadAllText(importSyncFile);
+                List<Region> importRegion = jsonText.JsonToList<Region>();
                 using (RegionRepository repository = new RegionRepository())
                 {
                     repository.DeleteAll();
 
                     int newRowsCount = 0;
-                    foreach (DataRow row in importRegion.Rows.OfType<DataRow>().Where(w => w.Field<int>("SyncItemStatus") == 0))
+                    foreach (Region row in importRegion.Cast<Region>().Where(w => w.SyncItemStatus == 0))
                     {
                         Region regionNew = new Region();
-                        regionNew.Id = row.Field<Guid>("Id");
-                        regionNew.Name = row.Field<string>("Name");
-                        regionNew.Description = row.Field<string>("Description");
-                        regionNew.Background = row.Field<string>("Background");
-                        regionNew.Symbol = row.Field<int>("Symbol");
-                        regionNew.LastExport = row.Field<DateTime>("LastExport");
+                        regionNew.Id = row.Id;
+                        regionNew.Name = Name;
+                        regionNew.Description = row.Description;
+                        regionNew.Background = row.Background;
+                        regionNew.Symbol = row.Symbol;
+                        regionNew.LastExport = row.LastExport;
                         regionNew.CreatedBy = UserInfo.TS().CurrentUser;
                         regionNew.CreatedOn = UserInfo.TS().CurrentTime;
                         repository.Add(regionNew);
-
-                        row.SetField<int>("SyncItemStatus", 2);
 
                         newRowsCount++;
                     }
@@ -383,9 +370,15 @@
             return fieldHash.RemoveWhitespace().ToMD5();
         }
 
-        private string PasswordPinExportHash(DataRow row)
+        private string PasswordPinExportHash(PasswordPin row)
         {
-            string fieldHash = $"{row.Field<string>("Title")}|{row.Field<string>("Description")}|{row.Field<string>("Username")}|{row.Field<string>("Passwort")}|{row.Field<string>("Pin")}|{row.Field<string>("Background")}|{row.Field<int>("Symbol")}|{row.Field<string>("Region")}";
+            string fieldHash = $"{row.Title}|{row.Description}|{row.Username}|{row.Passwort}|{row.Pin}|{row.Background}|{row.Symbol}|{row.Region}";
+            return fieldHash.RemoveWhitespace().ToMD5();
+        }
+
+        private string AttachmentExportHash(Attachment row)
+        {
+            string fieldHash = $"{row.Id}|{row.ObjectId}|{row.ObjectName}|{row.Filename}|{row.FileSize}";
             return fieldHash.RemoveWhitespace().ToMD5();
         }
 

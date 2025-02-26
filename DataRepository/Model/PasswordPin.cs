@@ -66,8 +66,6 @@ namespace PasswortNET.Model
 
         public string LicenseKey { get; set; }
 
-        public SyncItemStatus SyncItemStatus { get; set; }
-
         public string Region { get; set; }
 
         public DateTime LastExport { get; set; }
@@ -75,6 +73,10 @@ namespace PasswortNET.Model
         public DateTime ShowLast { get; set; }
 
         public bool IsShowLast { get; set; }
+
+        public SyncItemStatus SyncItemStatus { get; set; }
+
+        public string SyncHash { get; set; }
 
         public string CreatedBy { get; set; }
 

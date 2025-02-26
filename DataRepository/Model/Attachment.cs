@@ -50,6 +50,8 @@ namespace PasswortNET.Model
 
         public SyncItemStatus SyncItemStatus { get; set; }
 
+        public string SyncHash { get; set; }
+
         public string CreatedBy { get; set; }
 
         public DateTime CreatedOn { get; set; }

@@ -7,6 +7,7 @@
     using System.Windows;
 
     using LiteDB;
+    using LiteDB.Engine;
 
     using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
@@ -38,7 +39,6 @@
                 if (this.ConnectionDB != null)
                 {
                     this.DatabaseIntern = new LiteDatabase(this.ConnectionDB);
-                    this.DatabaseIntern.UserVersion = 3;
                     if (this.DatabaseIntern != null)
                     {
                         this.CollectionIntern = this.DatabaseIntern.GetCollection<TEntity>(collectionName);
@@ -59,7 +59,7 @@
                 MessageBox.Show($"Falsches Passwort zum öffnenen der Datenbank.\n{databaseFile}","Simple Password Manager");
                 Environment.Exit(-1);
             }
-            catch (LiteException ex) when (ex.Message == "This file is not encrypted")
+            catch (LiteException ex) when (ex.Message == "File is not encrypted.")
             {
                 MessageBox.Show($"Datenbank ist nicht verschlüsselt.\n{databaseFile}", "Simple Password Manager");
                 Environment.Exit(-1);
