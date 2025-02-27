@@ -75,7 +75,8 @@ namespace PasswortNET.DataRepository
             {
                 using (ObjectRuntime objectRuntime = new ObjectRuntime())
                 {
-                    this.DatabaseIntern = new LiteDatabase(this.ConnectionDB);
+                    this.ConnectionDB.Password = null;
+                    this.DatabaseIntern = new LiteDatabase(this.ConnectionDB, (BsonMapper)null);
 
                     if (this.DatabaseIntern != null)
                     {
@@ -134,10 +135,27 @@ namespace PasswortNET.DataRepository
         private ConnectionString Connection(string databaseFile, string password = null)
         {
             ConnectionString conn = new ConnectionString(databaseFile);
-            conn.Connection = ConnectionType.Shared;
+            conn.Connection = ConnectionType.Direct;
             conn.Password = password;
 
             return conn;
+        }
+
+        private void LiteDBChangePassword(string password, ConnectionString connectionString)
+        {
+            LiteDatabase val = new LiteDatabase(connectionString, (BsonMapper)null);
+            try
+            {
+                RebuildOptions val2 = ((!(password == "")) ? new RebuildOptions
+                {
+                    Password = password
+                } : new RebuildOptions());
+                val.Rebuild(val2);
+            }
+            finally
+            {
+                ((IDisposable)val)?.Dispose();
+            }
         }
     }
 }
