@@ -75,7 +75,6 @@ namespace PasswortNET.DataRepository
             {
                 using (ObjectRuntime objectRuntime = new ObjectRuntime())
                 {
-                    this.ConnectionDB.Password = null;
                     this.DatabaseIntern = new LiteDatabase(this.ConnectionDB, (BsonMapper)null);
 
                     if (this.DatabaseIntern != null)
@@ -135,7 +134,7 @@ namespace PasswortNET.DataRepository
         private ConnectionString Connection(string databaseFile, string password = null)
         {
             ConnectionString conn = new ConnectionString(databaseFile);
-            conn.Connection = ConnectionType.Direct;
+            conn.Connection = ConnectionType.Shared;
             conn.Password = password;
 
             return conn;

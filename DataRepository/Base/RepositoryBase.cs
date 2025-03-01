@@ -22,8 +22,6 @@
 
         protected RepositoryBase(string databaseFile = "", string password = "")
         {
-            password = "222e5937065d2151f760731fef54b0f6";
-
             using (ApplicationSettings settings = new ApplicationSettings())
             {
                 settings.Load();
@@ -168,7 +166,7 @@
                 if (this.CollectionIntern != null)
                 {
                     result = this.CollectionIntern.DeleteAll();
-                    rebuildResult = this.DatabaseIntern.Rebuild();
+                    //rebuildResult = this.DatabaseIntern.Rebuild();
                 }
             }
             catch (Exception ex)
@@ -354,7 +352,7 @@
 
             ConnectionString conn = new ConnectionString(databaseFile);
             conn.Connection = ConnectionType.Shared;
-            conn.Password = password;
+            conn.Password = "222e5937065d2151f760731fef54b0f6";
 
             return conn;
         }
