@@ -268,7 +268,7 @@
                     {
                         Region regionNew = new Region();
                         regionNew.Id = row.Id;
-                        regionNew.Name = Name;
+                        regionNew.Name = row.Name;
                         regionNew.Description = row.Description;
                         regionNew.Background = row.Background;
                         regionNew.Symbol = row.Symbol;
@@ -288,6 +288,9 @@
                 {
                     return;
                 }
+
+                jsonText = File.ReadAllText(importSyncFile);
+                List<PasswordPin> importPasswotPin = jsonText.JsonToList<PasswordPin>();
 
                 DataTable importPassword = this.ReadXMLFromPassword(importSyncFile);
                 using (PasswordPinRepository repository = new PasswordPinRepository())
