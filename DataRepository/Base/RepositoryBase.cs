@@ -159,14 +159,12 @@
         public virtual int DeleteAll()
         {
             int result = 0;
-            long rebuildResult = 0;
 
             try
             {
                 if (this.CollectionIntern != null)
                 {
                     result = this.CollectionIntern.DeleteAll();
-                    //rebuildResult = this.DatabaseIntern.Rebuild();
                 }
             }
             catch (Exception ex)

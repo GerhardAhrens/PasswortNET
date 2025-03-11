@@ -7,9 +7,12 @@
     using System.IO;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Drawing.Imaging;
+    using LiteDB;
 
     using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
+    using ModernBaseLibrary.Graphics;
 
     using ModernIU.Controls;
 
@@ -158,7 +161,7 @@
                     source.ToJson<Region>(exportSyncFile);
                 }
 
-                progress.Report(0.25);
+                progress.Report(0.33);
 
                 exportSyncFile = $"{this.ExportFolder}\\PasswortSync.Passwort";
                 using (PasswordPinRepository repository = new PasswordPinRepository())
@@ -176,12 +179,62 @@
                     {
                         row.SyncItemStatus = 0;
                         row.SyncHash = this.PasswordPinExportHash(row);
+
+                        if (repository.DatabaseIntern.FileStorage.Exists(row.Id.ToString()) == true)
+                        {
+                            string attachmentPath = Path.Combine(this.ExportFolder, "Attachments");
+                            if (Directory.Exists(attachmentPath) == false)
+                            {
+                                Directory.CreateDirectory(attachmentPath);
+                            }
+
+                            MemoryStream stream = new MemoryStream();
+                            LiteFileInfo<string> file = repository.DatabaseIntern.FileStorage.FindById(row.Id.ToString());
+                            file.CopyTo(stream);
+
+                            if (stream.ToArray().Length > 1_000)
+                            {
+                                System.Drawing.Image image = System.Drawing.Image.FromStream(stream);
+                                if (image != null)
+                                {
+                                    string imageTyp = image.RawFormat.ToString().ToLower();
+                                    if (imageTyp == "png")
+                                    {
+                                        image.Save($"{attachmentPath}\\{row.Id.ToString()}.{imageTyp}", ImageFormat.Png);
+                                    }
+                                    else if (imageTyp == "jpeg")
+                                    {
+                                        image.Save($"{attachmentPath}\\{row.Id.ToString()}.jpg", ImageFormat.Jpeg);
+                                    }
+                                    else if (imageTyp == "bmp")
+                                    {
+                                        image.Save($"{attachmentPath}\\{row.Id.ToString()}.{imageTyp}", ImageFormat.Bmp);
+                                    }
+                                    else if (imageTyp == "gif")
+                                    {
+                                        image.Save($"{attachmentPath}\\{row.Id.ToString()}.{imageTyp}", ImageFormat.Gif);
+                                    }
+                                    else if (imageTyp == "tiff")
+                                    {
+                                        image.Save($"{attachmentPath}\\{row.Id.ToString()}.{imageTyp}", ImageFormat.Tiff);
+                                    }
+                                    else if (imageTyp == "ico")
+                                    {
+                                        image.Save($"{attachmentPath}\\{row.Id.ToString()}.{imageTyp}", ImageFormat.Icon);
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllBytes($"{attachmentPath}\\{row.Id.ToString()}.jpg", stream.ToArray());
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     source.ToJson<PasswordPin>(exportSyncFile);
                 }
 
-                progress.Report(0.5);
+                progress.Report(0.66);
 
                 exportSyncFile = $"{this.ExportFolder}\\PasswortSync.Attachment";
                 using (AttachmentRepository repository = new AttachmentRepository())
@@ -203,7 +256,7 @@
                     source.ToJson<Attachment>(exportSyncFile);
                 }
 
-                progress.Report(0.75);
+                progress.Report(1.00);
 
                 this.IsBusyIndicator = false;
             }
@@ -516,6 +569,28 @@
                 string errorMessage = ex.Message;
                 throw;
             }
+        }
+
+        public bool IsPng(byte[] array)
+        {
+            return array != null
+                && array.Length > 8
+                && array[0] == 0x89
+                && array[1] == 0x50
+                && array[2] == 0x4e
+                && array[3] == 0x47
+                && array[4] == 0x0d
+                && array[5] == 0x0a
+                && array[6] == 0x1a
+                && array[7] == 0x0a;
+        }
+
+        public static bool IsJpeg(byte[] array)
+        {
+            return array != null
+                && array.Length > 2
+                && array[0] == 0xff
+                && array[1] == 0xd8;
         }
     }
 }
