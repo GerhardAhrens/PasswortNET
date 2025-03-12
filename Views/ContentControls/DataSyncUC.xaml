@@ -161,7 +161,7 @@
                         Margin="0,5,0,0"
                         HorizontalAlignment="Left"
                         TitleWidth="150">
-                        <ModernUI:FlatCheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsImportAllRows, UpdateSourceTrigger=PropertyChanged}" />
+                        <ModernUI:FlatCheckBox Margin="10,0,0,0" IsChecked="{Binding Path=IsImportAllRows, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                     </ModernUI:ContentFrame>
 
                     <ModernUI:ContentFrame

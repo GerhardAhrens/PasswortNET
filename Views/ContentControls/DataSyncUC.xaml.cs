@@ -21,6 +21,8 @@
     using PasswortNET.Core;
     using PasswortNET.DataRepository;
     using PasswortNET.Model;
+    using System.Linq;
+    using static System.Net.Mime.MediaTypeNames;
 
     /// <summary>
     /// Interaktionslogik für DataSyncUC.xaml
@@ -109,7 +111,7 @@
         {
             this.Focus();
             this.IsUCLoaded = true;
-            this.IsImportAllRows = true;
+            this.IsImportAllRows = false;
         }
 
         private bool CanExportSyncHandler(object args)
@@ -393,7 +395,23 @@
             try
             {
                 importSyncFile = $"{this.ImportFolder}\\PasswortSync.Tag";
+                if (File.Exists(importSyncFile) == false)
+                {
+                    return;
+                }
 
+                string jsonText = File.ReadAllText(importSyncFile);
+                List<Region> importRegion = jsonText.JsonToList<Region>();
+                using (RegionRepository repository = new RegionRepository())
+                {
+                    var fromDB = repository.List();
+                    foreach (Region row in fromDB)
+                    {
+                        row.SyncHash = this.RegionExportHash(row);
+                    }
+
+                    var bb = importRegion.Except<Region>(fromDB, new HashComparer());
+                }
             }
             catch (Exception ex)
             {
@@ -590,7 +608,31 @@
             return array != null
                 && array.Length > 2
                 && array[0] == 0xff
-                && array[1] == 0xd8;
+            && array[1] == 0xd8;
+        }
+    }
+
+    public sealed class HashComparer : IEqualityComparer<Region>
+    {
+        public bool Equals(Region x, Region y)
+        {
+            if (x == null)
+            {
+                return y == null;
+            }
+            else if (y == null)
+            {
+                return false;
+            }
+            else
+            {
+                return x.SyncHash == y.SyncHash;
+            }
+        }
+
+        public int GetHashCode(Region obj)
+        {
+            return obj.SyncHash.GetHashCode();
         }
     }
 }

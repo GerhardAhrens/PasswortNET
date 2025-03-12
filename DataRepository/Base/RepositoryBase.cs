@@ -243,7 +243,7 @@
             {
                 if (this.CollectionIntern != null)
                 {
-                    result = this.CollectionIntern.Find(predicate);
+                    result = this.CollectionIntern.Find(predicate).ToList();
                 }
             }
             catch (Exception ex)
@@ -263,7 +263,7 @@
             {
                 if (this.CollectionIntern != null)
                 {
-                    result = this.CollectionIntern.FindAll();
+                    result = this.CollectionIntern.FindAll().ToList();
                 }
             }
             catch (Exception ex)

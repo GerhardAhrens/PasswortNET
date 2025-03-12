@@ -128,6 +128,8 @@
 
         private void AddHandler(Region commandParam)
         {
+            Region tagName = null;
+
             try
             {
                 if (string.IsNullOrEmpty(this.TagName) == false)
@@ -143,9 +145,22 @@
                             r.Background = this.ConvertIndexToColorName(this.BackgroundColorSelected);
                             r.Id = Guid.NewGuid();
                             repository.Add(r);
+                            tagName = r;
                         }
 
                         this.LoadDataHandler(true);
+                        int tagIndex = -1;
+                        foreach (Region r in this.lbRegion.Items)
+                        {
+                            tagIndex++;
+                            if (r.Name == tagName.Name)
+                            {
+                                break;
+                            }
+                        }
+
+                        this.lbRegion.SelectedIndex = tagIndex;
+                        this.lbRegion.ScrollIntoView(this.lbRegion.Items[tagIndex]);
                     }
                 }
             }
@@ -158,6 +173,8 @@
 
         private void UpdateHandler(Region commandParam)
         {
+            Region tagName = null;
+
             try
             {
                 if (string.IsNullOrEmpty(this.TagName) == false)
@@ -172,6 +189,7 @@
                             r.ModifiedBy = UserInfo.TS().CurrentUser;
                             r.ModifiedOn = UserInfo.TS().CurrentTime;
                             repository.Update(r);
+                            tagName = r;
                         }
                         else
                         {
@@ -182,10 +200,24 @@
                             r.CreatedOn = UserInfo.TS().CurrentTime;
                             r.Id = Guid.NewGuid();
                             repository.Add(r);
+                            tagName = r;
                         }
                     }
 
                     this.LoadDataHandler(true);
+
+                    int tagIndex = -1;
+                    foreach (Region r in this.lbRegion.Items)
+                    {
+                        tagIndex++;
+                        if (r.Name == tagName.Name)
+                        {
+                            break;
+                        }
+                    }
+
+                    this.lbRegion.SelectedIndex = tagIndex;
+                    this.lbRegion.ScrollIntoView(this.lbRegion.Items[tagIndex]);
                 }
             }
             catch (Exception ex)
@@ -215,6 +247,9 @@
                     }
 
                     this.LoadDataHandler(true);
+
+                    this.lbRegion.SelectedIndex = 0;
+                    this.lbRegion.ScrollIntoView(this.lbRegion.Items[0]);
                 }
             }
             catch (Exception ex)
