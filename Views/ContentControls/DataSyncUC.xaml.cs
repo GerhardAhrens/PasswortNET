@@ -394,6 +394,7 @@
 
             try
             {
+                /* Import von Tag */
                 importSyncFile = $"{this.ImportFolder}\\PasswortSync.Tag";
                 if (File.Exists(importSyncFile) == false)
                 {
@@ -404,13 +405,62 @@
                 List<Region> importRegion = jsonText.JsonToList<Region>();
                 using (RegionRepository repository = new RegionRepository())
                 {
-                    var fromDB = repository.List();
+                    IEnumerable<Region> fromDB = repository.List();
                     foreach (Region row in fromDB)
                     {
                         row.SyncHash = this.RegionExportHash(row);
                     }
 
-                    var bb = importRegion.Except<Region>(fromDB, new HashComparer());
+                    IEnumerable<Region> differentRows = importRegion.Except<Region>(fromDB, new HashRegionComparer());
+                    foreach (Region row in differentRows)
+                    {
+                        if (fromDB.Any(a => a.Id == row.Id) == true)
+                        {
+                            repository.Update(row);
+                        }
+                        else
+                        {
+                            repository.Add(row);
+                        }
+                    }
+                }
+
+                /* Import von Passwörtern */
+                importSyncFile = $"{this.ImportFolder}\\PasswortSync.Passwort";
+                if (File.Exists(importSyncFile) == false)
+                {
+                    return;
+                }
+
+                jsonText = File.ReadAllText(importSyncFile);
+                List<PasswordPin> importPassword = jsonText.JsonToList<PasswordPin>();
+                using (PasswordPinRepository repository = new PasswordPinRepository())
+                {
+                    IEnumerable<PasswordPin> fromDB = repository.List();
+                    foreach (PasswordPin row in fromDB)
+                    {
+                        row.SyncHash = this.PasswordPinExportHash(row);
+                    }
+
+                    IEnumerable<PasswordPin> differentRows = importPassword.Except<PasswordPin>(fromDB, new HashPasswordComparer());
+                    foreach (PasswordPin row in differentRows)
+                    {
+                        if (fromDB.Any(a => a.Id == row.Id) == true)
+                        {
+                            repository.Update(row);
+                        }
+                        else
+                        {
+                            repository.Add(row);
+                        }
+                    }
+                }
+
+                /* Import von Attachments */
+                importSyncFile = $"{this.ImportFolder}\\PasswortSync.Attachment";
+                if (File.Exists(importSyncFile) == false)
+                {
+                    return;
                 }
             }
             catch (Exception ex)
@@ -612,7 +662,7 @@
         }
     }
 
-    public sealed class HashComparer : IEqualityComparer<Region>
+    public sealed class HashRegionComparer : IEqualityComparer<Region>
     {
         public bool Equals(Region x, Region y)
         {
@@ -631,6 +681,30 @@
         }
 
         public int GetHashCode(Region obj)
+        {
+            return obj.SyncHash.GetHashCode();
+        }
+    }
+
+    public sealed class HashPasswordComparer : IEqualityComparer<PasswordPin>
+    {
+        public bool Equals(PasswordPin x, PasswordPin y)
+        {
+            if (x == null)
+            {
+                return y == null;
+            }
+            else if (y == null)
+            {
+                return false;
+            }
+            else
+            {
+                return x.SyncHash == y.SyncHash;
+            }
+        }
+
+        public int GetHashCode(PasswordPin obj)
         {
             return obj.SyncHash.GetHashCode();
         }

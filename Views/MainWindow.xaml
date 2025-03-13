@@ -19,6 +19,23 @@
 
     <Window.Resources>
         <ModernWPF:CommandKeyReference x:Key="LogoffCmdKey" Command="{Binding Path=CmdAgg[LogoffCommand]}" />
+
+        <Style TargetType="{x:Type MenuItem}">
+            <Setter Property="Cursor" Value="Arrow" />
+            <Setter Property="FontWeight" Value="Normal" />
+
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="LightGray" />
+                </Trigger>
+
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="FontWeight" Value="Medium" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <ModernUI:MWindow.MoreOnTitle>
@@ -40,7 +57,7 @@
                         <TextBlock
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="Menü" />
+                            Text="" />
                     </MenuItem.Header>
                     <MenuItem
                         Header="Passwörter/Lizenzen"
