@@ -3,10 +3,16 @@
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Data;
+    using ModernBaseLibrary.Core;
+
+    using ModernBaseLibrary.Extension;
+    using ModernIU.Controls;
 
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Core;
+    using PasswortNET.DataRepository;
     using PasswortNET.Model;
 
     /// <summary>
@@ -14,6 +20,8 @@
     /// </summary>
     public partial class MainOverviewUC : UserControlBase
     {
+        private INotificationService notificationService = new NotificationService();
+
         public MainOverviewUC()
         {
             this.InitializeComponent();
@@ -89,7 +97,61 @@
         #region Load and Filter Data
         private void LoadDataHandler()
         {
+            try
+            {
+                using (PasswordPinRepository repository = new PasswordPinRepository())
+                {
+                    this.RegionSource = repository.ListByRegion();
 
+                    IEnumerable<PasswordPin> overviewSource = repository.List();
+                    if (overviewSource != null)
+                    {
+                        this.DialogDataView = CollectionViewSource.GetDefaultView(overviewSource);
+                        if (this.DialogDataView != null)
+                        {
+
+                            this.ChangeView("TileView");
+                            this.DialogDataView.Filter = rowItem => this.DataDefaultFilter(rowItem as PasswordPin);
+                            this.DialogDataView.SortDescriptions.Add(new SortDescription("AccessTyp", ListSortDirection.Ascending));
+                            this.DialogDataView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
+                            this.DialogDataView.MoveCurrentToFirst();
+                            this.DisplayRowCount = this.DialogDataView.Count<PasswordPin>();
+
+                            if (this.DisplayRowCount > 0)
+                            {
+                                this.IsFilterContentFound = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (FileLockException ex)
+            {
+                App.ErrorMessage(ex);
+                App.Current.Shutdown(0);
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
+        }
+
+        private bool DataDefaultFilter(PasswordPin rowItem)
+        {
+            bool found = false;
+
+            if (rowItem == null)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(this.RegionCurrent?.Name) == true)
+            {
+                found = true;
+            }
+
+            return found;
         }
         #endregion Load and Filter Data
 

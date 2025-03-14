@@ -43,11 +43,12 @@
   <ItemGroup>
     <Folder Include="Core\Behavior\" />
     <Folder Include="Core\AuditTrail\" />
+    <Folder Include="Core\Converter\" />
     <Folder Include="Core\Settings\" />
     <Folder Include="AssemblyInfo\" />
     <Folder Include="DataRepository\Base\" />
+    <Folder Include="Themes\" />
     <Folder Include="Resources\Style\" />
-    <Folder Include="Views\Converter\" />
     <Folder Include="Views\NotificationContent\" />
   </ItemGroup>
 

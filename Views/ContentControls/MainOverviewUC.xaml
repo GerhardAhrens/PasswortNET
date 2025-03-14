@@ -121,7 +121,10 @@
             Name="lvwMain"
             Grid.Row="1"
             Background="WhiteSmoke"
-            IsSynchronizedWithCurrentItem="True">
+            IsSynchronizedWithCurrentItem="True"
+            ItemsSource="{Binding Path=DialogDataView, UpdateSourceTrigger=PropertyChanged}"
+            SelectedItem="{Binding Path=CurrentSelectedItem, UpdateSourceTrigger=PropertyChanged}"
+            View="{Binding Path=CustomView, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ContextMenu>
                 <ContextMenu Focusable="False">
                     <MenuItem

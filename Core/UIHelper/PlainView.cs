@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-
 namespace PasswortNET.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Windows;
+    using System.Windows.Controls;
+
     public class PlainView : ViewBase
     {
 
