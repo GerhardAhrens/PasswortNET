@@ -23,12 +23,6 @@
         }
 
         #region Properties
-        public int DisplayRowCount
-        {
-            get => base.GetValue<int>();
-            set => base.SetValue(value);
-        }
-
         public string FilterDefaultSearch
         {
             get => base.GetValue<string>();
