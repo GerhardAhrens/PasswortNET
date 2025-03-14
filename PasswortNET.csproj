@@ -46,6 +46,7 @@
     <Folder Include="Core\Settings\" />
     <Folder Include="AssemblyInfo\" />
     <Folder Include="DataRepository\Base\" />
+    <Folder Include="Resources\Style\" />
     <Folder Include="Views\Converter\" />
     <Folder Include="Views\NotificationContent\" />
   </ItemGroup>

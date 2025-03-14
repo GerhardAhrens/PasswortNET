@@ -11,6 +11,7 @@
 
                 <!--  Lokale Styles  -->
                 <ResourceDictionary Source="Resources\XamlIcon\XamlIcon.xaml" />
+                <ResourceDictionary Source="Resources\Style\ListViewStyle.xaml" />
                 <!--  Externe Styles aus Bibliotheken  -->
 
             </ResourceDictionary.MergedDictionaries>

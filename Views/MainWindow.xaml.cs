@@ -5,6 +5,7 @@
     using System.Runtime.Versioning;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Threading;
 
     using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
@@ -22,7 +23,9 @@
     [SupportedOSPlatform("windows")]
     public partial class MainWindow : WindowBase, IDialogClosing
     {
+        private const string DateFormat = "dd.MM.yyyy HH:mm";
         private INotificationService notificationService = new NotificationService();
+        private DispatcherTimer statusBarDate = null;
 
         public MainWindow() : base(typeof(MainWindow))
         {
@@ -108,6 +111,8 @@
             NotificationService.RegisterDialog<QuestionYesNo>();
             NotificationService.RegisterDialog<QuestionHtmlYesNo>();
             NotificationService.RegisterDialog<MessageHtmlOk>();
+
+            this.InitTimer();
 
             /* Letzte Windows Positionn landen*/
             using (UserPreferences userPrefs = new UserPreferences(this))
@@ -199,6 +204,7 @@
                         }
 
                         e.Cancel = false;
+                        this.statusBarDate.Stop();
                         Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                         Application.Current.Shutdown();
                     }
@@ -215,6 +221,7 @@
                     }
 
                     e.Cancel = false;
+                    this.statusBarDate.Stop();
                     Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                     Application.Current.Shutdown();
                 }
@@ -303,6 +310,18 @@
                     StatusbarMain.Statusbar.SetNotification($"Bereit: {milliSeconds}ms");
                 }
             }
+        }
+
+        private void InitTimer()
+        {
+            this.statusBarDate = new DispatcherTimer();
+            this.statusBarDate.Interval = new TimeSpan(0, 0, 1);
+            this.statusBarDate.Start();
+            this.statusBarDate.Tick += new EventHandler(
+                delegate (object s, EventArgs a) 
+                {
+                    this.dtStatusBarDate.Text = DateTime.Now.ToString(DateFormat);
+                });
         }
     }
 }

@@ -7,6 +7,7 @@
     xmlns:ModernWPF="clr-namespace:ModernIU.WPF.Base;assembly=ModernUILibrary"
     xmlns:base="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="nameMainOverviewUC"
@@ -57,7 +58,7 @@
                 IconWidth="24"
                 KeyboardNavigation.IsTabStop="True"
                 KeyboardNavigation.TabIndex="1"
-                Text=""
+                Text="{Binding Path=FilterDefaultSearch, UpdateSourceTrigger=PropertyChanged}"
                 Watermark="Suchen und Filter" />
 
             <ModernUI:SimpleGrid
@@ -115,5 +116,48 @@
                     HorizontalAlignment="Right" />
             </ModernUI:SimpleGrid>
         </DockPanel>
+
+        <ListView
+            Name="lvwMain"
+            Grid.Row="1"
+            Background="WhiteSmoke"
+            IsSynchronizedWithCurrentItem="True">
+            <ListView.ContextMenu>
+                <ContextMenu Focusable="False">
+                    <MenuItem
+                        Command="{Binding CmdAgg[ListViewCommand]}"
+                        CommandParameter="GridView"
+                        Header="Liste"
+                        Icon="{StaticResource ResourceKey=MenuListViewList}" />
+
+                    <MenuItem
+                        Command="{Binding CmdAgg[ListViewCommand]}"
+                        CommandParameter="TileView"
+                        Header="Kachel"
+                        Icon="{StaticResource ResourceKey=MenuListViewKachel}" />
+
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[EditEntryCommand]}"
+                        Header="Ändern"
+                        Icon="{StaticResource ResourceKey=MenuListViewEdit}" />
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[DeleteEntryCommand]}"
+                        Header="Löschen"
+                        Icon="{StaticResource ResourceKey=MenuListViewDelete}" />
+
+                    <MenuItem
+                        Command="{Binding Path=CmdAgg[CopyEntryCommand]}"
+                        Header="Kopieren"
+                        Icon="{StaticResource ResourceKey=MenuListViewCopy}" />
+                </ContextMenu>
+            </ListView.ContextMenu>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CmdAgg[EditEntryCommand], RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding ElementName=lvwMain, Path=SelectedItem}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListView>
+
     </ModernUI:SimpleGrid>
 </base:UserControlBase>

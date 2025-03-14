@@ -181,6 +181,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Label Content="{StaticResource ResourceKey=IconStatusbarCalendar}" />
                     <TextBlock
+                        x:Name="dtStatusBarDate"
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
                         Text="{Binding Path=CurrentDate, Source={x:Static localStatic:StatusbarMain.Statusbar}}" />
