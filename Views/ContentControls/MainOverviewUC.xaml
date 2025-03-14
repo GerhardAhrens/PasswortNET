@@ -9,6 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="nameMainOverviewUC"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -18,6 +19,7 @@
         <ModernConverter:BooleanToVisibleConverter x:Key="BooleanToVisibilityConverter" />
         <ModernConverter:BooleanToNotVisibleConverter x:Key="BooleanToNotVisibilityConverter" />
         <ModernConverter:VisibilityToBoolConverter x:Key="VisibilityToBoolConverter" />
+        <ModernConverter:MaxWidthConverter x:Key="MaxWidthConverter" />
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -42,8 +44,9 @@
                 Grid.Row="0"
                 Grid.RowSpan="2"
                 Grid.Column="0"
-                Width="350"
+                Width="{Binding Path=ActualWidth, ElementName=nameMainOverviewUC, Converter={StaticResource ResourceKey=MaxWidthConverter}, ConverterParameter=450}"
                 Height="30"
+                Margin="5,0,0,0"
                 BorderThickness="1"
                 CornerRadius="3"
                 DockPanel.Dock="Left"
