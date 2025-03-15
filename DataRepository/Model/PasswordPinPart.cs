@@ -31,6 +31,15 @@ namespace PasswortNET.Model
         }
 
         [JsonIgnore]
+        public string ToSearchFilter
+        {
+            get
+            {
+                return $"{this.Title}|{this.Username}|{this.Description}|{this.Website}";
+            }
+        }
+
+        [JsonIgnore]
         public string Timestamp
         {
             get

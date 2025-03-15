@@ -5,6 +5,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
+    using System.Xml.Linq;
 
     using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
@@ -107,7 +108,7 @@
                     }
 
                     this.RegionCount = repository.Count();
-                    this.RegionSource = repository.List().ToList().OrderBy(o => o.Name);
+                    this.RegionSource = repository.List().ToList().OrderBy(o => o.ItemSorting);
                 }
 
                 if (this.lbRegion.HasItems == true)
@@ -138,12 +139,15 @@
                     {
                         using (RegionRepository repository = new RegionRepository())
                         {
+                            int lastSortItem = repository.List().ToList().Max<Region>(m => m.ItemSorting) + 1;
+
                             Region r = new Region();
                             r.Name = this.TagName;
                             r.CreatedBy = UserInfo.TS().CurrentUser;
                             r.CreatedOn = UserInfo.TS().CurrentTime;
                             r.Background = this.ConvertIndexToColorName(this.BackgroundColorSelected);
                             r.Id = Guid.NewGuid();
+                            r.ItemSorting = lastSortItem;
                             repository.Add(r);
                             tagName = r;
                         }
@@ -250,6 +254,46 @@
 
                     this.lbRegion.SelectedIndex = 0;
                     this.lbRegion.ScrollIntoView(this.lbRegion.Items[0]);
+                }
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
+        }
+
+        private void UpdateSorting()
+        {
+            try
+            {
+                using (RegionRepository repository = new RegionRepository())
+                {
+                    int index = 9;
+                    IEnumerable<Region> tags = repository.List().ToList().OrderBy(o => o.Name);
+                    foreach (Region tag in tags)
+                    {
+                        if (tag.Name.ToUpper().In("ALLE", "ZULETZT GESEHEN") == true)
+                        {
+                            if (tag.Name.ToUpper() == "ALLE")
+                            {
+                                tag.ItemSorting = 0;
+                                repository.Update(tag);
+                            }
+
+                            if (tag.Name.ToUpper() == "ZULETZT GESEHEN")
+                            {
+                                tag.ItemSorting = 1;
+                                repository.Update(tag);
+                            }
+                        }
+                        else
+                        {
+                            index++;
+                            tag.ItemSorting = index;
+                            repository.Update(tag);
+                        }
+                    }
                 }
             }
             catch (Exception ex)

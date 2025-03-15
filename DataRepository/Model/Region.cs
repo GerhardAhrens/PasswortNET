@@ -36,6 +36,8 @@ namespace PasswortNET.Model
 
         public string Name { get; set; }
 
+        public int ItemSorting { get; set; }
+
         public string Description { get; set; }
 
         public string Background { get; set; }

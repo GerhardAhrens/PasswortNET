@@ -233,7 +233,6 @@
             MenuWorkArea view = DialogFactory.Get(e.MenuButton);
             if (view is MenuWorkArea menuWorkArea)
             {
-                long milliSeconds = 0;
                 using (ObjectRuntime objectRuntime = new ObjectRuntime())
                 {
                     StatusbarMain.Statusbar.SetNotification();
@@ -272,7 +271,7 @@
                         this.IsLogoff = true;
                         this.IsImportExport = false;
                     }
-                    else if (this.WorkContent.GetType() == typeof(HomeUC))
+                    else if (this.WorkContent.GetType() == typeof(MainOverviewUC))
                     {
                         this.IsAppSettings = true;
                         this.IsAbout = true;
@@ -306,8 +305,7 @@
                         this.IsImportExport = true;
                     }
 
-                    milliSeconds = objectRuntime.ResultMilliseconds();
-                    StatusbarMain.Statusbar.SetNotification($"Bereit: {milliSeconds}ms");
+                    StatusbarMain.Statusbar.SetNotification($"Bereit: {objectRuntime.ResultMilliseconds()}ms");
                 }
             }
         }

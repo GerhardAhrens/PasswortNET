@@ -4,9 +4,11 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
+
     using ModernBaseLibrary.Core;
 
     using ModernBaseLibrary.Extension;
+
     using ModernIU.Controls;
 
     using ModernUI.MVVM.Base;
@@ -34,7 +36,7 @@
         public string FilterDefaultSearch
         {
             get => base.GetValue<string>();
-            set => base.SetValue(value);
+            set => base.SetValue(value, this.RefreshDefaultFilter);
         }
 
         public ICollectionView DialogDataView
@@ -64,7 +66,7 @@
         public Region RegionCurrent
         {
             get => base.GetValue<Region>();
-            set => base.SetValue(value);
+            set => base.SetValue(value, this.RefreshDefaultFilter);
         }
 
         public bool IsFilterContentFound
@@ -82,6 +84,9 @@
             this.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("ListViewCommand", new RelayCommand(p1 => ListViewContextMenu(p1.ToString()), p2 => true));
             this.CmdAgg.AddOrSetCommand("EditEntryCommand", new RelayCommand(p1 => this.EditEntryHandler(p1), p2 => this.CanEditEntryHandler()));
+            this.CmdAgg.AddOrSetCommand("AddEntryCommand", new RelayCommand(p1 => this.AddEntryHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("DeleteEntryCommand", new RelayCommand(p1 => this.DeleteEntryHandler(), p2 => this.CanDeleteEntryHandler()));
+            this.CmdAgg.AddOrSetCommand("CopyEntryCommand", new RelayCommand(p1 => this.CopyEntryHandler(), p2 => this.CanCopyEntryHandler()));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -99,30 +104,36 @@
         {
             try
             {
-                using (PasswordPinRepository repository = new PasswordPinRepository())
+                using (ObjectRuntime objectRuntime = new ObjectRuntime())
                 {
-                    this.RegionSource = repository.ListByRegion();
-
-                    IEnumerable<PasswordPin> overviewSource = repository.List();
-                    if (overviewSource != null)
+                    using (PasswordPinRepository repository = new PasswordPinRepository())
                     {
-                        this.DialogDataView = CollectionViewSource.GetDefaultView(overviewSource);
-                        if (this.DialogDataView != null)
+                        this.RegionSource = repository.ListByRegion().OrderBy(o => o.ItemSorting);
+
+                        IEnumerable<PasswordPin> overviewSource = repository.List();
+                        if (overviewSource != null)
                         {
-
-                            this.ChangeView("TileView");
-                            this.DialogDataView.Filter = rowItem => this.DataDefaultFilter(rowItem as PasswordPin);
-                            this.DialogDataView.SortDescriptions.Add(new SortDescription("AccessTyp", ListSortDirection.Ascending));
-                            this.DialogDataView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
-                            this.DialogDataView.MoveCurrentToFirst();
-                            this.DisplayRowCount = this.DialogDataView.Count<PasswordPin>();
-
-                            if (this.DisplayRowCount > 0)
+                            this.DialogDataView = CollectionViewSource.GetDefaultView(overviewSource);
+                            if (this.DialogDataView != null)
                             {
-                                this.IsFilterContentFound = true;
+
+                                this.ChangeView("TileView");
+                                this.DialogDataView.Filter = rowItem => this.DataDefaultFilter(rowItem as PasswordPin);
+                                this.DialogDataView.SortDescriptions.Add(new SortDescription("AccessTyp", ListSortDirection.Ascending));
+                                this.DialogDataView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
+                                this.DialogDataView.MoveCurrentToFirst();
+                                this.DisplayRowCount = this.DialogDataView.Count<PasswordPin>();
+
+                                if (this.DisplayRowCount > 0)
+                                {
+                                    this.IsFilterContentFound = true;
+                                }
                             }
                         }
                     }
+
+                    StatusbarMain.Statusbar.SetNotification($"Bereit: {objectRuntime.ResultMilliseconds()}ms; Anzahl: {this.DisplayRowCount}");
+
                 }
             }
             catch (FileLockException ex)
@@ -150,6 +161,119 @@
             {
                 found = true;
             }
+            else
+            {
+                if (this.RegionCurrent?.Name.ToLower() != "alle")
+                {
+                    if (rowItem.Region?.ToLower() == this.RegionCurrent?.Name.ToLower())
+                    {
+                        found = true;
+                    }
+                    else
+                    {
+                        if (this.RegionCurrent?.Name.ToLower() == "zuletzt gesehen")
+                        {
+                            if (rowItem.IsShowLast == true)
+                            {
+                                found = true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else if (this.RegionCurrent?.Name.ToLower() == "zuletzt gesehen")
+                {
+                    if (rowItem.IsShowLast == true)
+                    {
+                        found = true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    found = true;
+                }
+            }
+
+            if (this.AccessTypState == AccessTyp.Website)
+            {
+                if (rowItem.AccessTyp == AccessTyp.Website)
+                {
+                    found = true;
+                }
+                else
+                {
+                    found = false;
+                }
+            }
+            else if (this.AccessTypState == AccessTyp.All)
+            {
+                found = true;
+            }
+            else if (this.AccessTypState == AccessTyp.Pin)
+            {
+                if (rowItem.AccessTyp == AccessTyp.Pin)
+                {
+                    found = true;
+                }
+                else
+                {
+                    found = false;
+                }
+            }
+            else if (this.AccessTypState == AccessTyp.Passwort)
+            {
+                if (rowItem.AccessTyp == AccessTyp.Passwort)
+                {
+                    found = true;
+                }
+                else
+                {
+                    found = false;
+                }
+            }
+            else if (this.AccessTypState == AccessTyp.License)
+            {
+                if (rowItem.AccessTyp == AccessTyp.License)
+                {
+                    found = true;
+                }
+                else
+                {
+                    found = false;
+                }
+            }
+
+            string textFilterString = (this.FilterDefaultSearch ?? string.Empty).ToUpper();
+            if (string.IsNullOrEmpty(textFilterString) == false)
+            {
+                string fullRow = rowItem.ToSearchFilter.ToUpper();
+                if (string.IsNullOrEmpty(fullRow) == true)
+                {
+                    return true;
+                }
+
+                string[] words = textFilterString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string word in words.AsParallel<string>())
+                {
+                    found = fullRow.Contains(word);
+
+                    if (found == false)
+                    {
+                        return false;
+                    }
+                }
+            }
 
             return found;
         }
@@ -160,6 +284,47 @@
             this.ChangeView(menuItem);
         }
 
+        private void RefreshDefaultFilter(string value, string propertyName)
+        {
+            if (value != null)
+            {
+                this.DialogDataView.Refresh();
+                this.DisplayRowCount = this.DialogDataView.Cast<PasswordPin>().Count();
+                this.DialogDataView.MoveCurrentToFirst();
+
+                if (this.DisplayRowCount > 0)
+                {
+                    this.IsFilterContentFound = true;
+                }
+                else
+                {
+                    this.IsFilterContentFound = false;
+                }
+
+                StatusbarMain.Statusbar.SetNotification($"Bereit: Anzahl: {this.DisplayRowCount}");
+            }
+        }
+
+        private void RefreshDefaultFilter(Region value, string propertyName)
+        {
+            if (value != null)
+            {
+                this.DialogDataView.Refresh();
+                this.DisplayRowCount = this.DialogDataView.Cast<PasswordPin>().Count();
+                this.DialogDataView.MoveCurrentToFirst();
+
+                if (this.DisplayRowCount > 0)
+                {
+                    this.IsFilterContentFound = true;
+                }
+                else
+                {
+                    this.IsFilterContentFound = false;
+                }
+
+                StatusbarMain.Statusbar.SetNotification($"Bereit: Anzahl: {this.DisplayRowCount}");
+            }
+        }
         private void ChangeView(string viewTyp = "")
         {
             if (viewTyp == "GridView")
@@ -185,6 +350,29 @@
         private void EditEntryHandler(object commandArgs)
         {
 
+        }
+
+        private void AddEntryHandler(object p1)
+        {
+        }
+
+        private bool CanDeleteEntryHandler()
+        {
+            return this.DisplayRowCount == 0 ? false : true;
+        }
+
+        private void DeleteEntryHandler()
+        {
+        }
+
+        private bool CanCopyEntryHandler()
+        {
+            return this.DisplayRowCount == 0 ? false : true;
+        }
+
+
+        private void CopyEntryHandler()
+        {
         }
 
         private void LogoffHandler(object p1)

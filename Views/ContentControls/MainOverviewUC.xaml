@@ -113,7 +113,11 @@
                     Grid.ColumnSpan="2"
                     Width="210"
                     Height="25"
-                    HorizontalAlignment="Right" />
+                    HorizontalAlignment="Right"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Path=RegionSource}"
+                    SelectedItem="{Binding Path=RegionCurrent, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedValuePath="Id" />
             </ModernUI:SimpleGrid>
         </DockPanel>
 
