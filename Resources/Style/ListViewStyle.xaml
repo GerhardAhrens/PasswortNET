@@ -4,21 +4,6 @@
     xmlns:ModernUI="clr-namespace:ModernIU.Controls;assembly=ModernUILibrary"
     xmlns:localUI="clr-namespace:PasswortNET.Core">
 
-    <!--#region ListView Styles-->
-    <Style x:Key="lvwMainStyle" TargetType="{x:Type ListView}">
-        <Setter Property="AlternationCount" Value="2" />
-        <Setter Property="Background" Value="{StaticResource ResourceKey=Overview.Background}" />
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
-        <Setter Property="KeyboardNavigation.IsTabStop" Value="False" />
-        <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True" />
-        <Setter Property="SelectionMode" Value="Single" />
-        <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
-        <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="True" />
-        <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
-        <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
-    </Style>
-
     <Style x:Key="lvwHeaderLeft" TargetType="{x:Type GridViewColumnHeader}">
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -32,6 +17,21 @@
     <Style x:Key="lvwColumnMax" TargetType="{x:Type GridViewColumnHeader}">
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+    <!--#region ListView Styles-->
+    <Style x:Key="lvwMainStyle" TargetType="{x:Type ListView}">
+        <Setter Property="AlternationCount" Value="2" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
+        <Setter Property="KeyboardNavigation.IsTabStop" Value="False" />
+        <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True" />
+        <Setter Property="SelectionMode" Value="Single" />
+        <Setter Property="IsSynchronizedWithCurrentItem" Value="True" />
+        <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="True" />
+        <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
+        <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling" />
     </Style>
 
     <Style x:Key="lvwItemContainerStyle" TargetType="{x:Type ListViewItem}">

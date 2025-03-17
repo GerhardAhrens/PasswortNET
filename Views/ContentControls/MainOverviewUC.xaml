@@ -167,6 +167,7 @@
             IsSynchronizedWithCurrentItem="True"
             ItemsSource="{Binding Path=DialogDataView, UpdateSourceTrigger=PropertyChanged}"
             SelectedItem="{Binding Path=CurrentSelectedItem, UpdateSourceTrigger=PropertyChanged}"
+            Style="{StaticResource ResourceKey=lvwMainStyle}"
             View="{Binding Path=CustomView, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ContextMenu>
                 <ContextMenu Focusable="False">

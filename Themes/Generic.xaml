@@ -78,7 +78,12 @@
             HeaderContainerStyle="{StaticResource ResourceKey=lvwHeaderLeft}">
             <GridViewColumn.CellTemplate>
                 <DataTemplate>
-                    <TextBlock FontFamily="{DynamicResource ResourceKey=FontAW5Solid}" Text="{Binding Path=Symbol, Converter={StaticResource ResourceKey=IntToSymbolCoverter}}" />
+                    <ModernUI:GeometryLabel
+                        Height="30"
+                        Margin="3,3,0,0"
+                        VerticalAlignment="Top"
+                        FontSize="18"
+                        PathData="{Binding Path=Symbol, Converter={StaticResource ResourceKey=IntToSymbolCoverter}, FallbackValue=xxx}" />
                 </DataTemplate>
             </GridViewColumn.CellTemplate>
         </GridViewColumn>
