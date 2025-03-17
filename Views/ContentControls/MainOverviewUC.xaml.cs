@@ -76,6 +76,36 @@
             set => base.SetValue(value);
         }
 
+        public bool IsCheckStateAll
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
+        public bool IsCheckStateWebsite
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
+        public bool IsCheckStatePin
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
+        public bool IsCheckStatePassword
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
+        public bool IsCheckStateLicense
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value);
+        }
+
         private AccessTyp AccessTypState { get; set; }
 
         #endregion Properties
@@ -351,6 +381,49 @@
         private void SelectAccessStateHandler(object args)
         {
             this.AccessTypState = (AccessTyp)args;
+
+            if (this.AccessTypState == AccessTyp.Pin)
+            {
+                this.IsCheckStatePin = true;
+                this.IsCheckStatePassword = false;
+                this.IsCheckStateWebsite = false;
+                this.IsCheckStateLicense = false;
+                this.IsCheckStateAll = false;
+            }
+            else if (this.AccessTypState == AccessTyp.All)
+            {
+                this.IsCheckStatePin = false;
+                this.IsCheckStatePassword = false;
+                this.IsCheckStateWebsite = false;
+                this.IsCheckStateLicense = false;
+                this.IsCheckStateAll = true;
+            }
+            else if (this.AccessTypState == AccessTyp.Passwort)
+            {
+                this.IsCheckStatePin = false;
+                this.IsCheckStatePassword = true;
+                this.IsCheckStateWebsite = false;
+                this.IsCheckStateLicense = false;
+                this.IsCheckStateAll = false;
+            }
+            else if (this.AccessTypState == AccessTyp.Website)
+            {
+                this.IsCheckStatePin = false;
+                this.IsCheckStatePassword = false;
+                this.IsCheckStateWebsite = true;
+                this.IsCheckStateLicense = false;
+                this.IsCheckStateAll = false;
+            }
+            else if (this.AccessTypState == AccessTyp.License)
+            {
+                this.IsCheckStatePin = false;
+                this.IsCheckStatePassword = false;
+                this.IsCheckStateWebsite = false;
+                this.IsCheckStateLicense = true;
+                this.IsCheckStateAll = false;
+            }
+
+            this.LoadDataHandler();
         }
 
         #region Command Handler Methodes

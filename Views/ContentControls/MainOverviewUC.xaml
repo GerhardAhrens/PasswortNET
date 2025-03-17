@@ -84,6 +84,8 @@
                     Width="100"
                     Height="25"
                     HorizontalAlignment="Right"
+                    Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
+                    CommandParameter="{x:Static localEnums:AccessTyp.Website}"
                     Content="Webseite" />
 
                 <ModernUI:FlatButton
@@ -92,6 +94,8 @@
                     Width="100"
                     Height="25"
                     HorizontalAlignment="Right"
+                    Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
+                    CommandParameter="{x:Static localEnums:AccessTyp.License}"
                     Content="Lizenzen" />
 
                 <ModernUI:FlatButton
@@ -100,6 +104,8 @@
                     Width="100"
                     Height="25"
                     HorizontalAlignment="Right"
+                    Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
+                    CommandParameter="{x:Static localEnums:AccessTyp.Pin}"
                     Content="Pin" />
 
                 <ModernUI:FlatButton
@@ -108,6 +114,8 @@
                     Width="100"
                     Height="25"
                     HorizontalAlignment="Right"
+                    Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
+                    CommandParameter="{x:Static localEnums:AccessTyp.Passwort}"
                     Content="Passwort" />
 
                 <ModernUI:MComboBox
@@ -123,6 +131,34 @@
                     SelectedValuePath="Id" />
             </ModernUI:SimpleGrid>
         </DockPanel>
+
+        <!--#region Keine Daten zum Filter gefunden-->
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Panel.ZIndex="1"
+            Orientation="Horizontal"
+            Visibility="{Binding Path=IsFilterContentFound, Converter={StaticResource ResourceKey=BooleanToNotVisibilityConverter}}">
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="18"
+                FontWeight="Bold">
+                <Run
+                    FontSize="28"
+                    Foreground="Blue"
+                    Text="😕" />
+                <Run Text="Keine Daten vorhanden, oder der Suchfilter passt nicht!" />
+
+                <LineBreak />
+                <Run
+                    FontSize="28"
+                    Foreground="Green"
+                    Text="⌨️" />
+                <Run Text="Geben Sie neue Daten ein oder prüfen Sie den Filter." />
+            </TextBlock>
+        </StackPanel>
+        <!--#endregion Keine Daten zum Filter gefunden-->
 
         <ListView
             Name="lvwMain"
