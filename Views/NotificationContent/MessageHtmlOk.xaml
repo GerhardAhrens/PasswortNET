@@ -59,7 +59,7 @@
 
             <DockPanel
                 Grid.Row="1"
-                Margin="10"
+                Margin="5"
                 Background="Transparent"
                 LastChildFill="True">
                 <WebBrowser

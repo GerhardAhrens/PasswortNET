@@ -179,6 +179,7 @@
 
         private void PrintHandler(object p1)
         {
+            this.notificationService.FeaturesNotFound("Drucken");
         }
 
         private void DataSyncHandler(object p1)
