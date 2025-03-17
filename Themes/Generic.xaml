@@ -13,6 +13,22 @@
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 
+    <Style x:Key="lvwHeaderLeft" TargetType="{x:Type GridViewColumnHeader}">
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+    </Style>
+
+    <Style x:Key="lvwHeaderRight" TargetType="{x:Type GridViewColumnHeader}">
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="HorizontalContentAlignment" Value="Right" />
+    </Style>
+
+    <Style x:Key="lvwColumnMax" TargetType="{x:Type GridViewColumnHeader}">
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+
     <DataTemplate x:Key="centralTile">
         <Border
             Name="bd"
@@ -32,6 +48,7 @@
                         Margin="3,3,0,0"
                         VerticalAlignment="Top"
                         FontSize="18"
+                        ToolTip="{Binding Path=Symbol, Mode=OneWay}"
                         PathData="{Binding Path=Symbol, Converter={StaticResource ResourceKey=IntToSymbolCoverter}, FallbackValue=xxx}" />
 
                     <TextBlock
@@ -74,7 +91,7 @@
     <GridView x:Key="gridView">
         <GridViewColumn
             Width="30"
-            Header="*"
+            Header=""
             HeaderContainerStyle="{StaticResource ResourceKey=lvwHeaderLeft}">
             <GridViewColumn.CellTemplate>
                 <DataTemplate>
@@ -113,12 +130,12 @@
                                      ResourceId=myPlainViewDSK}"
         BasedOn="{StaticResource {x:Type ListBox}}"
         TargetType="{x:Type ListView}">
-        <Setter Property="ItemContainerStyle" Value="{Binding (ListView.View).ItemContainerStyle, RelativeSource={RelativeSource Self}}" />
-        <Setter Property="ItemTemplate" Value="{Binding (ListView.View).ItemTemplate, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="ItemContainerStyle" Value="{Binding Path=(ListView.View).ItemContainerStyle, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="ItemTemplate" Value="{Binding Path=(ListView.View).ItemTemplate, RelativeSource={RelativeSource Self}}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}" />
+                    <WrapPanel Width="{Binding Path=(FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>

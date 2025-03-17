@@ -28,6 +28,7 @@
         public MainOverviewUC()
         {
             this.InitializeComponent();
+            System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Critical;
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
             this.InitCommands();
             this.DataContext = this;
