@@ -19,6 +19,7 @@ namespace PasswortNET.DataRepository
     using ModernBaseLibrary.Core;
 
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
     using PasswortNET.Model;
 
     public class StatistikRepository : RepositoryBase<StatistikRepository>

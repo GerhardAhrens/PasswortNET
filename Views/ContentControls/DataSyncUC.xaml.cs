@@ -23,6 +23,7 @@
     using PasswortNET.Model;
     using System.Linq;
     using static System.Net.Mime.MediaTypeNames;
+    using PasswortNET.Core.Enums;
 
     /// <summary>
     /// Interaktionslogik für DataSyncUC.xaml

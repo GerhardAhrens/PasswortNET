@@ -6,6 +6,7 @@
     using System.Windows.Media;
 
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
 
     public class AccessTypToFrameColorCoverter : IValueConverter
     {

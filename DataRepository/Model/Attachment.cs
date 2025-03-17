@@ -19,6 +19,7 @@ namespace PasswortNET.Model
 
     using ModernBaseLibrary.Core;
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
 
     public sealed partial class Attachment 
     {

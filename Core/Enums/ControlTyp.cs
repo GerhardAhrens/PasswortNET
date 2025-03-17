@@ -13,7 +13,7 @@
 // </summary>
 //-----------------------------------------------------------------------
 
-namespace PasswortNET.Core
+namespace PasswortNET.Core.Enums
 {
     using System;
 

@@ -22,7 +22,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace PasswortNET.Core
+namespace PasswortNET.Core.Enums
 {
     using System;
     using System.ComponentModel;

@@ -31,6 +31,7 @@ namespace PasswortNET.DataRepository
     using ModernBaseLibrary.Extension;
 
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
 
     public class DatabaseBackup : DisposableCoreBase
     {

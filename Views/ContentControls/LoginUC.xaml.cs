@@ -17,6 +17,7 @@
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
     using PasswortNET.DataRepository;
     using PasswortNET.Model;
 

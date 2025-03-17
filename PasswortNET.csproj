@@ -16,6 +16,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Core\Converter\**" />
+    <EmbeddedResource Remove="Core\Converter\**" />
+    <None Remove="Core\Converter\**" />
+    <Page Remove="Core\Converter\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\Picture\ApplicationIcon.ico" />
     <None Remove="Resources\Picture\ApplicationIcon.png" />
   </ItemGroup>
@@ -43,7 +50,6 @@
   <ItemGroup>
     <Folder Include="Core\Behavior\" />
     <Folder Include="Core\AuditTrail\" />
-    <Folder Include="Core\Converter\" />
     <Folder Include="Core\Settings\" />
     <Folder Include="AssemblyInfo\" />
     <Folder Include="DataRepository\Base\" />

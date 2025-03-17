@@ -6,6 +6,7 @@
     using System.Windows.Data;
 
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
 
     public class AccessTypToVisibilityCoverter : IValueConverter
     {

@@ -10,6 +10,7 @@
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
 
     /// <summary>
     /// Interaktionslogik für AppSettingsUC.xaml

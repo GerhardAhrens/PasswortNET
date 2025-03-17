@@ -21,6 +21,7 @@ namespace PasswortNET.Core
 
     using ModernIU.Controls;
 
+    using PasswortNET.Core.Enums;
     using PasswortNET.Views;
 
     public static class MessageContent

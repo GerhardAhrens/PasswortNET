@@ -5,6 +5,8 @@ namespace PasswortNET.Core
     using System.IO;
     using System.Runtime.CompilerServices;
 
+    using PasswortNET.Core.Enums;
+
     public static class StatusbarMain
     {
         private static StatusbarModel _StatusbarModel = new StatusbarModel();

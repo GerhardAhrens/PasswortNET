@@ -20,6 +20,7 @@ namespace PasswortNET.Model
 
     using ModernBaseLibrary.Extension;
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
 
     [DebuggerDisplay("Name={this.Name}")]
     public partial class Region 

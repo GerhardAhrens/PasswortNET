@@ -14,6 +14,7 @@
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
     using PasswortNET.DataRepository;
     using PasswortNET.Model;
 
@@ -87,6 +88,7 @@
             this.CmdAgg.AddOrSetCommand("AddEntryCommand", new RelayCommand(p1 => this.AddEntryHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("DeleteEntryCommand", new RelayCommand(p1 => this.DeleteEntryHandler(), p2 => this.CanDeleteEntryHandler()));
             this.CmdAgg.AddOrSetCommand("CopyEntryCommand", new RelayCommand(p1 => this.CopyEntryHandler(), p2 => this.CanCopyEntryHandler()));
+            this.CmdAgg.AddOrSetCommand("SelectAccessStateCommand", new RelayCommand(p1 => this.SelectAccessStateHandler(p1), p2 => true));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -344,6 +346,11 @@
         private bool CanEditEntryHandler()
         {
             return this.DisplayRowCount == 0 ? false : true;
+        }
+
+        private void SelectAccessStateHandler(object args)
+        {
+            this.AccessTypState = (AccessTyp)args;
         }
 
         #region Command Handler Methodes

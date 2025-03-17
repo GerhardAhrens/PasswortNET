@@ -22,6 +22,7 @@ namespace PasswortNET.Model
     using ModernBaseLibrary.Extension;
 
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
 
     [DebuggerDisplay("Title={this.Title};Username={this.Username};Symbol={this.Symbol};Background={this.Background}")]
     public partial class PasswordPin

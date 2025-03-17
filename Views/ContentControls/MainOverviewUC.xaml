@@ -9,6 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
+    xmlns:localEnums="clr-namespace:PasswortNET.Core.Enums"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="nameMainOverviewUC"
     d:DesignHeight="450"
@@ -73,6 +74,8 @@
                     Grid.Column="0"
                     Width="100"
                     HorizontalAlignment="Right"
+                    Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
+                    CommandParameter="{x:Static localEnums:AccessTyp.All}"
                     Content="Alle" />
 
                 <ModernUI:FlatButton
