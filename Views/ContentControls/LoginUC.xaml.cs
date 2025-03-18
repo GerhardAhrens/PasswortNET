@@ -30,6 +30,7 @@
             this.InitializeComponent();
 
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
+            WeakEventManager<UserControl, MouseWheelEventArgs>.AddHandler(this, "PreviewMouseWheel", this.OnPreviewMouseWheel);
             this.InitCommands();
             this.DataContext = this;
         }
@@ -118,8 +119,8 @@
         private void LoginHandler(object p1)
         {
             const int MAXLOGIN = 3;
-            string databaseFile = string.Empty;
             RunEnvironments runEnvironment = RunEnvironments.None;
+            string databaseFile = string.Empty;
             bool isFirstStart = false;
             string userName = this.LoginUser;
             string passwort = this.TxtPassword.Password;
@@ -288,6 +289,32 @@
                 {
                     this.Scalefactor.ScaleX = 1.35;
                     this.Scalefactor.ScaleY = 1.35;
+                }
+            }
+        }
+
+        private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                // If the mouse wheel delta is positive, move the box up.
+                if (e.Delta > 0)
+                {
+                    if (this.Scalefactor.ScaleX <= 3.0)
+                    {
+                        this.Scalefactor.ScaleX = this.Scalefactor.ScaleX + 0.5;
+                        this.Scalefactor.ScaleY = this.Scalefactor.ScaleY + 0.5;
+                    }
+                }
+
+                // If the mouse wheel delta is negative, move the box down.
+                if (e.Delta < 0)
+                {
+                    if (this.Scalefactor.ScaleX > 1.35)
+                    {
+                        this.Scalefactor.ScaleX = this.Scalefactor.ScaleX - 0.5;
+                        this.Scalefactor.ScaleY = this.Scalefactor.ScaleY - 0.5;
+                    }
                 }
             }
         }
