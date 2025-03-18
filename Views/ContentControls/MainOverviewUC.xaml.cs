@@ -31,6 +31,7 @@
         {
             this.InitializeComponent();
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Critical;
+            base.EventAgg.Subscribe<WorkEventArgs>(this.WorkEntryHandler);
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
             WeakEventManager<ListView, MouseWheelEventArgs>.AddHandler(this.lvwMain, "PreviewMouseWheel", this.OnLvwPreviewMouseWheel);
             this.Unloaded += OnUcUnloaded;
@@ -163,12 +164,12 @@
                                 this.DialogDataView.SortDescriptions.Add(new SortDescription("AccessTyp", ListSortDirection.Ascending));
                                 this.DialogDataView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
                                 this.DialogDataView.MoveCurrentToFirst();
+                                this.lvwMain.SelectedIndex = 0;
+                                var item = this.DialogDataView.CurrentItem;
+                                this.lvwMain.ScrollIntoView(item);
                                 this.DisplayRowCount = this.DialogDataView.Count<PasswordPin>();
 
-                                if (this.DisplayRowCount > 0)
-                                {
-                                    this.IsFilterContentFound = true;
-                                }
+                                this.IsFilterContentFound = this.DisplayRowCount > 0 ? true : false;
                             }
                         }
                     }
@@ -440,8 +441,8 @@
                     {
                         if (this.Scalefactor.ScaleX <= 2.0)
                         {
-                            this.Scalefactor.ScaleX = this.Scalefactor.ScaleX + 0.5;
-                            this.Scalefactor.ScaleY = this.Scalefactor.ScaleY + 0.5;
+                            this.Scalefactor.ScaleX = this.Scalefactor.ScaleX + 0.25;
+                            this.Scalefactor.ScaleY = this.Scalefactor.ScaleY + 0.25;
                         }
                     }
 
@@ -449,8 +450,8 @@
                     {
                         if (this.Scalefactor.ScaleX > 0.75)
                         {
-                            this.Scalefactor.ScaleX = this.Scalefactor.ScaleX - 0.5;
-                            this.Scalefactor.ScaleY = this.Scalefactor.ScaleY - 0.5;
+                            this.Scalefactor.ScaleX = this.Scalefactor.ScaleX - 0.25;
+                            this.Scalefactor.ScaleY = this.Scalefactor.ScaleY - 0.25;
                         }
                     }
                 }
@@ -560,5 +561,13 @@
         }
         #endregion Command Handler Methodes
 
+        #region Handler zum dem EventAggregator
+        private void WorkEntryHandler(WorkEventArgs args)
+        {
+            this.notificationService.FeaturesNotFound(args.AccessTyp.ToString());
+
+            this.LoadDataHandler();
+        }
+        #endregion Handler zum dem EventAggregator
     }
 }

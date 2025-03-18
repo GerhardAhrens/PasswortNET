@@ -68,7 +68,7 @@ namespace PasswortNET.Core
         {
             StringBuilder htmlContent = new StringBuilder();
             htmlContent.Append("<html><body scroll=\"yes\">");
-            htmlContent.Append($"<h2 style=\"color:Red;\">Die gew&uuml;nschte Funktion '{featuresText}' steht nicht zur Verf&uuml;gung.</h2>");
+            htmlContent.Append($"<h3 style=\"color:Red;\">Die gew&uuml;nschte Funktion '{featuresText}' steht nicht zur Verf&uuml;gung.</h2>");
             htmlContent.Append($"<h3 style=\"color:black;\">Bei Bedarf kontaktieren Sie den Applikationsverantwortlichen.</h3>");
             htmlContent.Append("</body></html>");
 

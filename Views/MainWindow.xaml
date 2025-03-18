@@ -42,7 +42,7 @@
 
     <ModernUI:MWindow.MoreOnTitle>
         <StackPanel
-            Margin="0,0,50,0"
+            Margin="0,0,5,0"
             HorizontalAlignment="Left"
             KeyboardNavigation.IsTabStop="False"
             Orientation="Horizontal">
@@ -62,7 +62,7 @@
                     </MenuItem.Header>
 
                     <MenuItem
-                        FlowDirection="RightToLeft"
+                        FlowDirection="LeftToRight"
                         Icon="{StaticResource ResourceKey=MenuItemSecurity}"
                         IsEnabled="{Binding Path=IsWorkPassword, UpdateSourceTrigger=PropertyChanged}">
                         <MenuItem.Header>
@@ -76,23 +76,26 @@
                             Command="{Binding Path=CmdAgg[AddEntryCommand]}"
                             CommandParameter="{x:Static localEnums:AccessTyp.Website}"
                             Header="Neuer Eintrag (Webseite, F2)"
-                            Icon="{StaticResource ResourceKey=MenuAddEntry}" />
+                            Icon="{StaticResource ResourceKey=MenuAddWebseite}" />
 
                         <MenuItem
                             Command="{Binding Path=CmdAgg[AddEntryCommand]}"
                             CommandParameter="{x:Static localEnums:AccessTyp.Passwort}"
-                            Header="Neuer Eintrag (Passwort, F3)" />
+                            Header="Neuer Eintrag (Passwort, F3)"
+                            Icon="{StaticResource ResourceKey=MenuAddPasswort}" />
+
                         <MenuItem
                             Command="{Binding Path=CmdAgg[AddEntryCommand]}"
                             CommandParameter="{x:Static localEnums:AccessTyp.Pin}"
-                            Header="Neuer Eintrag (Pin, F4)" />
+                            Header="Neuer Eintrag (Pin, F4)"
+                            Icon="{StaticResource ResourceKey=MenuAddPin}" />
+
                         <MenuItem
                             Command="{Binding Path=CmdAgg[AddEntryCommand]}"
                             CommandParameter="{x:Static localEnums:AccessTyp.License}"
-                            Header="Neuer Eintrag (Lizenzen, F5)" />
-                        <Separator />
-                        <MenuItem Header="Auswahl löschen (Entf)" />
-                        <MenuItem Header="Auswahl kopieren" />
+                            Header="Neuer Eintrag (Lizenzen, F5)"
+                            Icon="{StaticResource ResourceKey=MenuAddLizenz}" />
+
                     </MenuItem>
 
                     <Separator />

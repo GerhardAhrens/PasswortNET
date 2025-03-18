@@ -193,6 +193,7 @@
                         CommandParameter="{Binding ElementName=lvwMain, Path=SelectedItem}"
                         Header="Ändern"
                         Icon="{StaticResource ResourceKey=MenuListViewEdit}" />
+                    
                     <MenuItem
                         Command="{Binding Path=CmdAgg[DeleteEntryCommand]}"
                         CommandParameter="{Binding ElementName=lvwMain, Path=SelectedItem}"

@@ -16,6 +16,7 @@
     using ModernUI.MVVM.Base;
 
     using PasswortNET.Core;
+    using PasswortNET.Core.Enums;
     using PasswortNET.Views.ContentControls;
 
     /// <summary>
@@ -110,6 +111,13 @@
 
         private void AddEntryHandler(object p1)
         {
+            AccessTyp at = (AccessTyp)p1;
+
+            base.EventAgg.Publish<WorkEventArgs>(new WorkEventArgs
+            {
+                Sender = this.GetType().Name,
+                AccessTyp = at,
+            });
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
