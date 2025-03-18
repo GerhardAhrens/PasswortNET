@@ -1,11 +1,8 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
     using System;
-    using System.Security;
-    using System.Security.Policy;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Controls.Ribbon;
     using System.Windows.Input;
     using System.Windows.Threading;
 
@@ -33,7 +30,6 @@
             this.InitializeComponent();
 
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
-
             this.InitCommands();
             this.DataContext = this;
         }
@@ -61,9 +57,12 @@
 
         public override void InitCommands()
         {
+            base.CmdAgg.AddOrSetCommand("CloseWindowCommand", new RelayCommand(p1 => this.CloseWindowHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("LoginCommand", new RelayCommand(p1 => this.LoginHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("InputLoginCommand", new RelayCommand(p1 => this.InputLoginHandler(p1), p2 => true));
-            base.CmdAgg.AddOrSetCommand("CloseWindowCommand", new RelayCommand(p1 => this.CloseWindowHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("ScalePlusCommand", new RelayCommand(p1 => this.OnScaleFactor(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("ScaleSubtractCommand", new RelayCommand(p1 => this.OnScaleFactor(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("ScaleNeutralCommand", new RelayCommand(p1 => this.OnScaleFactor(p1), p2 => true));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -180,7 +179,7 @@
                 }
             }
 
-            if (string.Equals(hash,compareHash) == false)
+            if (string.Equals(hash, compareHash) == false)
             {
                 this.MaxTryLogin--;
                 if (this.MaxTryLogin == 0)
@@ -261,6 +260,34 @@
                 else if (mp.Name == "TxtPasswordRepeat" && e.Key == Key.Tab)
                 {
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.TxtBenutzername.Focus(); }));
+                }
+            }
+        }
+
+        private void OnScaleFactor(object commandParam)
+        {
+            if (commandParam.ToString().ToUpper() == "ADD")
+            {
+                if (this.Scalefactor.ScaleX <= 3.0)
+                {
+                    this.Scalefactor.ScaleX = this.Scalefactor.ScaleX + 0.5;
+                    this.Scalefactor.ScaleY = this.Scalefactor.ScaleY + 0.5;
+                }
+            }
+            else if (commandParam.ToString().ToUpper() == "SUBTRACT")
+            {
+                if (this.Scalefactor.ScaleX > 1.35)
+                {
+                    this.Scalefactor.ScaleX = this.Scalefactor.ScaleX - 0.5;
+                    this.Scalefactor.ScaleY = this.Scalefactor.ScaleY - 0.5;
+                }
+            }
+            else if (commandParam.ToString().ToUpper() == "NEUTRAL")
+            {
+                if (this.Scalefactor.ScaleX != 1.35)
+                {
+                    this.Scalefactor.ScaleX = 1.35;
+                    this.Scalefactor.ScaleY = 1.35;
                 }
             }
         }

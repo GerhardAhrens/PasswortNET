@@ -17,6 +17,10 @@
     Icon="/Resources/Picture/ApplicationIcon.ico"
     mc:Ignorable="d">
 
+    <Window.LayoutTransform>
+        <ScaleTransform x:Name="Scalefactor" ScaleX="1.0" ScaleY="1.0" />
+    </Window.LayoutTransform>
+    
     <Window.Resources>
         <ModernWPF:CommandKeyReference x:Key="LogoffCmdKey" Command="{Binding Path=CmdAgg[LogoffCommand]}" />
 
@@ -136,28 +140,30 @@
         </StackPanel>
     </ModernUI:MWindow.MoreOnTitle>
 
-
     <ModernUI:SimpleGrid Columns="*" Rows="*,40">
         <!--#region Contentbereich-->
-        <Border
-            Grid.Row="0"
-            Grid.Column="0"
-            Margin="0,5,0,0"
-            Background="Snow"
-            BorderBrush="Black"
-            BorderThickness="0,1,0,1">
-            <ContentControl
-                x:Name="mainContent"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="Transparent"
-                Content="{Binding Path=WorkContent, UpdateSourceTrigger=PropertyChanged}"
-                KeyboardNavigation.IsTabStop="False"
-                KeyboardNavigation.TabNavigation="None"
-                ScrollViewer.CanContentScroll="True"
-                VirtualizingPanel.IsVirtualizing="True"
-                Visibility="Visible" />
-        </Border>
+        <ScrollViewer
+            CanContentScroll="True"
+            HorizontalScrollBarVisibility="Visible"
+            VerticalScrollBarVisibility="Visible">
+            <Border
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="0,5,0,0"
+                Background="White"
+                BorderBrush="Black"
+                BorderThickness="0,1,0,1">
+                <ContentControl
+                    x:Name="mainContent"
+                    Background="Transparent"
+                    Content="{Binding Path=WorkContent, UpdateSourceTrigger=PropertyChanged}"
+                    KeyboardNavigation.IsTabStop="False"
+                    KeyboardNavigation.TabNavigation="None"
+                    ScrollViewer.CanContentScroll="True"
+                    VirtualizingPanel.IsVirtualizing="True"
+                    Visibility="Visible" />
+            </Border>
+        </ScrollViewer>
         <!--#endregion Contentbereich-->
 
         <!--#region Statuszeile-->

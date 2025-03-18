@@ -10,6 +10,7 @@
     xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
     xmlns:localConverter="clr-namespace:PasswortNET.Views.Converter"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -18,9 +19,14 @@
         <ModernWPF:CommandKeyReference x:Key="WindowCloseCmdKey" Command="{Binding Path=CmdAgg[CloseWindowCommand]}" />
         <ModernWPF:CommandKeyReference x:Key="LoginCmdKey" Command="{Binding Path=CmdAgg[LoginCommand]}" />
         <ModernWPF:CommandKeyReference x:Key="InputLoginCmdKey" Command="{Binding Path=CmdAgg[InputLoginCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="ScalePlusCmdKey" Command="{Binding Path=CmdAgg[ScalePlusCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="ScaleSubtractCmdKey" Command="{Binding Path=CmdAgg[ScaleSubtractCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="ScaleNeutralCmdKey" Command="{Binding Path=CmdAgg[ScaleNeutralCommand]}" />
 
         <ModernConverter:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter" />
         <localConverter:PasswordStrengthConverter x:Key="PasswordStrengthConverter" />
+
+        <sys:Double x:Key="ScaleXY">1.35</sys:Double>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -33,7 +39,27 @@
             Key="I"
             Command="{StaticResource ResourceKey=InputLoginCmdKey}"
             Modifiers="Alt" />
+
+        <KeyBinding
+            Key="Add"
+            Command="{StaticResource ResourceKey=ScalePlusCmdKey}"
+            CommandParameter="Add" />
+
+        <KeyBinding
+            Key="Subtract"
+            Command="{StaticResource ResourceKey=ScaleSubtractCmdKey}"
+            CommandParameter="Subtract" />
+
+        <KeyBinding
+            Key="Esc"
+            Command="{StaticResource ResourceKey=ScaleNeutralCmdKey}"
+            CommandParameter="Neutral"
+            Modifiers="Shift" />
     </UserControl.InputBindings>
+
+    <UserControl.LayoutTransform>
+        <ScaleTransform x:Name="Scalefactor" ScaleX="{StaticResource ResourceKey=ScaleXY}" ScaleY="{StaticResource ResourceKey=ScaleXY}" />
+    </UserControl.LayoutTransform>
 
     <ModernUI:SimpleGrid Columns="*" Rows="30,*,30">
         <StackPanel
