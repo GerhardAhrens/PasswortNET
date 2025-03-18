@@ -4,6 +4,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
+    using System.Windows.Input;
 
     using ModernBaseLibrary.Core;
 
@@ -13,6 +14,7 @@
 
     using ModernUI.MVVM.Base;
 
+    using PasswortNET.AuditTrail;
     using PasswortNET.Core;
     using PasswortNET.Core.Enums;
     using PasswortNET.DataRepository;
@@ -30,8 +32,15 @@
             this.InitializeComponent();
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Critical;
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
+            WeakEventManager<ListView, MouseWheelEventArgs>.AddHandler(this.lvwMain, "PreviewMouseWheel", this.OnLvwPreviewMouseWheel);
+            this.Unloaded += OnUcUnloaded;
             this.InitCommands();
             this.DataContext = this;
+        }
+
+        private void OnUcUnloaded(object sender, RoutedEventArgs e)
+        {
+            this.CustomView = null;
         }
 
         #region Properties
@@ -116,7 +125,6 @@
             this.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("ListViewCommand", new RelayCommand(p1 => ListViewContextMenu(p1.ToString()), p2 => true));
             this.CmdAgg.AddOrSetCommand("EditEntryCommand", new RelayCommand(p1 => this.EditEntryHandler(p1), p2 => this.CanEditEntryHandler()));
-            this.CmdAgg.AddOrSetCommand("AddEntryCommand", new RelayCommand(p1 => this.AddEntryHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("DeleteEntryCommand", new RelayCommand(p1 => this.DeleteEntryHandler(), p2 => this.CanDeleteEntryHandler()));
             this.CmdAgg.AddOrSetCommand("CopyEntryCommand", new RelayCommand(p1 => this.CopyEntryHandler(), p2 => this.CanCopyEntryHandler()));
             this.CmdAgg.AddOrSetCommand("SelectAccessStateCommand", new RelayCommand(p1 => this.SelectAccessStateHandler(p1), p2 => true));
@@ -374,11 +382,6 @@
             }
         }
 
-        private bool CanEditEntryHandler()
-        {
-            return this.DisplayRowCount == 0 ? false : true;
-        }
-
         private void SelectAccessStateHandler(object args)
         {
             this.AccessTypState = (AccessTyp)args;
@@ -427,14 +430,66 @@
             this.LoadDataHandler();
         }
 
-        #region Command Handler Methodes
-        private void EditEntryHandler(object commandArgs)
+        private void OnLvwPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
+            if (sender != null)
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) == true)
+                {
+                    if (e.Delta > 0)
+                    {
+                        if (this.Scalefactor.ScaleX <= 2.0)
+                        {
+                            this.Scalefactor.ScaleX = this.Scalefactor.ScaleX + 0.5;
+                            this.Scalefactor.ScaleY = this.Scalefactor.ScaleY + 0.5;
+                        }
+                    }
 
+                    if (e.Delta < 0)
+                    {
+                        if (this.Scalefactor.ScaleX > 0.75)
+                        {
+                            this.Scalefactor.ScaleX = this.Scalefactor.ScaleX - 0.5;
+                            this.Scalefactor.ScaleY = this.Scalefactor.ScaleY - 0.5;
+                        }
+                    }
+                }
+                else
+                {
+                    e.Handled = true;
+
+                    var e2 = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                    e2.RoutedEvent = ListView.MouseWheelEvent;
+                    e2.Source = e.Source;
+
+                    this.lvwMain.RaiseEvent(e2);
+                }
+            }
         }
 
-        private void AddEntryHandler(object p1)
+        #region Command Handler Methodes
+        private bool CanEditEntryHandler()
         {
+            return this.DisplayRowCount == 0 ? false : true;
+        }
+
+        private void EditEntryHandler(object commandArgs)
+        {
+            if (this.CurrentSelectedItem == null)
+            {
+                notificationService.NoRowSelected();
+                return;
+            }
+
+            AccessTyp accessTyp = ((PasswordPin)this.CurrentSelectedItem).AccessTyp;
+            Guid id = this.CurrentSelectedItem.Id;
+
+            if (accessTyp.In(AccessTyp.Website,AccessTyp.Passwort, AccessTyp.Pin) == true)
+            {
+            }
+            else
+            {
+            }
         }
 
         private bool CanDeleteEntryHandler()
@@ -444,6 +499,26 @@
 
         private void DeleteEntryHandler()
         {
+            if (this.CurrentSelectedItem == null)
+            {
+                notificationService.NoRowSelected();
+                return;
+            }
+
+            Guid id = this.CurrentSelectedItem.Id;
+
+            NotificationBoxButton result = this.notificationService.DeleteSelectedRow(this.CurrentSelectedItem.Title);
+            if (result == NotificationBoxButton.Yes)
+            {
+                using (PasswordPinRepository repository = new PasswordPinRepository())
+                {
+                    OperationResult<AuditTrailResult> auditTrailresult = AuditTrail.Create(null, this.CurrentSelectedItem);
+
+                    repository.Delete(id, auditTrailresult);
+                }
+
+                this.LoadDataHandler();
+            }
         }
 
         private bool CanCopyEntryHandler()
@@ -454,6 +529,25 @@
 
         private void CopyEntryHandler()
         {
+            if (this.CurrentSelectedItem == null)
+            {
+                notificationService.NoRowSelected();
+                return;
+            }
+
+            AccessTyp accessTyp = ((PasswordPin)this.CurrentSelectedItem).AccessTyp;
+            Guid id = this.CurrentSelectedItem.Id;
+
+            NotificationBoxButton result = this.notificationService.CopySelectedRow(this.CurrentSelectedItem.Title);
+            if (result == NotificationBoxButton.Yes)
+            {
+                if (accessTyp.In(AccessTyp.Website, AccessTyp.Passwort, AccessTyp.Pin) == true)
+                {
+                }
+                else
+                {
+                }
+            }
         }
 
         private void LogoffHandler(object p1)
@@ -465,5 +559,6 @@
             });
         }
         #endregion Command Handler Methodes
+
     }
 }

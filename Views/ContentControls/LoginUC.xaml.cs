@@ -295,19 +295,17 @@
 
         private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) == true)
             {
-                // If the mouse wheel delta is positive, move the box up.
                 if (e.Delta > 0)
                 {
-                    if (this.Scalefactor.ScaleX <= 3.0)
+                    if (this.Scalefactor.ScaleX <= 2.0)
                     {
                         this.Scalefactor.ScaleX = this.Scalefactor.ScaleX + 0.5;
                         this.Scalefactor.ScaleY = this.Scalefactor.ScaleY + 0.5;
                     }
                 }
 
-                // If the mouse wheel delta is negative, move the box down.
                 if (e.Delta < 0)
                 {
                     if (this.Scalefactor.ScaleX > 1.35)

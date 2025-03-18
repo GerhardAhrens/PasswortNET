@@ -6,6 +6,7 @@
     xmlns:ModernWPF="clr-namespace:ModernIU.WPF.Base;assembly=ModernUILibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PasswortNET"
+    xmlns:localEnums="clr-namespace:PasswortNET.Core.Enums"
     xmlns:localStatic="clr-namespace:PasswortNET.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:winbase="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
@@ -17,12 +18,9 @@
     Icon="/Resources/Picture/ApplicationIcon.ico"
     mc:Ignorable="d">
 
-    <Window.LayoutTransform>
-        <ScaleTransform x:Name="Scalefactor" ScaleX="1.0" ScaleY="1.0" />
-    </Window.LayoutTransform>
-    
     <Window.Resources>
         <ModernWPF:CommandKeyReference x:Key="LogoffCmdKey" Command="{Binding Path=CmdAgg[LogoffCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="CloseWindowCmdKey" Command="{Binding Path=CmdAgg[CloseWindowCommand]}" />
 
         <Style TargetType="{x:Type MenuItem}">
             <Setter Property="Cursor" Value="Arrow" />
@@ -44,7 +42,7 @@
 
     <ModernUI:MWindow.MoreOnTitle>
         <StackPanel
-            Margin="0,0,10,0"
+            Margin="0,0,50,0"
             HorizontalAlignment="Left"
             KeyboardNavigation.IsTabStop="False"
             Orientation="Horizontal">
@@ -55,7 +53,6 @@
                 Background="Transparent"
                 FontWeight="Bold"
                 Foreground="Black">
-
                 <MenuItem VerticalAlignment="Center" Icon="{StaticResource ResourceKey=MenuItemDots}">
                     <MenuItem.Header>
                         <TextBlock
@@ -63,14 +60,36 @@
                             VerticalAlignment="Center"
                             Text="" />
                     </MenuItem.Header>
+
                     <MenuItem
-                        Header="Passwörter/Lizenzen"
+                        FlowDirection="RightToLeft"
                         Icon="{StaticResource ResourceKey=MenuItemSecurity}"
                         IsEnabled="{Binding Path=IsWorkPassword, UpdateSourceTrigger=PropertyChanged}">
-                        <MenuItem Header="Neuer Eintrag (Webseite, F2)" />
-                        <MenuItem Header="Neuer Eintrag (Passwort, F3)" />
-                        <MenuItem Header="Neuer Eintrag (Pin, F4)" />
-                        <MenuItem Header="Neuer Eintrag (Lizenzen, F5)" />
+                        <MenuItem.Header>
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                FontWeight="Medium"
+                                Text="Passwörter/Lizenzen"
+                                TextAlignment="Left" />
+                        </MenuItem.Header>
+                        <MenuItem
+                            Command="{Binding Path=CmdAgg[AddEntryCommand]}"
+                            CommandParameter="{x:Static localEnums:AccessTyp.Website}"
+                            Header="Neuer Eintrag (Webseite, F2)"
+                            Icon="{StaticResource ResourceKey=MenuAddEntry}" />
+
+                        <MenuItem
+                            Command="{Binding Path=CmdAgg[AddEntryCommand]}"
+                            CommandParameter="{x:Static localEnums:AccessTyp.Passwort}"
+                            Header="Neuer Eintrag (Passwort, F3)" />
+                        <MenuItem
+                            Command="{Binding Path=CmdAgg[AddEntryCommand]}"
+                            CommandParameter="{x:Static localEnums:AccessTyp.Pin}"
+                            Header="Neuer Eintrag (Pin, F4)" />
+                        <MenuItem
+                            Command="{Binding Path=CmdAgg[AddEntryCommand]}"
+                            CommandParameter="{x:Static localEnums:AccessTyp.License}"
+                            Header="Neuer Eintrag (Lizenzen, F5)" />
                         <Separator />
                         <MenuItem Header="Auswahl löschen (Entf)" />
                         <MenuItem Header="Auswahl kopieren" />
@@ -140,6 +159,18 @@
         </StackPanel>
     </ModernUI:MWindow.MoreOnTitle>
 
+    <Window.InputBindings>
+        <KeyBinding
+            Key="F4"
+            Command="{StaticResource ResourceKey=CloseWindowCmdKey}"
+            Modifiers="Alt" />
+
+        <KeyBinding
+            Key="L"
+            Command="{StaticResource ResourceKey=LogoffCmdKey}"
+            Modifiers="Ctrl" />
+    </Window.InputBindings>
+
     <ModernUI:SimpleGrid Columns="*" Rows="*,40">
         <!--#region Contentbereich-->
         <ScrollViewer
@@ -149,10 +180,9 @@
             <Border
                 Grid.Row="0"
                 Grid.Column="0"
-                Margin="0,5,0,0"
                 Background="White"
                 BorderBrush="Black"
-                BorderThickness="0,1,0,1">
+                BorderThickness="0,2,0,2">
                 <ContentControl
                     x:Name="mainContent"
                     Background="Transparent"

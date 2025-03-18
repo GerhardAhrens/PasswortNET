@@ -11,6 +11,7 @@
     xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
     xmlns:localEnums="clr-namespace:PasswortNET.Core.Enums"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     x:Name="nameMainOverviewUC"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -22,6 +23,8 @@
         <ModernConverter:BooleanToNotVisibleConverter x:Key="BooleanToNotVisibilityConverter" />
         <ModernConverter:VisibilityToBoolConverter x:Key="VisibilityToBoolConverter" />
         <ModernConverter:MaxWidthConverter x:Key="MaxWidthConverter" />
+
+        <sys:Double x:Key="ScaleXY">1.0</sys:Double>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -31,22 +34,23 @@
             Modifiers="Ctrl" />
     </UserControl.InputBindings>
 
+    <UserControl.LayoutTransform>
+        <ScaleTransform x:Name="Scalefactor" ScaleX="{StaticResource ResourceKey=ScaleXY}" ScaleY="{StaticResource ResourceKey=ScaleXY}" />
+    </UserControl.LayoutTransform>
+
     <ModernUI:SimpleGrid
         HorizontalAlignment="Stretch"
         Columns="*"
         Rows="60,*">
 
-        <DockPanel
-            Grid.Row="0"
-            Grid.Column="0"
-            Grid.ColumnSpan="2">
+        <DockPanel Grid.Row="0" Grid.Column="0">
 
             <ModernUI:IconTextBox
                 x:Name="TxtBenutzername"
                 Grid.Row="0"
                 Grid.RowSpan="2"
                 Grid.Column="0"
-                Width="{Binding Path=ActualWidth, ElementName=nameMainOverviewUC, Converter={StaticResource ResourceKey=MaxWidthConverter}, ConverterParameter=450}"
+                Width="{Binding Path=ActualWidth, ElementName=nameMainOverviewUC, Converter={StaticResource ResourceKey=MaxWidthConverter}, ConverterParameter=460}"
                 Height="30"
                 Margin="5,0,0,0"
                 BorderThickness="1"
@@ -163,6 +167,7 @@
         <ListView
             Name="lvwMain"
             Grid.Row="1"
+            Width="{Binding Path=ActualWidth, ElementName=nameMainOverviewUC, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
             Background="WhiteSmoke"
             IsSynchronizedWithCurrentItem="True"
             ItemsSource="{Binding Path=DialogDataView, UpdateSourceTrigger=PropertyChanged}"
@@ -185,15 +190,18 @@
 
                     <MenuItem
                         Command="{Binding Path=CmdAgg[EditEntryCommand]}"
+                        CommandParameter="{Binding ElementName=lvwMain, Path=SelectedItem}"
                         Header="Ändern"
                         Icon="{StaticResource ResourceKey=MenuListViewEdit}" />
                     <MenuItem
                         Command="{Binding Path=CmdAgg[DeleteEntryCommand]}"
+                        CommandParameter="{Binding ElementName=lvwMain, Path=SelectedItem}"
                         Header="Löschen"
                         Icon="{StaticResource ResourceKey=MenuListViewDelete}" />
 
                     <MenuItem
                         Command="{Binding Path=CmdAgg[CopyEntryCommand]}"
+                        CommandParameter="{Binding ElementName=lvwMain, Path=SelectedItem}"
                         Header="Kopieren"
                         Icon="{StaticResource ResourceKey=MenuListViewCopy}" />
                 </ContextMenu>

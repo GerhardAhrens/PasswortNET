@@ -5,6 +5,7 @@
     using System.Runtime.Versioning;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
     using System.Windows.Threading;
 
     using ModernBaseLibrary.Core;
@@ -104,6 +105,11 @@
             base.CmdAgg.AddOrSetCommand("ExportCommand", new RelayCommand(p1 => this.ExportHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("DataSyncCommand", new RelayCommand(p1 => this.DataSyncHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("PrintCommand", new RelayCommand(p1 => this.PrintHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("AddEntryCommand", new RelayCommand(p1 => this.AddEntryHandler(p1), p2 => true));
+        }
+
+        private void AddEntryHandler(object p1)
+        {
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -279,6 +285,7 @@
                         this.IsLogoff = true;
                         this.IsWorkPassword = true;
                         this.IsImportExport = true;
+                        this.WorkContent.Width = this.ActualWidth - 20;
                     }
                     else if (this.WorkContent.GetType() == typeof(ChangePasswordUC))
                     {
@@ -307,6 +314,17 @@
                     }
 
                     StatusbarMain.Statusbar.SetNotification($"Bereit: {objectRuntime.ResultMilliseconds()}ms");
+                }
+            }
+        }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            if (this.WorkContent != null)
+            {
+                if (this.WorkContent.GetType() == typeof(MainOverviewUC))
+                {
+                    this.WorkContent.Width = this.ActualWidth - 20;
                 }
             }
         }

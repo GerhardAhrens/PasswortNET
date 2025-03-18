@@ -78,7 +78,12 @@
                 Text="TbTitelUC" />
         </StackPanel>
 
-        <StackPanel Grid.Row="1" VerticalAlignment="Center">
+        <ScrollViewer
+            Grid.Row="1"
+            VerticalAlignment="Center"
+            HorizontalScrollBarVisibility="Hidden"
+            PreviewMouseWheel="OnPreviewMouseWheel"
+            VerticalScrollBarVisibility="Hidden">
             <ModernUI:MGroupBox
                 Width="400"
                 Margin="5"
@@ -135,7 +140,7 @@
                 </StackPanel>
             </ModernUI:MGroupBox>
 
-        </StackPanel>
+        </ScrollViewer>
 
         <DockPanel
             Grid.Row="2"

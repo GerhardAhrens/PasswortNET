@@ -289,6 +289,62 @@ namespace PasswortNET.Core
 
         #endregion Login und Change Password
 
+        #region Bearbeiten von Passwörtern, Webzugänge, Pins
+        public static NotificationBoxButton NoRowSelected(this INotificationService @this)
+        {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.Append("<html><body scroll=\"yes\">");
+            htmlContent.Append($"<h2 style=\"color:Red;\">Kein Eintrag zur Bearbeitung ausgew&auml;hlt.</h2>");
+            htmlContent.Append($"<h3 style=\"color:black;\">Sie müssen zur Bearbeitung einen Eintrag ausw&auml;hlen.</h3>");
+            htmlContent.Append("</body></html>");
+
+            (string InfoText, string CustomText, double FontSize) msgText = ("Funktion nicht gefunden", htmlContent.ToString(), 0);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageHtmlOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+
+        public static NotificationBoxButton DeleteSelectedRow(this INotificationService @this, string titel = "")
+        {
+            (string InfoText, string CustomText, double FontSize) msgText = ("Eintrag löschen", $"\nSoll gewählte Eintrag '{titel}' gelöscht werden?\nDer Eintrag wird danach endgültig aus der Datenbank entfernt.", 18);
+            NotificationBoxButton questionResult = NotificationBoxButton.None;
+
+            @this.ShowDialog<QuestionYesNo>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    questionResult = ((System.Tuple<ModernIU.Controls.NotificationBoxButton>)tag).Item1;
+                }
+            });
+
+            return questionResult;
+        }
+
+        public static NotificationBoxButton CopySelectedRow(this INotificationService @this, string titel = "")
+        {
+            (string InfoText, string CustomText, double FontSize) msgText = ("Eintrag kopieren", $"\nSoll gewählte Eintrag '{titel}' kopiert werden?", 18);
+            NotificationBoxButton questionResult = NotificationBoxButton.None;
+
+            @this.ShowDialog<QuestionYesNo>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    questionResult = ((System.Tuple<ModernIU.Controls.NotificationBoxButton>)tag).Item1;
+                }
+            });
+
+            return questionResult;
+        }
+        #endregion Bearbeiten von Passwörtern, Webzugänge, Pins
+
         #region Export, Import, Data Sync
         public static NotificationBoxButton NoFolderForSync(this INotificationService @this, SyncDirection syncDirection)
         {
