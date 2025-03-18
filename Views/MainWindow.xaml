@@ -144,8 +144,8 @@
         <!--#region Contentbereich-->
         <ScrollViewer
             CanContentScroll="True"
-            HorizontalScrollBarVisibility="Visible"
-            VerticalScrollBarVisibility="Visible">
+            HorizontalScrollBarVisibility="Auto"
+            VerticalScrollBarVisibility="Auto">
             <Border
                 Grid.Row="0"
                 Grid.Column="0"
