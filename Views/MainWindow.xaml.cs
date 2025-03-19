@@ -94,11 +94,14 @@
             get => base.GetValue<bool>();
             set => base.SetValue(value);
         }
+
+        private MainButton CurrentUCName { get; set; }
         #endregion Properties
 
         public override void InitCommands()
         {
             base.CmdAgg.AddOrSetCommand("CloseWindowCommand", new RelayCommand(p1 => this.CloseWindowHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("HelpCommand", new RelayCommand(p1 => this.HelpHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("ChangePasswordCommand", new RelayCommand(p1 => this.ChangePasswordHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("AppSettingsCommand", new RelayCommand(p1 => this.AppSettingsHandler(p1), p2 => true));
@@ -107,17 +110,6 @@
             base.CmdAgg.AddOrSetCommand("DataSyncCommand", new RelayCommand(p1 => this.DataSyncHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("PrintCommand", new RelayCommand(p1 => this.PrintHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("AddEntryCommand", new RelayCommand(p1 => this.AddEntryHandler(p1), p2 => true));
-        }
-
-        private void AddEntryHandler(object p1)
-        {
-            AccessTyp at = (AccessTyp)p1;
-
-            base.EventAgg.Publish<WorkEventArgs>(new WorkEventArgs
-            {
-                Sender = this.GetType().Name,
-                AccessTyp = at,
-            });
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -203,6 +195,22 @@
             this.ChangeControl(arg);
         }
 
+        private void AddEntryHandler(object p1)
+        {
+            AccessTyp at = (AccessTyp)p1;
+
+            base.EventAgg.Publish<WorkEventArgs>(new WorkEventArgs
+            {
+                Sender = this.GetType().Name,
+                AccessTyp = at,
+            });
+        }
+
+        private void HelpHandler(object p1)
+        {
+            this.notificationService.FeaturesNotFound(this.CurrentUCName.ToDescription());
+        }
+
         public override void OnViewIsClosing(CancelEventArgs e)
         {
             Window window = Application.Current.MainWindow;
@@ -251,6 +259,7 @@
                 using (ObjectRuntime objectRuntime = new ObjectRuntime())
                 {
                     StatusbarMain.Statusbar.SetNotification();
+                    this.CurrentUCName = e.MenuButton;
                     string titelUC = e.MenuButton.ToDescription();
                     this.WorkContent = menuWorkArea.WorkContent;
                     this.WorkContent.VerticalAlignment = VerticalAlignment.Stretch;

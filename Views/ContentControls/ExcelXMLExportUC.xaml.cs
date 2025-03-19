@@ -358,7 +358,7 @@
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
             {
                 Sender = this.GetType().Name,
-                MenuButton = MainButton.Home,
+                MenuButton = MainButton.MainOverview,
             });
         }
 

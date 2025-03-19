@@ -45,5 +45,7 @@ namespace PasswortNET.Core
         Export = 10,
         [Description("Drucken Passwortdaten")]
         Print = 11,
+        [Description("Hilfe")]
+        Help = 12,
     }
 }

@@ -47,7 +47,13 @@
             KeyboardNavigation.IsTabStop="False"
             Orientation="Horizontal">
 
+            <ModernUI:GeometryButton
+                Command="{Binding Path=CmdAgg[HelpCommand]}"
+                CommandParameter="{x:Static localStatic:MainButton.Help}"
+                PathData="{StaticResource ResourceKey=IconHelp}" />
+
             <Menu
+                x:Name="M2"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Background="Transparent"
