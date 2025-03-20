@@ -304,6 +304,14 @@
                         this.IsImportExport = true;
                         this.WorkContent.Width = this.ActualWidth - 20;
                     }
+                    else if (this.WorkContent.GetType() == typeof(PasswordDetailUC))
+                    {
+                        this.IsAppSettings = false;
+                        this.IsAbout = false;
+                        this.IsLogoff = true;
+                        this.IsWorkPassword = true;
+                        this.IsImportExport = false;
+                    }
                     else if (this.WorkContent.GetType() == typeof(ChangePasswordUC))
                     {
                         this.IsAppSettings = false;

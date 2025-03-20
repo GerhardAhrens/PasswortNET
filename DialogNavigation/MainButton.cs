@@ -39,13 +39,15 @@ namespace PasswortNET.Core
         Back = 7,
         [Description("Übersicht Passwort/Zugänge/Pin/Lizenzen")]
         MainOverview = 8,
+        [Description("Bearbeiten Passwort/Zugänge/Pin/Lizenzen")]
+        PasswordDetail = 9,
         [Description("Datenbank synchronisieren")]
-        DataSync = 9,
+        DataSync = 10,
         [Description("Export Passwortdaten")]
-        Export = 10,
+        Export = 11,
         [Description("Drucken Passwortdaten")]
-        Print = 11,
+        Print = 12,
         [Description("Hilfe")]
-        Help = 12,
+        Help = 13,
     }
 }

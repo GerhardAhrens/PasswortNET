@@ -483,7 +483,26 @@
             }
 
             AccessTyp accessTyp = ((PasswordPin)this.CurrentSelectedItem).AccessTyp;
-            Guid id = this.CurrentSelectedItem.Id;
+            Guid currentId = this.CurrentSelectedItem.Id;
+
+            try
+            {
+                base.EventAgg.Publish<ChangeViewEventArgs>(
+                    new ChangeViewEventArgs
+                    {
+                        Sender = this.GetType().Name,
+                        EntityId = currentId,
+                        RowPosition = 0,
+                        FromPage = MainButton.MainOverview,
+                        MenuButton = MainButton.PasswordDetail,
+                        IsNew = false
+                    });
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
 
             if (accessTyp.In(AccessTyp.Website,AccessTyp.Passwort, AccessTyp.Pin) == true)
             {
