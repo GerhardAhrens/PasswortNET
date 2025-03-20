@@ -339,7 +339,7 @@
                     this.NeuCount = $"Tag: {newRowsCount}";
                 }
 
-                importSyncFile = $"{this.ExportFolder}\\PasswortSync.Passwort";
+                importSyncFile = $"{this.ImportFolder}\\PasswortSync.Passwort";
                 if (File.Exists(importSyncFile) == false)
                 {
                     return;
@@ -348,32 +348,59 @@
                 jsonText = File.ReadAllText(importSyncFile);
                 List<PasswordPin> importPasswotPin = jsonText.JsonToList<PasswordPin>();
 
-                DataTable importPassword = this.ReadXMLFromPassword(importSyncFile);
                 using (PasswordPinRepository repository = new PasswordPinRepository())
                 {
                     repository.DeleteAll();
 
-                    foreach (DataRow row in importPassword.Rows.OfType<DataRow>().Where(w => w.Field<int>("SyncItemStatus") == 0))
+                    foreach (PasswordPin row in importPasswotPin.Cast<PasswordPin>().Where(w => w.SyncItemStatus == 0))
                     {
                         PasswordPin passwortPinNew = new PasswordPin();
-                        passwortPinNew.Id = row.Field<Guid>("Id");
-                        passwortPinNew.AccessTyp = (AccessTyp)row.Field<int>("AccessTyp");
-                        passwortPinNew.Title = row.Field<string>("Title");
-                        passwortPinNew.ShowDescription = row.Field<bool>("ShowDescription");
-                        passwortPinNew.Username = row.Field<string>("Username");
-                        passwortPinNew.Passwort = row.Field<string>("Passwort");
-                        passwortPinNew.Pin = row.Field<string>("Pin");
-                        passwortPinNew.Symbol = row.Field<string>("Symbol").ToInt();
-                        passwortPinNew.Background = row.Field<string>("Background");
-                        passwortPinNew.CompanyId = row.Field<Guid>("CompanyId");
-                        passwortPinNew.LicenseName = row.Field<string>("LicenseName");
-                        passwortPinNew.LicenseKey = row.Field<string>("LicenseKey");
-                        passwortPinNew.LastExport = row.Field<DateTime>("LastExport");
+                        passwortPinNew.Id = row.Id;
+                        passwortPinNew.AccessTyp = row.AccessTyp;
+                        passwortPinNew.Title = row.Title;
+                        passwortPinNew.IsAttachmnent = false;
+                        passwortPinNew.ShowDescription = row.ShowDescription;
+                        passwortPinNew.Username = row.Username;
+                        passwortPinNew.Passwort = row.Passwort;
+                        passwortPinNew.Pin = row.Pin;
+                        passwortPinNew.Website = row.Website;
+                        passwortPinNew.Symbol = row.Symbol;
+                        passwortPinNew.Background = row.Background;
+                        passwortPinNew.CompanyId = row.CompanyId;
+                        passwortPinNew.Company = row.Company;
+                        passwortPinNew.CompanyInfoMail = row.CompanyInfoMail;
+                        passwortPinNew.LicenseName = row.LicenseName;
+                        passwortPinNew.LicenseKey = row.LicenseKey;
+                        passwortPinNew.Region = row.Region;
+                        passwortPinNew.LastExport = row.LastExport;
+                        passwortPinNew.ShowLast = row.ShowLast;
+                        passwortPinNew.IsShowLast = row.IsShowLast;
+                        passwortPinNew.SyncItemStatus = row.SyncItemStatus;
+                        passwortPinNew.SyncHash = string.Empty;
                         passwortPinNew.CreatedBy = UserInfo.TS().CurrentUser;
                         passwortPinNew.CreatedOn = UserInfo.TS().CurrentTime;
                         repository.Add(passwortPinNew);
+                    }
 
-                        row.SetField<int>("SyncItemStatus", 2);
+                    string attachmentPath = Path.Combine(this.ImportFolder, "Attachments");
+                    if (Directory.Exists(attachmentPath) == true)
+                    {
+                        List<string> attachmentFiles = Directory.GetFiles(attachmentPath).ToList();
+                        foreach (string file in attachmentFiles)
+                        {
+                            Guid photoId = Guid.Parse(Path.GetFileNameWithoutExtension(file));
+                            byte[] photo = File.ReadAllBytes(file);
+                            if (photo?.Length > 0)
+                            {
+                                using (MemoryStream stream = new MemoryStream())
+                                {
+                                    stream.Write(photo, 0, photo.Length);
+                                    stream.Position = 0;
+                                    repository.DatabaseIntern.FileStorage.Delete(photoId.ToString());
+                                    LiteFileInfo<string> fileInfo = repository.DatabaseIntern.FileStorage.Upload(photoId.ToString(), "Unbekannt", stream);
+                                }
+                            }
+                        }
                     }
                 }
 
