@@ -117,6 +117,7 @@
             NotificationService.RegisterDialog<QuestionYesNo>();
             NotificationService.RegisterDialog<QuestionHtmlYesNo>();
             NotificationService.RegisterDialog<MessageHtmlOk>();
+            NotificationService.RegisterDialog<MessageOk>();
 
             this.InitTimer();
 
@@ -263,6 +264,7 @@
                     string titelUC = e.MenuButton.ToDescription();
                     this.WorkContent = menuWorkArea.WorkContent;
                     this.WorkContent.VerticalAlignment = VerticalAlignment.Stretch;
+                    this.WorkContent.Focusable = true;
 
                     TextBlock textBlock = UIHelper.FindByName<TextBlock>(this.WorkContent, "TbTitelUC");
                     if (textBlock != null)
@@ -309,7 +311,7 @@
                         this.IsAppSettings = false;
                         this.IsAbout = false;
                         this.IsLogoff = true;
-                        this.IsWorkPassword = true;
+                        this.IsWorkPassword = false;
                         this.IsImportExport = false;
                     }
                     else if (this.WorkContent.GetType() == typeof(ChangePasswordUC))

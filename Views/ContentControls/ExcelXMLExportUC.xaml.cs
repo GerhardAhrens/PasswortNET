@@ -147,7 +147,7 @@
                 progress.Report(0);
                 if (this.IsAllRows == false)
                 {
-
+                    this.CreateSelectedRows(progress);
                 }
                 else
                 {
@@ -304,6 +304,11 @@
         {
             this.ProgressBarValue = percentage * 100;
             this.ProgressBarText = (percentage).ToString("0%");
+        }
+
+        private void CreateSelectedRows(IProgress<double> progress)
+        {
+
         }
 
         private void CreateAllRows(IProgress<double> progress)

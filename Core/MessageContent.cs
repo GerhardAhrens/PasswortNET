@@ -86,6 +86,22 @@ namespace PasswortNET.Core
             return resultOK.Item1;
         }
 
+        public static NotificationBoxButton FeaturesNotFound2(this INotificationService @this, string featuresText = "")
+        {
+            (string InfoText, string CustomText, double FontSize) msgText = ("Funktion nicht gefunden", $"Die gewünschte Funktion '{featuresText}' steht nicht zur Verfügung\nBei Bedarf kontaktieren Sie den Verantwortlichen der Applikation.",18);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+
         #region Login und Change Password
         public static NotificationBoxButton DatebaseNotExist(this INotificationService @this, string fileName)
         {
