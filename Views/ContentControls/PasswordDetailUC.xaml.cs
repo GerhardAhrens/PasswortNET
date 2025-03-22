@@ -18,7 +18,7 @@
     {
         private INotificationService notificationService = new NotificationService();
 
-        public PasswordDetailUC() : base(typeof(PasswordDetailUC))
+        public PasswordDetailUC(ChangeViewEventArgs e) : base(typeof(PasswordDetailUC))
         {
             this.InitializeComponent();
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);

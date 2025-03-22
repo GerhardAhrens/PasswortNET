@@ -32,7 +32,35 @@
 
                     if (Views.ContainsKey(mainButton) == true)
                     {
-                        menuWorkArea = new MenuWorkArea(CreateInstanceContent(mainButton));
+                        menuWorkArea = new MenuWorkArea(CreateInstanceContent(mainButton,null));
+                        menuWorkArea.WorkContent.Focusable = true;
+                        menuWorkArea.WorkContent.Focus();
+                    }
+
+                    if (menuWorkArea != null)
+                    {
+                        menuWorkArea.UsedTime = lvt.Result();
+                        menuWorkArea.ButtonDescription = mainButton.ToDescription();
+                    }
+                }
+            }
+
+            return menuWorkArea;
+        }
+
+        public static MenuWorkArea Get(MainButton mainButton, ChangeViewEventArgs changeViewArgs)
+        {
+            MenuWorkArea menuWorkArea = null;
+            using (LoadingWaitCursor wc = new LoadingWaitCursor())
+            {
+                using (LoadingViewTime lvt = new LoadingViewTime())
+                {
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
+                    if (Views.ContainsKey(mainButton) == true)
+                    {
+                        menuWorkArea = new MenuWorkArea(CreateInstanceContent(mainButton, changeViewArgs));
                         menuWorkArea.WorkContent.Focusable = true;
                         menuWorkArea.WorkContent.Focus();
                     }
@@ -77,7 +105,7 @@
             }
         }
 
-        private static UserControlBase CreateInstanceContent(Enum key)
+        private static UserControlBase CreateInstanceContent(Enum key, ChangeViewEventArgs changeViewArgs)
         {
             Type viewObject = Views[key];
 
@@ -94,7 +122,7 @@
                         }
                         else
                         {
-                            return (UserControlBase)Activator.CreateInstance(viewObject, null);
+                            return (UserControlBase)Activator.CreateInstance(viewObject, changeViewArgs);
                         }
                     }
                     else
