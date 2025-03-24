@@ -175,7 +175,6 @@
                     }
 
                     StatusbarMain.Statusbar.SetNotification($"Bereit: {objectRuntime.ResultMilliseconds()}ms; Anzahl: {this.DisplayRowCount}");
-
                 }
             }
             catch (FileLockException ex)

@@ -4,6 +4,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using ModernBaseLibrary.Core;
 
     using ModernIU.Controls;
 
@@ -18,13 +19,21 @@
     {
         private INotificationService notificationService = new NotificationService();
 
-        public PasswordDetailUC(ChangeViewEventArgs e) : base(typeof(PasswordDetailUC))
+        public PasswordDetailUC(ChangeViewEventArgs args) : base(typeof(PasswordDetailUC))
         {
             this.InitializeComponent();
+
+            this.Id = args.EntityId;
+            this.RowPosition = args.RowPosition;
+
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
             this.InitCommands();
             this.DataContext = this;
         }
+
+
+        private Guid Id { get; set; }
+        private int RowPosition { get; set; }
 
         public override void InitCommands()
         {
@@ -39,6 +48,29 @@
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             Keyboard.Focus(this);
+            this.LoadDataHandler();
+        }
+
+        private void LoadDataHandler()
+        {
+            try
+            {
+                using (ObjectRuntime objectRuntime = new ObjectRuntime())
+                {
+
+                    StatusbarMain.Statusbar.SetNotification($"Bereit: {objectRuntime.ResultMilliseconds()}ms");
+                }
+            }
+            catch (FileLockException ex)
+            {
+                App.ErrorMessage(ex);
+                App.Current.Shutdown(0);
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
         }
 
         private void BackHandler(object p1)
@@ -47,6 +79,7 @@
             {
                 Sender = this.GetType().Name,
                 MenuButton = MainButton.MainOverview,
+                RowPosition = this.RowPosition,
             });
         }
 
