@@ -25,6 +25,8 @@
   <ItemGroup>
     <None Remove="Resources\Picture\ApplicationIcon.ico" />
     <None Remove="Resources\Picture\ApplicationIcon.png" />
+    <None Remove="Resources\Picture\NoPicture256x226.png" />
+    <None Remove="Resources\Picture\NoPicture512x454.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +38,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Picture\ApplicationIcon.ico" />
     <EmbeddedResource Include="Resources\Picture\ApplicationIcon.png" />
+    <EmbeddedResource Include="Resources\Picture\NoPicture256x226.png" />
+    <EmbeddedResource Include="Resources\Picture\NoPicture512x454.png" />
   </ItemGroup>
 
   <ItemGroup>

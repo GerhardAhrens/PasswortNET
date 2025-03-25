@@ -10,7 +10,7 @@
     {
         public string Sender { get; set; }
         public string Description { get; set; }
-        public MainButton MenuButton { get; set; }
+        public FunctionButtons MenuButton { get; set; }
         public string LoginHash { get; set; }
 
         /// <summary>
@@ -25,11 +25,11 @@
         /// <summary>
         /// Wechsel von Dialog
         /// </summary>
-        public MainButton FromPage { get; set; }
+        public FunctionButtons FromPage { get; set; }
 
         /// <summary>
         /// Wechsel zu Dialog
         /// </summary>
-        public MainButton TargetPage { get; set; }
+        public FunctionButtons TargetPage { get; set; }
     }
 }

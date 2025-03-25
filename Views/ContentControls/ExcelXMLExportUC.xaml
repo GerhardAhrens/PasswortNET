@@ -47,7 +47,7 @@
                 Height="25"
                 Background="SteelBlue"
                 Command="{StaticResource ResourceKey=BackCloseCmdKey}"
-                CommandParameter="{x:Static localStatic:MainButton.Back}"
+                CommandParameter="{x:Static localStatic:FunctionButtons.Back}"
                 Content="Zurück"
                 CornerRadius="2"
                 MouseOverBackground="LightGray"

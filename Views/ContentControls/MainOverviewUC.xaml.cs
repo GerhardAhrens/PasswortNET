@@ -492,22 +492,28 @@
                         Sender = this.GetType().Name,
                         EntityId = currentId,
                         RowPosition = 0,
-                        FromPage = MainButton.MainOverview,
-                        MenuButton = MainButton.PasswordDetail,
+                        FromPage = FunctionButtons.MainOverview,
+                        MenuButton = FunctionButtons.PasswordDetail,
                         IsNew = false
                     });
+
+                if (accessTyp == AccessTyp.Website)
+                {
+                }
+                else if (accessTyp == AccessTyp.Passwort)
+                {
+                }
+                else if (accessTyp == AccessTyp.Pin)
+                {
+                }
+                else if (accessTyp == AccessTyp.License)
+                {
+                }
             }
             catch (Exception ex)
             {
                 string errorText = ex.Message;
                 throw;
-            }
-
-            if (accessTyp.In(AccessTyp.Website,AccessTyp.Passwort, AccessTyp.Pin) == true)
-            {
-            }
-            else
-            {
             }
         }
 
@@ -574,7 +580,7 @@
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
             {
                 Sender = this.GetType().Name,
-                MenuButton = MainButton.Login,
+                MenuButton = FunctionButtons.Login,
             });
         }
         #endregion Command Handler Methodes

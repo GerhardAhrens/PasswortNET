@@ -19,8 +19,8 @@ namespace PasswortNET.DialogNavigation
 
     public interface IDialogFactory
     {
-        public abstract static FactoryResult Get(MainButton mainButton);
+        public abstract static FactoryResult Get(FunctionButtons mainButton);
 
-        public abstract static FactoryResult Get(MainButton mainButton, IFactoryArgs changeViewArgs);
+        public abstract static FactoryResult Get(FunctionButtons mainButton, IFactoryArgs changeViewArgs);
     }
 }

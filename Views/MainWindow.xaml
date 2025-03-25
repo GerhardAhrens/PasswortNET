@@ -49,7 +49,7 @@
 
             <ModernUI:GeometryButton
                 Command="{Binding Path=CmdAgg[HelpCommand]}"
-                CommandParameter="{x:Static localStatic:MainButton.Help}"
+                CommandParameter="{x:Static localStatic:FunctionButtons.Help}"
                 PathData="{StaticResource ResourceKey=IconHelp}" />
 
             <Menu
@@ -108,14 +108,14 @@
 
                     <MenuItem
                         Command="{Binding Path=CmdAgg[AboutCommand]}"
-                        CommandParameter="{x:Static localStatic:MainButton.About}"
+                        CommandParameter="{x:Static localStatic:FunctionButtons.About}"
                         Header="Über ..."
                         Icon="{StaticResource ResourceKey=MenuItemAbout}"
                         IsEnabled="{Binding Path=IsAbout, UpdateSourceTrigger=PropertyChanged}" />
 
                     <MenuItem
                         Command="{Binding Path=CmdAgg[AppSettingsCommand]}"
-                        CommandParameter="{x:Static localStatic:MainButton.AppSettings}"
+                        CommandParameter="{x:Static localStatic:FunctionButtons.AppSettings}"
                         Header="Einstellungen"
                         Icon="{StaticResource ResourceKey=MenuItemAppSettings}"
                         IsEnabled="{Binding Path=IsAppSettings, UpdateSourceTrigger=PropertyChanged}" />
@@ -124,21 +124,21 @@
 
                     <MenuItem
                         Command="{Binding Path=CmdAgg[ExportCommand]}"
-                        CommandParameter="{x:Static localStatic:MainButton.Export}"
+                        CommandParameter="{x:Static localStatic:FunctionButtons.Export}"
                         Header="Export"
                         Icon="{StaticResource ResourceKey=MenuItemExport}"
                         IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
 
                     <MenuItem
                         Command="{Binding Path=CmdAgg[PrintCommand]}"
-                        CommandParameter="{x:Static localStatic:MainButton.Print}"
+                        CommandParameter="{x:Static localStatic:FunctionButtons.Print}"
                         Header="Drucken"
                         Icon="{StaticResource ResourceKey=MenuItemPrint}"
                         IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
 
                     <MenuItem
                         Command="{Binding Path=CmdAgg[DataSyncCommand]}"
-                        CommandParameter="{x:Static localStatic:MainButton.DataSync}"
+                        CommandParameter="{x:Static localStatic:FunctionButtons.DataSync}"
                         Header="Datenbank synchronisieren"
                         Icon="{StaticResource ResourceKey=MenuItemDataSync}"
                         IsEnabled="{Binding Path=IsImportExport, UpdateSourceTrigger=PropertyChanged}" />
@@ -146,14 +146,14 @@
 
                     <MenuItem
                         Command="{Binding Path=CmdAgg[ChangePasswordCommand]}"
-                        CommandParameter="{x:Static localStatic:MainButton.ChangePassword}"
+                        CommandParameter="{x:Static localStatic:FunctionButtons.ChangePassword}"
                         Header="Passwort ändern"
                         Icon="{StaticResource ResourceKey=MenuItemChangePassword}"
                         IsEnabled="{Binding Path=IsLogoff, UpdateSourceTrigger=PropertyChanged}" />
 
                     <MenuItem
                         Command="{StaticResource ResourceKey=LogoffCmdKey}"
-                        CommandParameter="{x:Static localStatic:MainButton.Logoff}"
+                        CommandParameter="{x:Static localStatic:FunctionButtons.Logoff}"
                         Header="Abmelden"
                         Icon="{StaticResource ResourceKey=MenuItemLogoff}"
                         IsEnabled="{Binding Path=IsLogoff, UpdateSourceTrigger=PropertyChanged}" />

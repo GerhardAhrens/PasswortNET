@@ -211,7 +211,7 @@
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
             {
                 Sender = this.GetType().Name,
-                MenuButton = MainButton.MainOverview,
+                MenuButton = FunctionButtons.MainOverview,
                 LoginHash = hash,
             });
         }

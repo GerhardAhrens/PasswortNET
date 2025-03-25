@@ -19,7 +19,7 @@ namespace PasswortNET.Core
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
 
-    public enum MainButton : int
+    public enum FunctionButtons : int
     {
         [Description("Keine Auswahl")]
         None = 0,

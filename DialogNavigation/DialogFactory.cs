@@ -21,7 +21,7 @@
             RegisterControls();
         }
 
-        public static FactoryResult Get(MainButton mainButton)
+        public static FactoryResult Get(FunctionButtons mainButton)
         {
             FactoryResult resultContent = null;
             using (LoadingWaitCursor wc = new LoadingWaitCursor())
@@ -46,7 +46,7 @@
             return resultContent;
         }
 
-        public static FactoryResult Get(MainButton mainButton, IFactoryArgs changeViewArgs)
+        public static FactoryResult Get(FunctionButtons mainButton, IFactoryArgs changeViewArgs)
         {
             FactoryResult resultContent = null;
             using (LoadingWaitCursor wc = new LoadingWaitCursor())
@@ -82,15 +82,15 @@
                 if (Views == null)
                 {
                     Views = new Dictionary<Enum, Type>();
-                    Views.Add(MainButton.Home, typeof(HomeUC));
-                    Views.Add(MainButton.Login, typeof(LoginUC));
-                    Views.Add(MainButton.ChangePassword, typeof(ChangePasswordUC));
-                    Views.Add(MainButton.AppSettings, typeof(AppSettingsUC));
-                    Views.Add(MainButton.About, typeof(AboutUC));
-                    Views.Add(MainButton.MainOverview, typeof(MainOverviewUC));
-                    Views.Add(MainButton.PasswordDetail, typeof(PasswordDetailUC));
-                    Views.Add(MainButton.Export, typeof(ExcelXMLExportUC));
-                    Views.Add(MainButton.DataSync, typeof(DataSyncUC));
+                    Views.Add(FunctionButtons.Home, typeof(HomeUC));
+                    Views.Add(FunctionButtons.Login, typeof(LoginUC));
+                    Views.Add(FunctionButtons.ChangePassword, typeof(ChangePasswordUC));
+                    Views.Add(FunctionButtons.AppSettings, typeof(AppSettingsUC));
+                    Views.Add(FunctionButtons.About, typeof(AboutUC));
+                    Views.Add(FunctionButtons.MainOverview, typeof(MainOverviewUC));
+                    Views.Add(FunctionButtons.PasswordDetail, typeof(PasswordDetailUC));
+                    Views.Add(FunctionButtons.Export, typeof(ExcelXMLExportUC));
+                    Views.Add(FunctionButtons.DataSync, typeof(DataSyncUC));
                 }
             }
             catch (Exception ex)

@@ -95,7 +95,7 @@
             set => base.SetValue(value);
         }
 
-        private MainButton CurrentUCName { get; set; }
+        private FunctionButtons CurrentUCName { get; set; }
         #endregion Properties
 
         public override void InitCommands()
@@ -136,7 +136,7 @@
             }
 
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
-            arg.MenuButton = MainButton.Login;
+            arg.MenuButton = FunctionButtons.Login;
             this.ChangeControl(arg);
 
             StatusbarMain.Statusbar.Notification = "Anwendung wird gestartet ...";
@@ -152,35 +152,35 @@
         private void LogoffHandler(object p1)
         {
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
-            arg.MenuButton = MainButton.Login;
+            arg.MenuButton = FunctionButtons.Login;
             this.ChangeControl(arg);
         }
 
         private void ChangePasswordHandler(object p1)
         {
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
-            arg.MenuButton = MainButton.ChangePassword;
+            arg.MenuButton = FunctionButtons.ChangePassword;
             this.ChangeControl(arg);
         }
 
         private void AppSettingsHandler(object p1)
         {
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
-            arg.MenuButton = MainButton.AppSettings;
+            arg.MenuButton = FunctionButtons.AppSettings;
             this.ChangeControl(arg);
         }
 
         private void AboutHandler(object p1)
         {
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
-            arg.MenuButton = MainButton.About;
+            arg.MenuButton = FunctionButtons.About;
             this.ChangeControl(arg);
         }
 
         private void ExportHandler(object p1)
         {
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
-            arg.MenuButton = MainButton.Export;
+            arg.MenuButton = FunctionButtons.Export;
             this.ChangeControl(arg);
         }
 
@@ -192,7 +192,7 @@
         private void DataSyncHandler(object p1)
         {
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
-            arg.MenuButton = MainButton.DataSync;
+            arg.MenuButton = FunctionButtons.DataSync;
             this.ChangeControl(arg);
         }
 
