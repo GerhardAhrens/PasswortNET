@@ -9,9 +9,10 @@
 
     using ModernUI.MVVM.Base;
 
+    using PasswortNET.DialogNavigation;
     using PasswortNET.Views.ContentControls;
 
-    public static class DialogFactory
+    public class DialogFactory : IDialogFactory
     {
         private static Dictionary<Enum, Type> Views = null;
 
@@ -20,9 +21,9 @@
             RegisterControls();
         }
 
-        public static MenuWorkArea Get(MainButton mainButton)
+        public static FactoryResult Get(MainButton mainButton)
         {
-            MenuWorkArea menuWorkArea = null;
+            FactoryResult resultContent = null;
             using (LoadingWaitCursor wc = new LoadingWaitCursor())
             {
                 using (LoadingViewTime lvt = new LoadingViewTime())
@@ -32,25 +33,22 @@
 
                     if (Views.ContainsKey(mainButton) == true)
                     {
-                        menuWorkArea = new MenuWorkArea(CreateInstanceContent(mainButton,null));
-                        menuWorkArea.WorkContent.Focusable = true;
-                        menuWorkArea.WorkContent.Focus();
-                    }
-
-                    if (menuWorkArea != null)
-                    {
-                        menuWorkArea.UsedTime = lvt.Result();
-                        menuWorkArea.ButtonDescription = mainButton.ToDescription();
+                        UserControlBase resultInstance = CreateInstanceContent(mainButton, null);
+                        resultContent = new FactoryResult(resultInstance);
+                        resultContent.WorkContent.Focusable = true;
+                        resultContent.WorkContent.Focus();
+                        resultContent.UsedTime = lvt.Result();
+                        resultContent.ButtonDescription = mainButton.ToDescription();
                     }
                 }
             }
 
-            return menuWorkArea;
+            return resultContent;
         }
 
-        public static MenuWorkArea Get(MainButton mainButton, ChangeViewEventArgs changeViewArgs)
+        public static FactoryResult Get(MainButton mainButton, IFactoryArgs changeViewArgs)
         {
-            MenuWorkArea menuWorkArea = null;
+            FactoryResult resultContent = null;
             using (LoadingWaitCursor wc = new LoadingWaitCursor())
             {
                 using (LoadingViewTime lvt = new LoadingViewTime())
@@ -60,25 +58,22 @@
 
                     if (Views.ContainsKey(mainButton) == true)
                     {
-                        menuWorkArea = new MenuWorkArea(CreateInstanceContent(mainButton, changeViewArgs));
-                        menuWorkArea.WorkContent.Focusable = true;
-                        menuWorkArea.WorkContent.Focus();
-                    }
-
-                    if (menuWorkArea != null)
-                    {
-                        menuWorkArea.UsedTime = lvt.Result();
-                        menuWorkArea.ButtonDescription = mainButton.ToDescription();
+                        UserControlBase resultInstance = CreateInstanceContent(mainButton, changeViewArgs);
+                        resultContent = new FactoryResult(resultInstance);
+                        resultContent.WorkContent.Focusable = true;
+                        resultContent.WorkContent.Focus();
+                        resultContent.UsedTime = lvt.Result();
+                        resultContent.ButtonDescription = mainButton.ToDescription();
                     }
                 }
             }
 
-            return menuWorkArea;
+            return resultContent;
         }
 
 
         /// <summary>
-        /// Registrieren der Ribbonmenü / Content Controls (Übersichtsdialoge)
+        /// Registrieren der Content Controls
         /// </summary>
         private static void RegisterControls()
         {
@@ -105,24 +100,25 @@
             }
         }
 
-        private static UserControlBase CreateInstanceContent(Enum key, ChangeViewEventArgs changeViewArgs)
+        private static UserControlBase CreateInstanceContent(Enum key, IFactoryArgs changeViewArgs)
         {
             Type viewObject = Views[key];
 
-            if (viewObject != null)
+            if (viewObject != null && viewObject.IsAssignableTo(typeof(UserControlBase)) == true)
             {
                 if (viewObject.GetConstructors().Count() >= 1)
                 {
                     if (viewObject.GetConstructors()[0].GetParameters().Count() == 1)
                     {
                         ParameterInfo param = viewObject.GetConstructors()[0].GetParameters()[0];
-                        if (param.Name == "pageTyp")
+                        Type typParam = Type.GetType($"{param.ParameterType.Namespace}.{param.ParameterType.Name}");
+                        if (param != null && typParam.GetInterfaces().Contains(typeof(IFactoryArgs)) == true)
                         {
-                            return (UserControlBase)Activator.CreateInstance(viewObject, key);
+                            return (UserControlBase)Activator.CreateInstance(viewObject, changeViewArgs);
                         }
                         else
                         {
-                            return (UserControlBase)Activator.CreateInstance(viewObject, changeViewArgs);
+                            throw new NotSupportedException($"Es wurde kein Konstruktor angegeben. Es muß ein Kontruktor der 'IFactoryArgs' implementiert vorhanden sein. Control: {key.ToDescription()}; Object: {viewObject.GetFriendlyTypeName()}");
                         }
                     }
                     else
@@ -137,7 +133,7 @@
             }
             else
             {
-                return null;
+                throw new NotSupportedException($"Das UserControl implementiert kein 'UserControlBase'. Control: {key.ToDescription()}; Object: {viewObject.GetFriendlyTypeName()}");
             }
         }
     }

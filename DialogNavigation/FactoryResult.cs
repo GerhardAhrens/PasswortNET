@@ -3,12 +3,12 @@ namespace PasswortNET.Core
     using System;
     using System.Windows.Controls;
 
-    public class MenuWorkArea : Tuple<UserControl, string>
+    public class FactoryResult : Tuple<UserControl, string>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MenuWorkArea"/> class.
+        /// Initializes a new instance of the <see cref="FactoryResult"/> class.
         /// </summary>
-        public MenuWorkArea(UserControl workContent, string usedTime = "") : base(workContent, usedTime)
+        public FactoryResult(UserControl workContent, string usedTime = "") : base(workContent, usedTime)
         {
             this.WorkContent = workContent;
             this.UsedTime = usedTime;

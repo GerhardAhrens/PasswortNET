@@ -254,8 +254,8 @@
 
         private void ChangeControl(ChangeViewEventArgs e)
         {
-            MenuWorkArea view = DialogFactory.Get(e.MenuButton,e);
-            if (view is MenuWorkArea menuWorkArea)
+            FactoryResult view = DialogFactory.Get(e.MenuButton,e);
+            if (view is FactoryResult menuWorkArea)
             {
                 using (ObjectRuntime objectRuntime = new ObjectRuntime())
                 {

@@ -1,9 +1,12 @@
 ﻿namespace PasswortNET.Core
 {
     using System;
+
     using ModernBaseLibrary.Core;
 
-    public class ChangeViewEventArgs : EventArgs, IEventAggregatorArgs
+    using PasswortNET.DialogNavigation;
+
+    public class ChangeViewEventArgs : EventArgs, IEventAggregatorArgs, IFactoryArgs
     {
         public string Sender { get; set; }
         public string Description { get; set; }
