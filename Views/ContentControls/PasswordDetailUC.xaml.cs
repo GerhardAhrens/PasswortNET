@@ -1,6 +1,7 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
     using System;
+    using System.IO;
     using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
@@ -111,10 +112,18 @@
             set => base.SetValue(value);
         }
 
+        public byte[] Photo
+        {
+            get => base.GetValue<byte[]>();
+            set => base.SetValue(value);
+        }
+
         private Guid Id { get; set; }
         private int RowPosition { get; set; }
-
-        public bool IsEntryNew { get; set; }
+        private bool IsPhotoFound { get; set; }
+        private long PhotoSize { get; set; } = 0;
+        private string PhotoFileName { get; set; } = string.Empty;
+        private bool IsEntryNew { get; set; }
 
         #endregion Properties
 
@@ -126,6 +135,8 @@
             this.CmdAgg.AddOrSetCommand("TrackingCommand", new RelayCommand(p1 => this.TrackingHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("PasswordGeneratorCommand", new RelayCommand(p1 => this.PasswordGeneratorHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("CallWebPageCommand", new RelayCommand(p1 => this.CallWebPageHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("DeleteAttachmentCommand", new RelayCommand(p1 => this.DeleteAttachmentHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("FromClipboardAttachmentCommand", new RelayCommand(p1 => this.FromClipboardAttachmentHandler(p1), p2 => true));
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -147,10 +158,21 @@
 
                     if (this.IsEntryNew == true)
                     {
+                        using (PasswordPinRepository repository = new PasswordPinRepository())
+                        {
+                            this.RegionSource = repository.ListByRegion();
+                            this.SelectedRegion = this.RegionSource.FirstOrDefault(f => f.Name == "Alle");
+                        }
+
                         this.CurrentSelectedItem = new PasswordPin();
                         this.CurrentSelectedItem.Id = this.Id;
                         this.CurrentSelectedItem.CreatedBy = UserInfo.TS().CurrentDomainUser;
                         this.CurrentSelectedItem.CreatedOn = UserInfo.TS().CurrentTime;
+                        this.CurrentSelectedItem.Id = Guid.Empty;
+                        this.AccessTyp = AccessTyp.Passwort;
+                        this.BackgroundColorSelected = this.ConvertNameToBrush("Transparent");
+                        this.Photo = this.ExtractResource("NoPicture256x226.png");
+                        base.IsPropertyChanged = false;
                     }
                     else
                     {
@@ -169,13 +191,39 @@
                                 this.Website = this.CurrentSelectedItem.Website;
                                 this.SelectedSymbol = this.CurrentSelectedItem.Symbol;
                                 this.Password = this.CurrentSelectedItem.Passwort;
+                                this.TxtPassword.Text = this.Password;
                                 this.BackgroundColorSelected = this.ConvertNameToBrush(this.CurrentSelectedItem.Background);
                                 if (string.IsNullOrEmpty(this.CurrentSelectedItem.Region) == false)
                                 {
                                     this.SelectedRegion = this.RegionSource.FirstOrDefault(f => f.Name == this.CurrentSelectedItem.Region);
                                 }
+
+                                this.CurrentSelectedItem.ModifiedBy = UserInfo.TS().CurrentDomainUser;
+                                this.CurrentSelectedItem.ModifiedOn = UserInfo.TS().CurrentTime;
                             }
                         }
+
+                        using (AttachmentRepository repository = new AttachmentRepository())
+                        {
+                            if (repository.ExistAttachment(this.CurrentSelectedItem.Id) == true)
+                            {
+                                this.Photo = repository.GetAttachmentById(this.CurrentSelectedItem.Id);
+                                this.IsPhotoFound = true;
+                                this.PhotoSize = this.Photo.Length;
+                                if (this.PhotoSize == 0)
+                                {
+                                    this.Photo = this.ExtractResource("NoPicture256x226.png");
+                                }
+                            }
+                            else
+                            {
+                                this.Photo = this.ExtractResource("NoPicture256x226.png");
+                                this.IsPhotoFound = false;
+                                this.PhotoSize = this.Photo.Length;
+                            }
+                        }
+
+                        base.IsPropertyChanged = false;
                     }
 
                     StatusbarMain.Statusbar.SetNotification($"Bereit: {objectRuntime.ResultMilliseconds()}ms");
@@ -193,6 +241,7 @@
             }
         }
 
+        #region Command Handler
         private void BackHandler(object p1)
         {
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
@@ -228,6 +277,16 @@
             this.notificationService.FeaturesNotFound2("Passwortgenerator");
         }
 
+        private void DeleteAttachmentHandler(object p1)
+        {
+        }
+
+        private void FromClipboardAttachmentHandler(object p1)
+        {
+        }
+
+        #endregion Command Handler
+
         private int ConvertColorNameToIndex(string colorName)
         {
             PropertyInfo[] colors = typeof(Brushes).GetProperties();
@@ -261,6 +320,22 @@
             Color col = (Color)ColorConverter.ConvertFromString(colorName);
             Brush brushColor = new SolidColorBrush(col);
             return brushColor;
+        }
+
+        public byte[] ExtractResource(string filename)
+        {
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            using (Stream resFilestream = executingAssembly.GetManifestResourceStream($"{executingAssembly.GetName().Name}.Resources.Picture.{filename}"))
+            {
+                if (resFilestream == null)
+                {
+                    return null;
+                }
+
+                byte[] ba = new byte[resFilestream.Length];
+                resFilestream.Read(ba, 0, ba.Length);
+                return ba;
+            }
         }
 
         private void CheckContent(string value, string propertyName)

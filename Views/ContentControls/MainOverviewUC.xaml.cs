@@ -588,7 +588,30 @@
         #region Handler zum dem EventAggregator
         private void WorkEntryHandler(WorkEventArgs args)
         {
-            this.notificationService.FeaturesNotFound(args.AccessTyp.ToString());
+            AccessTyp accessTyp = args.AccessTyp;
+
+            if (accessTyp == AccessTyp.Website)
+            {
+            }
+            else if (accessTyp == AccessTyp.Passwort)
+            {
+                base.EventAgg.Publish<ChangeViewEventArgs>(
+                    new ChangeViewEventArgs
+                    {
+                        Sender = this.GetType().Name,
+                        EntityId = Guid.Empty,
+                        RowPosition = 0,
+                        FromPage = FunctionButtons.MainOverview,
+                        MenuButton = FunctionButtons.PasswordDetail,
+                        IsNew = true
+                    });
+            }
+            else if (accessTyp == AccessTyp.Pin)
+            {
+            }
+            else if (accessTyp == AccessTyp.License)
+            {
+            }
 
             this.LoadDataHandler();
         }
