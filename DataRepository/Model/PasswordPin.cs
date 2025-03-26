@@ -20,12 +20,13 @@ namespace PasswortNET.Model
     using System.Windows.Media;
 
     using ModernBaseLibrary.Extension;
+    using ModernUILibrary.MVVM.Base;
 
     using PasswortNET.Core;
     using PasswortNET.Core.Enums;
 
     [DebuggerDisplay("Title={this.Title};Username={this.Username};Symbol={this.Symbol};Background={this.Background}")]
-    public partial class PasswordPin
+    public partial class PasswordPin : ModelBase<PasswordPin>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PasswordPin"/> class.

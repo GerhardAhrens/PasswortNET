@@ -20,6 +20,8 @@
 
         public bool IsNew { get; set; } = false;
 
+        public bool IsCopy { get; set; } = false;
+
         public int RowPosition { get; set; }
 
         /// <summary>

@@ -18,8 +18,9 @@ namespace PasswortNET.Model
     using System.Text.Json.Serialization;
 
     using ModernBaseLibrary.Core;
+    using ModernUILibrary.MVVM.Base;
 
-    public partial class PasswordPin
+    public partial class PasswordPin : ModelBase<PasswordPin>
     {
         [JsonIgnore]
         public string FullName

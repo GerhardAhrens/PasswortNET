@@ -7,13 +7,16 @@
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Media.Imaging;
 
     using ModernBaseLibrary.Core;
+    using ModernBaseLibrary.Extension;
 
     using ModernIU.Controls;
 
     using ModernUI.MVVM.Base;
 
+    using PasswortNET.AuditTrail;
     using PasswortNET.Core;
     using PasswortNET.Core.Enums;
     using PasswortNET.DataRepository;
@@ -32,11 +35,24 @@
 
             this.Id = args.EntityId;
             this.RowPosition = args.RowPosition;
-            this.IsEntryNew = args.IsNew;
+            this.IsNew = args.IsNew;
+            this.IsCopy = args.IsCopy;
 
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
+            WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Unloaded", this.OnUcUnloaded);
             this.InitCommands();
             this.DataContext = this;
+        }
+
+        private void OnUcUnloaded(object sender, RoutedEventArgs e)
+        {
+            PasswordPin original = PasswordPin.ToClone<PasswordPin>(this.CurrentSelectedItem);
+            using (PasswordPinRepository repository = new PasswordPinRepository())
+            {
+                original.ShowLast = DateTime.Now;
+                original.IsShowLast = true;
+                repository.Update(original);
+            }
         }
 
         #region Properties
@@ -106,7 +122,7 @@
             set => base.SetValue(value, this.CheckContent);
         }
 
-        public Brush BackgroundColorSelected
+        public Brush SelectedBackgroundColor
         {
             get => base.GetValue<Brush>();
             set => base.SetValue(value);
@@ -119,11 +135,11 @@
         }
 
         private Guid Id { get; set; }
-        private int RowPosition { get; set; }
         private bool IsPhotoFound { get; set; }
         private long PhotoSize { get; set; } = 0;
         private string PhotoFileName { get; set; } = string.Empty;
-        private bool IsEntryNew { get; set; }
+        private bool IsNew { get; set; }
+        private bool IsCopy { get; set; }
 
         #endregion Properties
 
@@ -156,7 +172,7 @@
                         this.SymbolSource = sl.GetSymbols();
                     }
 
-                    if (this.IsEntryNew == true)
+                    if (this.IsNew == true)
                     {
                         using (PasswordPinRepository repository = new PasswordPinRepository())
                         {
@@ -170,7 +186,7 @@
                         this.CurrentSelectedItem.CreatedOn = UserInfo.TS().CurrentTime;
                         this.CurrentSelectedItem.Id = Guid.Empty;
                         this.AccessTyp = AccessTyp.Passwort;
-                        this.BackgroundColorSelected = this.ConvertNameToBrush("Transparent");
+                        this.SelectedBackgroundColor = this.ConvertNameToBrush("Transparent");
                         this.Photo = this.ExtractResource("NoPicture256x226.png");
                         base.IsPropertyChanged = false;
                     }
@@ -192,7 +208,7 @@
                                 this.SelectedSymbol = this.CurrentSelectedItem.Symbol;
                                 this.Password = this.CurrentSelectedItem.Passwort;
                                 this.TxtPassword.Text = this.Password;
-                                this.BackgroundColorSelected = this.ConvertNameToBrush(this.CurrentSelectedItem.Background);
+                                this.SelectedBackgroundColor = this.ConvertNameToBrush(this.CurrentSelectedItem.Background);
                                 if (string.IsNullOrEmpty(this.CurrentSelectedItem.Region) == false)
                                 {
                                     this.SelectedRegion = this.RegionSource.FirstOrDefault(f => f.Name == this.CurrentSelectedItem.Region);
@@ -232,7 +248,6 @@
             catch (FileLockException ex)
             {
                 App.ErrorMessage(ex);
-                App.Current.Shutdown(0);
             }
             catch (Exception ex)
             {
@@ -254,7 +269,65 @@
 
         private void SaveDetailHandler(object p1)
         {
-            this.notificationService.FeaturesNotFound2("Speichern");
+            try
+            {
+                PasswordPin original = PasswordPin.ToClone<PasswordPin>(this.CurrentSelectedItem);
+                this.CurrentSelectedItem.AccessTyp = this.AccessTyp;
+                this.CurrentSelectedItem.Title = this.Title;
+                this.CurrentSelectedItem.Description = this.Description;
+                this.CurrentSelectedItem.ShowDescription = this.ShowDescription;
+                this.CurrentSelectedItem.Website = this.Website;
+                this.CurrentSelectedItem.Symbol = this.SelectedSymbol;
+                this.CurrentSelectedItem.Passwort = this.TxtPassword.Text;
+                this.CurrentSelectedItem.Background = this.ConvertBrushToName(this.CBColor.SelectedColor);
+                this.CurrentSelectedItem.Region = this.SelectedRegion?.Name;
+                using (PasswordPinRepository repository = new PasswordPinRepository())
+                {
+                    if (this.CurrentSelectedItem.Id == Guid.Empty && this.IsCopy == false)
+                    {
+                        this.CurrentSelectedItem.CreatedBy = UserInfo.TS().CurrentUser;
+                        this.CurrentSelectedItem.CreatedOn = UserInfo.TS().CurrentTime;
+                        this.CurrentSelectedItem.ModifiedBy = UserInfo.TS().CurrentUser;
+                        this.CurrentSelectedItem.ModifiedOn = UserInfo.TS().CurrentTime;
+                        this.CurrentSelectedItem.Id = Guid.NewGuid();
+                        OperationResult<AuditTrailResult> auditTrailresult = AuditTrail.Create(this.CurrentSelectedItem, null);
+
+                        repository.Add(this.CurrentSelectedItem, auditTrailresult, this.Photo);
+
+                        this.ChangedContent(false);
+                    }
+                    else if (this.CurrentSelectedItem.Id != Guid.Empty && this.IsCopy == false)
+                    {
+                        this.CurrentSelectedItem.CreatedBy = UserInfo.TS().CurrentUser;
+                        this.CurrentSelectedItem.CreatedOn = UserInfo.TS().CurrentTime;
+                        this.CurrentSelectedItem.ModifiedBy = UserInfo.TS().CurrentUser;
+                        this.CurrentSelectedItem.ModifiedOn = UserInfo.TS().CurrentTime;
+                        OperationResult<AuditTrailResult> auditTrailresult = AuditTrail.Create(original, this.CurrentSelectedItem);
+
+                        repository.Update(this.CurrentSelectedItem, auditTrailresult, this.Photo);
+                        this.ChangedContent(false);
+                    }
+                    else if (this.CurrentSelectedItem.Id != Guid.Empty && this.IsCopy == true)
+                    {
+                        this.CurrentSelectedItem.Id = Guid.NewGuid();
+                        this.CurrentSelectedItem.CreatedBy = UserInfo.TS().CurrentUser;
+                        this.CurrentSelectedItem.CreatedOn = UserInfo.TS().CurrentTime;
+                        this.CurrentSelectedItem.ModifiedBy = UserInfo.TS().CurrentUser;
+                        this.CurrentSelectedItem.ModifiedOn = UserInfo.TS().CurrentTime;
+                        OperationResult<AuditTrailResult> auditTrailresult = AuditTrail.Create(this.CurrentSelectedItem, null);
+
+                        repository.Add(this.CurrentSelectedItem, auditTrailresult, this.Photo);
+                        this.ChangedContent(false);
+                    }
+                }
+
+                this.BackHandler(null);
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
         }
 
         private void AddAttachmentHandler(object p1)
@@ -279,10 +352,32 @@
 
         private void DeleteAttachmentHandler(object p1)
         {
+            using (AttachmentRepository repository = new AttachmentRepository())
+            {
+                repository.DeleteAttachment(this.CurrentSelectedItem.Id);
+                this.Photo = this.ExtractResource("NoPicture256x226.png");
+                this.IsPhotoFound = false;
+                this.PhotoSize = this.Photo.Length;
+            }
         }
 
         private void FromClipboardAttachmentHandler(object p1)
         {
+            BitmapSource clipboardImage = Clipboard.GetImage();
+            if (clipboardImage != null)
+            {
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.QualityLevel = 100;
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    encoder.Frames.Add(BitmapFrame.Create(clipboardImage));
+                    encoder.Save(stream);
+                    this.Photo = stream.ToArray();
+                    this.IsPhotoFound = true;
+                    this.PhotoSize = this.Photo.Length;
+                    stream.Close();
+                }
+            }
         }
 
         #endregion Command Handler
@@ -322,6 +417,24 @@
             return brushColor;
         }
 
+        private string ConvertBrushToName(Brush colorName)
+        {
+            string result = string.Empty;
+            string cname = new BrushConverter().ConvertToString(colorName);
+            PropertyInfo[] brushes = typeof(Brushes).GetProperties();
+            foreach (PropertyInfo item in brushes)
+            {
+                Brush brush = item.GetValue(brushes) as Brush;
+                if (brush.ToString() == cname)
+                {
+                    result = item.Name;
+                    break;
+                }
+
+            }
+            return result;
+        }
+
         public byte[] ExtractResource(string filename)
         {
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
@@ -355,13 +468,13 @@
             var propValue = propInfo.GetValue(this.CurrentSelectedItem);
             if (propValue == null)
             {
-                base.IsPropertyChanged = true;
+                this.ChangedContent(true);
                 return;
             }
 
             if (propValue.Equals(value) == false)
             {
-                base.IsPropertyChanged = true;
+                this.ChangedContent(true);
             }
         }
 
@@ -382,13 +495,26 @@
             var propValue = propInfo.GetValue(this.CurrentSelectedItem);
             if (propValue == null)
             {
-                base.IsPropertyChanged = true;
+                this.ChangedContent(true);
                 return;
             }
 
             if (propValue.Equals(value) == false)
             {
-                base.IsPropertyChanged = true;
+                this.ChangedContent(true);
+            }
+        }
+
+        public override void ChangedContent(bool isPropertyChanged = false)
+        {
+            this.IsPropertyChanged = isPropertyChanged;
+            if (isPropertyChanged == true)
+            {
+                StatusbarMain.Statusbar.SetNotification($"Geändert");
+            }
+            else
+            {
+                StatusbarMain.Statusbar.SetNotification($"Bereit");
             }
         }
     }
