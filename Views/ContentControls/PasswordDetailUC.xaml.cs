@@ -1,8 +1,12 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Reflection;
+    using System.Runtime.InteropServices;
+    using System.Security.Policy;
+    using System.Text.RegularExpressions;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -12,6 +16,7 @@
     using ModernBaseLibrary.Core;
     using ModernBaseLibrary.Extension;
 
+    using ModernIU.Base;
     using ModernIU.Controls;
 
     using ModernUI.MVVM.Base;
@@ -150,7 +155,7 @@
             this.CmdAgg.AddOrSetCommand("AddAttachmentCommand", new RelayCommand(p1 => this.AddAttachmentHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("TrackingCommand", new RelayCommand(p1 => this.TrackingHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("PasswordGeneratorCommand", new RelayCommand(p1 => this.PasswordGeneratorHandler(p1), p2 => true));
-            this.CmdAgg.AddOrSetCommand("CallWebPageCommand", new RelayCommand(p1 => this.CallWebPageHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("CallWebPageCommand", new RelayCommand(p1 => this.CallWebPageHandler(p1), p2 => this.CanCallWebPageHandler(p2)));
             this.CmdAgg.AddOrSetCommand("DeleteAttachmentCommand", new RelayCommand(p1 => this.DeleteAttachmentHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("FromClipboardAttachmentCommand", new RelayCommand(p1 => this.FromClipboardAttachmentHandler(p1), p2 => true));
         }
@@ -278,7 +283,7 @@
                 this.CurrentSelectedItem.ShowDescription = this.ShowDescription;
                 this.CurrentSelectedItem.Website = this.Website;
                 this.CurrentSelectedItem.Symbol = this.SelectedSymbol;
-                this.CurrentSelectedItem.Passwort = this.TxtPassword.Text;
+                this.CurrentSelectedItem.Passwort = this.TxtPassword.Password;
                 this.CurrentSelectedItem.Background = this.ConvertBrushToName(this.CBColor.SelectedColor);
                 this.CurrentSelectedItem.Region = this.SelectedRegion?.Name;
                 using (PasswordPinRepository repository = new PasswordPinRepository())
@@ -340,14 +345,68 @@
             this.notificationService.FeaturesNotFound2("Tracking");
         }
 
-        private void CallWebPageHandler(object p1)
+        private bool CanCallWebPageHandler(object commandParm)
         {
-            this.notificationService.FeaturesNotFound2("Webseite");
+            if (this.CurrentSelectedItem == null)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(this.Website?.Trim()) == true)
+            {
+                return false;
+            }
+            else
+            {
+                if (IsValidURL(this.Website?.Trim()) == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void CallWebPageHandler(object commandParm)
+        {
+            string url = this.Website?.Trim();
+            try
+            {
+                url = url.Replace("&", "^&");
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    url = url.Replace("&", "^&");
+                    Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    Process.Start("xdg-open", url);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", url);
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         private void PasswordGeneratorHandler(object p1)
         {
-            this.notificationService.FeaturesNotFound2("Passwortgenerator");
+            PasswordGeneratorResult result = PasswordGeneratorView.Execute();
+            if (result != null && result.Error == null)
+            {
+                if (result.Cancelled == false)
+                {
+                    this.TxtPassword.Text = result.Result;
+                }
+            }
         }
 
         private void DeleteAttachmentHandler(object p1)
@@ -516,6 +575,13 @@
             {
                 StatusbarMain.Statusbar.SetNotification($"Bereit");
             }
+        }
+
+        private bool IsValidURL(string urlPage)
+        {
+            string Pattern = @"(http(s)?://)?([\w-]+\.)+[\w-]+[\w-]+[\.]+[\][a-z.]{2,3}$+([./?%&=]*)?";
+            Regex Rgx = new Regex(Pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            return Rgx.IsMatch(urlPage);
         }
     }
 }
