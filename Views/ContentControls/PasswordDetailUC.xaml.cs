@@ -390,7 +390,22 @@
 
         private void TrackingHandler(object p1)
         {
-            this.notificationService.FeaturesNotFound2("Tracking");
+            try
+            {
+                base.EventAgg.Publish<ChangeViewEventArgs>(
+                    new ChangeViewEventArgs
+                    {
+                        Sender = this.GetType().Name,
+                        EntityId = this.Id,
+                        FromPage = FunctionButtons.MainOverview,
+                        MenuButton = FunctionButtons.AuditTrail,
+                    });
+            }
+            catch (Exception ex)
+            {
+                string errorText = ex.Message;
+                throw;
+            }
         }
 
         private bool CanCallWebPageHandler(object commandParm)

@@ -49,5 +49,7 @@ namespace PasswortNET.Core
         Print = 12,
         [Description("Hilfe")]
         Help = 13,
+        [Description("Änderungsverfolgung")]
+        AuditTrail = 14,
     }
 }
