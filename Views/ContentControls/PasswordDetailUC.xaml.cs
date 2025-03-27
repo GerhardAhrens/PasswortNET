@@ -5,18 +5,19 @@
     using System.IO;
     using System.Reflection;
     using System.Runtime.InteropServices;
-    using System.Security.Policy;
     using System.Text.RegularExpressions;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
+    using System.Windows.Threading;
 
+    using ModernBaseLibrary.Collection;
     using ModernBaseLibrary.Core;
+    using ModernBaseLibrary.Core.IO;
     using ModernBaseLibrary.Extension;
 
-    using ModernIU.Base;
     using ModernIU.Controls;
 
     using ModernUI.MVVM.Base;
@@ -26,12 +27,15 @@
     using PasswortNET.Core.Enums;
     using PasswortNET.DataRepository;
     using PasswortNET.Model;
+    using PasswortNET.Resources;
 
     /// <summary>
     /// Interaktionslogik für PasswordDetailUC.xaml
     /// </summary>
     public partial class PasswordDetailUC : UserControlBase
     {
+        private readonly Dictionary<string, Func<Result<string>>> validationDelegates = new Dictionary<string, Func<Result<string>>>();
+        private readonly HashSet<string> propertyNames = new HashSet<string>();
         private INotificationService notificationService = new NotificationService();
 
         public PasswordDetailUC(ChangeViewEventArgs args) : base(typeof(PasswordDetailUC))
@@ -45,6 +49,12 @@
 
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Unloaded", this.OnUcUnloaded);
+            WeakEventManager<UserControl, MouseWheelEventArgs>.AddHandler(this, "PreviewMouseWheel", this.OnPreviewMouseWheel);
+            WeakEventManager<MPasswordBox, KeyEventArgs>.AddHandler(this.TxtPassword, "PreviewKeyDown", this.OnPreviewKeyDownPassword);
+
+            this.propertyNames = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly).Select(s => s.Name).ToHashSet();
+            this.ValidationErrors = new ObservableDictionary<string, string>();
+
             this.InitCommands();
             this.DataContext = this;
         }
@@ -139,6 +149,19 @@
             set => base.SetValue(value);
         }
 
+        /* Prüfen von Eingaben */
+        public ObservableDictionary<string, string> ValidationErrors
+        {
+            get => base.GetValue<ObservableDictionary<string, string>>();
+            set => base.SetValue(value);
+        }
+
+        public string ValidationErrorsSelected
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value, this.NavigationProperty);
+        }
+
         private Guid Id { get; set; }
         private bool IsPhotoFound { get; set; }
         private long PhotoSize { get; set; } = 0;
@@ -153,10 +176,10 @@
             this.CmdAgg.AddOrSetCommand("BackCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("SaveDetailCommand", new RelayCommand(p1 => this.SaveDetailHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("AddAttachmentCommand", new RelayCommand(p1 => this.AddAttachmentHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("DeleteAttachmentCommand", new RelayCommand(p1 => this.DeleteAttachmentHandler(p1), p2 => this.CanDeleteAttachmentHandler(p2)));
             this.CmdAgg.AddOrSetCommand("TrackingCommand", new RelayCommand(p1 => this.TrackingHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("PasswordGeneratorCommand", new RelayCommand(p1 => this.PasswordGeneratorHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("CallWebPageCommand", new RelayCommand(p1 => this.CallWebPageHandler(p1), p2 => this.CanCallWebPageHandler(p2)));
-            this.CmdAgg.AddOrSetCommand("DeleteAttachmentCommand", new RelayCommand(p1 => this.DeleteAttachmentHandler(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("FromClipboardAttachmentCommand", new RelayCommand(p1 => this.FromClipboardAttachmentHandler(p1), p2 => true));
         }
 
@@ -164,6 +187,7 @@
         {
             Keyboard.Focus(this);
             this.LoadDataHandler();
+            this.RegisterValidations();
         }
 
         private void LoadDataHandler()
@@ -191,12 +215,14 @@
                         this.CurrentSelectedItem.CreatedOn = UserInfo.TS().CurrentTime;
                         this.CurrentSelectedItem.Id = Guid.Empty;
                         this.AccessTyp = AccessTyp.Passwort;
-                        this.SelectedBackgroundColor = this.ConvertNameToBrush("Transparent");
-                        this.Photo = this.ExtractResource("NoPicture256x226.png");
+                        this.SelectedBackgroundColor = ColorConverters.ConvertNameToBrush("Transparent");
+                        this.Photo = EmbeddedResource.Extract("NoPicture256x226.png");
                         base.IsPropertyChanged = false;
                     }
                     else
                     {
+                        base.IsPropertyChanged = false;
+
                         using (PasswordPinRepository repository = new PasswordPinRepository())
                         {
                             this.RegionSource = repository.ListByRegion();
@@ -211,9 +237,9 @@
                                 this.ShowDescription = this.CurrentSelectedItem.ShowDescription;
                                 this.Website = this.CurrentSelectedItem.Website;
                                 this.SelectedSymbol = this.CurrentSelectedItem.Symbol;
+                                this.TxtPassword.Text = this.CurrentSelectedItem.Passwort;
                                 this.Password = this.CurrentSelectedItem.Passwort;
-                                this.TxtPassword.Text = this.Password;
-                                this.SelectedBackgroundColor = this.ConvertNameToBrush(this.CurrentSelectedItem.Background);
+                                this.SelectedBackgroundColor = ColorConverters.ConvertNameToBrush(this.CurrentSelectedItem.Background);
                                 if (string.IsNullOrEmpty(this.CurrentSelectedItem.Region) == false)
                                 {
                                     this.SelectedRegion = this.RegionSource.FirstOrDefault(f => f.Name == this.CurrentSelectedItem.Region);
@@ -233,12 +259,12 @@
                                 this.PhotoSize = this.Photo.Length;
                                 if (this.PhotoSize == 0)
                                 {
-                                    this.Photo = this.ExtractResource("NoPicture256x226.png");
+                                    this.Photo = EmbeddedResource.Extract("NoPicture256x226.png");
                                 }
                             }
                             else
                             {
-                                this.Photo = this.ExtractResource("NoPicture256x226.png");
+                                this.Photo = EmbeddedResource.Extract("NoPicture256x226.png");
                                 this.IsPhotoFound = false;
                                 this.PhotoSize = this.Photo.Length;
                             }
@@ -284,7 +310,7 @@
                 this.CurrentSelectedItem.Website = this.Website;
                 this.CurrentSelectedItem.Symbol = this.SelectedSymbol;
                 this.CurrentSelectedItem.Passwort = this.TxtPassword.Password;
-                this.CurrentSelectedItem.Background = this.ConvertBrushToName(this.CBColor.SelectedColor);
+                this.CurrentSelectedItem.Background = ColorConverters.ConvertBrushToName(this.CBColor.SelectedColor);
                 this.CurrentSelectedItem.Region = this.SelectedRegion?.Name;
                 using (PasswordPinRepository repository = new PasswordPinRepository())
                 {
@@ -337,7 +363,29 @@
 
         private void AddAttachmentHandler(object p1)
         {
-            this.notificationService.FeaturesNotFound2("Anhang");
+            FileFilter fileFilter = new FileFilter();
+            fileFilter.AddFilter("Alle Dateien", "*", true);
+            fileFilter.AddFilter("Images", "*.png;*.jpg", false);
+
+
+            using (OpenFileDialogEx openFile = new OpenFileDialogEx())
+            {
+                openFile.Title = "Bild einfügen";
+                openFile.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+                openFile.FileFilter = fileFilter;
+                openFile.OpenDialog();
+                if (string.IsNullOrEmpty(openFile.FileName) == false)
+                {
+                    this.PhotoFileName = openFile.FileName;
+                }
+            }
+
+            if (string.IsNullOrEmpty(this.PhotoFileName) == true)
+            {
+                return;
+            }
+
+            this.Photo = System.IO.File.ReadAllBytes(this.PhotoFileName);
         }
 
         private void TrackingHandler(object p1)
@@ -396,7 +444,6 @@
                 }
             }
         }
-
         private void PasswordGeneratorHandler(object p1)
         {
             PasswordGeneratorResult result = PasswordGeneratorView.Execute();
@@ -409,12 +456,17 @@
             }
         }
 
+        private bool CanDeleteAttachmentHandler(object p2)
+        {
+            return this.IsPhotoFound;
+        }
+
         private void DeleteAttachmentHandler(object p1)
         {
             using (AttachmentRepository repository = new AttachmentRepository())
             {
                 repository.DeleteAttachment(this.CurrentSelectedItem.Id);
-                this.Photo = this.ExtractResource("NoPicture256x226.png");
+                this.Photo = EmbeddedResource.Extract("NoPicture256x226.png");
                 this.IsPhotoFound = false;
                 this.PhotoSize = this.Photo.Length;
             }
@@ -441,78 +493,22 @@
 
         #endregion Command Handler
 
-        private int ConvertColorNameToIndex(string colorName)
+        private void RegisterValidations()
         {
-            PropertyInfo[] colors = typeof(Brushes).GetProperties();
-            int indexColor = Array.FindIndex(colors, x => x.Name.ToUpper() == colorName.ToUpper());
-            if (indexColor == -1)
+            this.validationDelegates.Add(nameof(this.Title), () =>
             {
-                indexColor = Array.FindIndex(colors, x => x.Name.ToUpper() == "TRANSPARENT");
-            }
+                return InputValidation<PasswordDetailUC>.This(this).NotEmpty(x => x.Title, "Titel");
+            });
 
-            return indexColor;
-        }
-
-        private string ConvertIndexToColorName(int colorIndex)
-        {
-            PropertyInfo[] colors = typeof(Brushes).GetProperties();
-            string colorName = colors[colorIndex].Name;
-            return colorName;
-        }
-
-        private Brush ConvertIndexToBrush(int colorIndex)
-        {
-            PropertyInfo[] colors = typeof(Brushes).GetProperties();
-            string colorName = colors[colorIndex].Name;
-            Color col = (Color)ColorConverter.ConvertFromString(colorName);
-            Brush brushColor = new SolidColorBrush(col);
-            return brushColor;
-        }
-
-        private Brush ConvertNameToBrush(string colorName)
-        {
-            Color col = (Color)ColorConverter.ConvertFromString(colorName);
-            Brush brushColor = new SolidColorBrush(col);
-            return brushColor;
-        }
-
-        private string ConvertBrushToName(Brush colorName)
-        {
-            string result = string.Empty;
-            string cname = new BrushConverter().ConvertToString(colorName);
-            PropertyInfo[] brushes = typeof(Brushes).GetProperties();
-            foreach (PropertyInfo item in brushes)
+            this.validationDelegates.Add(nameof(this.Password), () =>
             {
-                Brush brush = item.GetValue(brushes) as Brush;
-                if (brush.ToString() == cname)
-                {
-                    result = item.Name;
-                    break;
-                }
-
-            }
-            return result;
+                return InputValidation<PasswordDetailUC>.This(this).NotEmptyAndMinChar(x => x.Password, "Passwort");
+            });
         }
 
-        public byte[] ExtractResource(string filename)
+        private void CheckContent<T>(T value, string propertyName)
         {
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            using (Stream resFilestream = executingAssembly.GetManifestResourceStream($"{executingAssembly.GetName().Name}.Resources.Picture.{filename}"))
-            {
-                if (resFilestream == null)
-                {
-                    return null;
-                }
-
-                byte[] ba = new byte[resFilestream.Length];
-                resFilestream.Read(ba, 0, ba.Length);
-                return ba;
-            }
-        }
-
-        private void CheckContent(string value, string propertyName)
-        {
-            if (this.CurrentSelectedItem == null)
+            if (this.CurrentSelectedItem == null || base.IsPropertyChanged == false)
             {
                 return;
             }
@@ -535,33 +531,41 @@
             {
                 this.ChangedContent(true);
             }
+
+            this.ValidationErrors.Clear();
+            foreach (string property in this.propertyNames)
+            {
+                Func<Result<string>> function = null;
+                if (validationDelegates.TryGetValue(property, out function) == true)
+                {
+                    Result<string> ruleText = this.DoValidation(function, property);
+                    if (string.IsNullOrEmpty(ruleText.Value) == false)
+                    {
+                        this.ValidationErrors.Add(property, ruleText.Value);
+                    }
+                }
+            }
         }
 
-        private void CheckContent(bool value, string propertyName)
+        private void OnPreviewKeyDownPassword(object sender, KeyEventArgs e)
         {
-            if (this.CurrentSelectedItem == null)
+            this.Password = ((ModernIU.Controls.MPasswordBox)e.Source).Password;
+
+            this.ValidationErrors.Clear();
+            foreach (string property in this.propertyNames)
             {
-                return;
+                Func<Result<string>> function = null;
+                if (validationDelegates.TryGetValue(property, out function) == true)
+                {
+                    Result<string> ruleText = this.DoValidation(function, property);
+                    if (string.IsNullOrEmpty(ruleText.Value) == false)
+                    {
+                        this.ValidationErrors.Add(property, ruleText.Value);
+                    }
+                }
             }
 
-            PropertyInfo propInfo = this.CurrentSelectedItem.GetType().GetProperties().FirstOrDefault(p => p.Name == propertyName);
-            if (propInfo == null)
-            {
-                base.IsPropertyChanged = false;
-                return;
-            }
-
-            var propValue = propInfo.GetValue(this.CurrentSelectedItem);
-            if (propValue == null)
-            {
-                this.ChangedContent(true);
-                return;
-            }
-
-            if (propValue.Equals(value) == false)
-            {
-                this.ChangedContent(true);
-            }
+            e.Handled = false;
         }
 
         public override void ChangedContent(bool isPropertyChanged = false)
@@ -574,6 +578,53 @@
             else
             {
                 StatusbarMain.Statusbar.SetNotification($"Bereit");
+            }
+        }
+
+        private void NavigationProperty<T>(T value, string propertyName)
+        {
+            if (value is string txt)
+            {
+                if (txt.ToLower() == "title")
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => 
+                    { 
+                        this.TxtTitel.Focus();
+                        this.TxtTitel.Background = Brushes.Coral;
+                    }));
+                }
+                else if (txt.ToLower() == "password")
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                    {
+                        this.TxtPassword.Focus();
+                        this.TxtPassword.Background = Brushes.Coral;
+                    }));
+                }
+            }
+        }
+
+        private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) == true)
+            {
+                if (e.Delta > 0)
+                {
+                    if (this.Scalefactor.ScaleX <= 2.0)
+                    {
+                        this.Scalefactor.ScaleX = this.Scalefactor.ScaleX + 0.25;
+                        this.Scalefactor.ScaleY = this.Scalefactor.ScaleY + 0.25;
+                    }
+                }
+
+                if (e.Delta < 0)
+                {
+                    if (this.Scalefactor.ScaleX > 1.35)
+                    {
+                        this.Scalefactor.ScaleX = this.Scalefactor.ScaleX - 0.25;
+                        this.Scalefactor.ScaleY = this.Scalefactor.ScaleY - 0.25;
+                    }
+                }
             }
         }
 

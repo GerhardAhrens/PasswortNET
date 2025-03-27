@@ -117,7 +117,6 @@
                         IconBackground="AliceBlue"
                         IconForeground="Gray"
                         IconWidth="18"
-                        IsCanSeePassword="True"
                         KeyboardNavigation.IsTabStop="True"
                         KeyboardNavigation.TabIndex="2"
                         Watermark="Bitte geben Sie Ihr Passwort ein" />
@@ -132,7 +131,6 @@
                         IconBackground="AliceBlue"
                         IconForeground="Gray"
                         IconWidth="18"
-                        IsCanSeePassword="True"
                         KeyboardNavigation.IsTabStop="True"
                         KeyboardNavigation.TabIndex="3"
                         Visibility="{Binding Path=IsPasswordRepeat, Converter={StaticResource ResourceKey=BooleanToVisibleConverter}}"

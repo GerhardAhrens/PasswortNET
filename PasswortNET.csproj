@@ -54,6 +54,7 @@
   <ItemGroup>
     <Folder Include="Core\Behavior\" />
     <Folder Include="Core\AuditTrail\" />
+    <Folder Include="Core\ValidationRule\" />
     <Folder Include="Core\Settings\" />
     <Folder Include="AssemblyInfo\" />
     <Folder Include="DataRepository\Base\" />

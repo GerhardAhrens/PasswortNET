@@ -35,7 +35,7 @@ namespace PasswortNET.Views.Converter
                 int id = PasswordGenerator.PasswordStrength(pwd);
                 if (id == 1)
                 {
-                    result = Brushes.Red;
+                    result = Brushes.OrangeRed;
                 }
                 else if (id == 2)
                 {
@@ -43,7 +43,7 @@ namespace PasswortNET.Views.Converter
                 }
                 else if (id == 3)
                 {
-                    result = Brushes.Green;
+                    result = Brushes.LightGreen;
                 }
                 else
                 {
