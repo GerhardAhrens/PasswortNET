@@ -1,23 +1,6 @@
-//-----------------------------------------------------------------------
-// <copyright file="MainRibbonButton.cs" company="NRM Netzdienste Rhein-Main GmbH">
-//     Class: MainRibbonButton
-//     Copyright © NRM Netzdienste Rhein-Main GmbH 2023
-// </copyright>
-//
-// <author>DeveloperName - NRM Netzdienste Rhein-Main GmbH</author>
-// <email>DeveloperName@nrm-netzdienste.de</email>
-// <date>02.07.2024</date>
-//
-// <summary>
-// Enum Klasse für 
-// </summary>
-//-----------------------------------------------------------------------
-
 namespace PasswortNET.Core
 {
-    using System;
     using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
 
     public enum FunctionButtons : int
     {
@@ -39,17 +22,23 @@ namespace PasswortNET.Core
         Back = 7,
         [Description("Übersicht Passwort/Zugänge/Pin/Lizenzen")]
         MainOverview = 8,
-        [Description("Bearbeiten Passwort/Zugänge/Pin/Lizenzen")]
+        [Description("Bearbeiten Passworte")]
         PasswordDetail = 9,
+        [Description("Bearbeiten Web-Zugänge")]
+        WebPageDetail = 10,
+        [Description("Bearbeiten Pin")]
+        PinDetail = 11,
+        [Description("Bearbeiten Lizenzen")]
+        LizenzenDetail = 12,
         [Description("Datenbank synchronisieren")]
-        DataSync = 10,
+        DataSync = 13,
         [Description("Export Passwortdaten")]
-        Export = 11,
+        Export = 14,
         [Description("Drucken Passwortdaten")]
-        Print = 12,
+        Print = 15,
         [Description("Hilfe")]
-        Help = 13,
+        Help = 16,
         [Description("Änderungsverfolgung")]
-        AuditTrail = 14,
+        AuditTrail = 17,
     }
 }

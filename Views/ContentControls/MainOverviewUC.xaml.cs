@@ -491,6 +491,16 @@
             {
                 if (accessTyp == AccessTyp.Website)
                 {
+                    base.EventAgg.Publish<ChangeViewEventArgs>(
+                        new ChangeViewEventArgs
+                        {
+                            Sender = this.GetType().Name,
+                            EntityId = currentId,
+                            RowPosition = 0,
+                            FromPage = FunctionButtons.MainOverview,
+                            MenuButton = FunctionButtons.WebPageDetail,
+                            IsNew = false
+                        });
                 }
                 else if (accessTyp == AccessTyp.Passwort)
                 {

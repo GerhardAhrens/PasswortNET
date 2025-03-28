@@ -89,6 +89,7 @@
                     Views.Add(FunctionButtons.About, typeof(AboutUC));
                     Views.Add(FunctionButtons.MainOverview, typeof(MainOverviewUC));
                     Views.Add(FunctionButtons.PasswordDetail, typeof(PasswordDetailUC));
+                    Views.Add(FunctionButtons.WebPageDetail, typeof(WebPageDetailUC));
                     Views.Add(FunctionButtons.Export, typeof(ExcelXMLExportUC));
                     Views.Add(FunctionButtons.DataSync, typeof(DataSyncUC));
                     Views.Add(FunctionButtons.AuditTrail, typeof(AuditTrailDetailUC));
