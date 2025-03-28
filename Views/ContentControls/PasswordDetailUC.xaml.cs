@@ -526,11 +526,17 @@
                     this.ChangedContent(true);
                     return;
                 }
-
-                var propValue = propInfo.GetValue(this.CurrentSelectedItem);
-                if (propValue != null)
+                else
                 {
-                    if (propValue.Equals(value) == false)
+                    var propValue = propInfo.GetValue(this.CurrentSelectedItem);
+                    if (propValue != null)
+                    {
+                        if (propValue.Equals(value) == false)
+                        {
+                            this.ChangedContent(true);
+                        }
+                    }
+                    else
                     {
                         this.ChangedContent(true);
                     }
