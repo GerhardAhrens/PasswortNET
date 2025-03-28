@@ -34,8 +34,6 @@
     /// </summary>
     public partial class PasswordDetailUC : UserControlBase
     {
-        private readonly Dictionary<string, Func<Result<string>>> validationDelegates = new Dictionary<string, Func<Result<string>>>();
-        private readonly HashSet<string> propertyNames = new HashSet<string>();
         private INotificationService notificationService = new NotificationService();
 
         public PasswordDetailUC(ChangeViewEventArgs args) : base(typeof(PasswordDetailUC))
@@ -51,7 +49,6 @@
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Unloaded", this.OnUcUnloaded);
             WeakEventManager<UserControl, MouseWheelEventArgs>.AddHandler(this, "PreviewMouseWheel", this.OnPreviewMouseWheel);
 
-            this.propertyNames = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly).Select(s => s.Name).ToHashSet();
             this.ValidationErrors = new ObservableDictionary<string, string>();
 
             this.InitCommands();
@@ -505,12 +502,12 @@
 
         private void RegisterValidations()
         {
-            this.validationDelegates.Add(nameof(this.Title), () =>
+            this.ValidationRules.Add(nameof(this.Title), () =>
             {
                 return InputValidation<PasswordDetailUC>.This(this).NotEmpty(x => x.Title, "Titel");
             });
 
-            this.validationDelegates.Add(nameof(this.Passwort), () =>
+            this.ValidationRules.Add(nameof(this.Passwort), () =>
             {
                 return InputValidation<PasswordDetailUC>.This(this).NotEmptyAndMinChar(x => x.Passwort, "Passwort");
             });
@@ -544,10 +541,10 @@
             }
 
             this.ValidationErrors.Clear();
-            foreach (string property in this.propertyNames)
+            foreach (string property in this.GetProperties(this))
             {
                 Func<Result<string>> function = null;
-                if (validationDelegates.TryGetValue(property, out function) == true)
+                if (this.ValidationRules.TryGetValue(property, out function) == true)
                 {
                     Result<string> ruleText = this.DoValidation(function, property);
                     if (string.IsNullOrEmpty(ruleText.Value) == false)

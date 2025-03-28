@@ -124,7 +124,7 @@
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("LogoffCommand", new RelayCommand(p1 => this.LogoffHandler(p1), p2 => true));
-            this.CmdAgg.AddOrSetCommand("ListViewCommand", new RelayCommand(p1 => ListViewContextMenu(p1.ToString()), p2 => true));
+            this.CmdAgg.AddOrSetCommand("ListViewCommand", new RelayCommand(p1 => ListViewContextMenu(p1), p2 => true));
             this.CmdAgg.AddOrSetCommand("EditEntryCommand", new RelayCommand(p1 => this.EditEntryHandler(p1), p2 => this.CanEditEntryHandler()));
             this.CmdAgg.AddOrSetCommand("DeleteEntryCommand", new RelayCommand(p1 => this.DeleteEntryHandler(), p2 => this.CanDeleteEntryHandler()));
             this.CmdAgg.AddOrSetCommand("CopyEntryCommand", new RelayCommand(p1 => this.CopyEntryHandler(), p2 => this.CanCopyEntryHandler()));
@@ -137,7 +137,7 @@
             Keyboard.Focus(this);
             this.IsUCLoaded = true;
             this.IsFilterContentFound = false;
-            this.ChangeView("TileView");
+            this.ChangeView(ListViewMode.TileView);
             this.AccessTypState = AccessTyp.All;
             this.LoadDataHandler();
         }
@@ -160,7 +160,7 @@
                             if (this.DialogDataView != null)
                             {
 
-                                this.ChangeView("TileView");
+                                this.ChangeView(ListViewMode.TileView);
                                 this.DialogDataView.Filter = rowItem => this.DataDefaultFilter(rowItem as PasswordPin);
                                 this.DialogDataView.SortDescriptions.Add(new SortDescription("AccessTyp", ListSortDirection.Ascending));
                                 this.DialogDataView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
@@ -321,9 +321,10 @@
         }
         #endregion Load and Filter Data
 
-        private void ListViewContextMenu(string menuItem)
+        private void ListViewContextMenu(object commandParam)
         {
-            this.ChangeView(menuItem);
+            ListViewMode listViewMode = (ListViewMode)commandParam;
+            this.ChangeView(listViewMode);
         }
 
         private void RefreshDefaultFilter(string value, string propertyName)
@@ -368,13 +369,13 @@
             }
         }
 
-        private void ChangeView(string viewTyp = "")
+        private void ChangeView(ListViewMode viewTyp = ListViewMode.TileView)
         {
-            if (viewTyp == "GridView")
+            if (viewTyp == ListViewMode.GridView)
             {
                 this.CustomView = Application.Current.TryFindResource("gridView") as ViewBase;
             }
-            else if (viewTyp == "TileView")
+            else if (viewTyp == ListViewMode.TileView)
             {
                 this.CustomView = Application.Current.TryFindResource("tileView") as ViewBase;
             }
@@ -562,15 +563,32 @@
             }
 
             AccessTyp accessTyp = ((PasswordPin)this.CurrentSelectedItem).AccessTyp;
-            Guid id = this.CurrentSelectedItem.Id;
+            Guid currentId = this.CurrentSelectedItem.Id;
 
             NotificationBoxButton result = this.notificationService.CopySelectedRow(this.CurrentSelectedItem.Title);
             if (result == NotificationBoxButton.Yes)
             {
-                if (accessTyp.In(AccessTyp.Website, AccessTyp.Passwort, AccessTyp.Pin) == true)
+                if (accessTyp == AccessTyp.Website)
+                { 
+                }
+                else if (accessTyp == AccessTyp.Passwort)
+                {
+                    base.EventAgg.Publish<ChangeViewEventArgs>(
+                        new ChangeViewEventArgs
+                        {
+                            Sender = this.GetType().Name,
+                            EntityId = currentId,
+                            RowPosition = this.DialogDataView.CurrentPosition,
+                            FromPage = FunctionButtons.MainOverview,
+                            MenuButton = FunctionButtons.PasswordDetail,
+                            IsNew = false,
+                            IsCopy = true
+                        });
+                }
+                else if (accessTyp == AccessTyp.Pin)
                 {
                 }
-                else
+                else if (accessTyp == AccessTyp.License)
                 {
                 }
             }

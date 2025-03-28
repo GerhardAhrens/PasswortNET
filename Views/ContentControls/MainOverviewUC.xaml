@@ -196,13 +196,13 @@
                 <ContextMenu Focusable="False">
                     <MenuItem
                         Command="{Binding CmdAgg[ListViewCommand]}"
-                        CommandParameter="GridView"
+                        CommandParameter="{x:Static localEnums:ListViewMode.GridView}"
                         Header="Liste"
                         Icon="{StaticResource ResourceKey=MenuListViewList}" />
 
                     <MenuItem
                         Command="{Binding CmdAgg[ListViewCommand]}"
-                        CommandParameter="TileView"
+                        CommandParameter="{x:Static localEnums:ListViewMode.TileView}"
                         Header="Kachel"
                         Icon="{StaticResource ResourceKey=MenuListViewKachel}" />
 
