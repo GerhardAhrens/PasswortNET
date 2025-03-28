@@ -35,8 +35,18 @@ namespace PasswortNET.Core
 
         public static int ConvertColorNameToIndex(string colorName)
         {
+            int indexColor = -1;
             PropertyInfo[] colors = typeof(Brushes).GetProperties();
-            int indexColor = Array.FindIndex(colors, x => x.Name.ToUpper() == colorName.ToUpper());
+
+            if (string.IsNullOrEmpty(colorName) == true)
+            {
+                indexColor = Array.FindIndex(colors, x => x.Name.ToUpper() == "TRANSPARENT");
+            }
+            else
+            {
+                indexColor = Array.FindIndex(colors, x => x.Name.ToUpper() == colorName.ToUpper());
+            }
+
             if (indexColor == -1)
             {
                 indexColor = Array.FindIndex(colors, x => x.Name.ToUpper() == "TRANSPARENT");

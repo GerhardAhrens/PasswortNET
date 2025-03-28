@@ -134,6 +134,7 @@
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             this.Focus();
+            Keyboard.Focus(this);
             this.IsUCLoaded = true;
             this.IsFilterContentFound = false;
             this.ChangeView("TileView");
@@ -366,6 +367,7 @@
                 StatusbarMain.Statusbar.SetNotification($"Bereit: Anzahl: {this.DisplayRowCount}");
             }
         }
+
         private void ChangeView(string viewTyp = "")
         {
             if (viewTyp == "GridView")
@@ -486,22 +488,21 @@
 
             try
             {
-                base.EventAgg.Publish<ChangeViewEventArgs>(
-                    new ChangeViewEventArgs
-                    {
-                        Sender = this.GetType().Name,
-                        EntityId = currentId,
-                        RowPosition = 0,
-                        FromPage = FunctionButtons.MainOverview,
-                        MenuButton = FunctionButtons.PasswordDetail,
-                        IsNew = false
-                    });
-
                 if (accessTyp == AccessTyp.Website)
                 {
                 }
                 else if (accessTyp == AccessTyp.Passwort)
                 {
+                    base.EventAgg.Publish<ChangeViewEventArgs>(
+                        new ChangeViewEventArgs
+                        {
+                            Sender = this.GetType().Name,
+                            EntityId = currentId,
+                            RowPosition = 0,
+                            FromPage = FunctionButtons.MainOverview,
+                            MenuButton = FunctionButtons.PasswordDetail,
+                            IsNew = false
+                        });
                 }
                 else if (accessTyp == AccessTyp.Pin)
                 {

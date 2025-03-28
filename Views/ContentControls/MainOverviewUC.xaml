@@ -69,66 +69,84 @@
             <ModernUI:SimpleGrid
                 Margin="0,0,5,0"
                 HorizontalAlignment="Right"
-                Columns="110, 110,110,110"
+                Columns="90, 45,45,45,45"
                 DockPanel.Dock="Right"
                 Rows="28,28">
 
-                <ModernUI:FlatButton
+                <ModernUI:GeometryButton
                     Grid.Row="0"
                     Grid.Column="0"
-                    Width="100"
-                    HorizontalAlignment="Right"
+                    Width="90"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    Background="#3399ff"
                     Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
                     CommandParameter="{x:Static localEnums:AccessTyp.All}"
-                    Content="Alle" />
+                    FontSize="18"
+                    Foreground="White"
+                    PathData="{StaticResource ResourceKey=IconSelectAll}"
+                    Text="Alle"
+                    ToolTip="Alle auswählen" />
 
-                <ModernUI:FlatButton
+                <ModernUI:GeometryButton
                     Grid.Row="0"
                     Grid.Column="1"
-                    Width="100"
-                    Height="25"
+                    Width="40"
+                    Height="30"
                     HorizontalAlignment="Right"
+                    Background="#3399ff"
                     Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
                     CommandParameter="{x:Static localEnums:AccessTyp.Website}"
-                    Content="Webseite" />
+                    FontSize="18"
+                    Foreground="White"
+                    PathData="{StaticResource ResourceKey=IconSelectWebPage}" />
 
-                <ModernUI:FlatButton
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Width="100"
-                    Height="25"
-                    HorizontalAlignment="Right"
-                    Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
-                    CommandParameter="{x:Static localEnums:AccessTyp.License}"
-                    Content="Lizenzen" />
-
-                <ModernUI:FlatButton
+                <ModernUI:GeometryButton
                     Grid.Row="0"
                     Grid.Column="2"
-                    Width="100"
-                    Height="25"
+                    Width="40"
+                    Height="30"
                     HorizontalAlignment="Right"
+                    Background="#3399ff"
+                    Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
+                    CommandParameter="{x:Static localEnums:AccessTyp.License}"
+                    FontSize="18"
+                    Foreground="White"
+                    PathData="{StaticResource ResourceKey=IconSelectLizenz}" />
+
+                <ModernUI:GeometryButton
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Width="40"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    Background="#3399ff"
                     Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
                     CommandParameter="{x:Static localEnums:AccessTyp.Pin}"
-                    Content="Pin" />
+                    FontSize="18"
+                    Foreground="White"
+                    PathData="{StaticResource ResourceKey=IconSelectPin}" />
 
-                <ModernUI:FlatButton
+                <ModernUI:GeometryButton
                     Grid.Row="0"
                     Grid.Column="4"
-                    Width="100"
-                    Height="25"
+                    Width="40"
+                    Height="30"
                     HorizontalAlignment="Right"
+                    Background="#3399ff"
                     Command="{Binding Path=CmdAgg[SelectAccessStateCommand]}"
                     CommandParameter="{x:Static localEnums:AccessTyp.Passwort}"
-                    Content="Passwort" />
+                    FontSize="18"
+                    Foreground="White"
+                    PathData="{StaticResource ResourceKey=IconSelectPassworde}" />
 
                 <ModernUI:MComboBox
                     Grid.Row="1"
-                    Grid.Column="2"
-                    Grid.ColumnSpan="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="4"
                     Width="210"
                     Height="25"
-                    HorizontalAlignment="Right"
+                    HorizontalAlignment="Left"
                     DisplayMemberPath="Name"
                     ItemsSource="{Binding Path=RegionSource}"
                     SelectedItem="{Binding Path=RegionCurrent, UpdateSourceTrigger=PropertyChanged}"
@@ -193,7 +211,7 @@
                         CommandParameter="{Binding ElementName=lvwMain, Path=SelectedItem}"
                         Header="Ändern"
                         Icon="{StaticResource ResourceKey=MenuListViewEdit}" />
-                    
+
                     <MenuItem
                         Command="{Binding Path=CmdAgg[DeleteEntryCommand]}"
                         CommandParameter="{Binding ElementName=lvwMain, Path=SelectedItem}"

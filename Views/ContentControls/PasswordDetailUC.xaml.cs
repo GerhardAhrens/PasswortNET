@@ -50,7 +50,6 @@
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Unloaded", this.OnUcUnloaded);
             WeakEventManager<UserControl, MouseWheelEventArgs>.AddHandler(this, "PreviewMouseWheel", this.OnPreviewMouseWheel);
-            WeakEventManager<MPasswordBox, KeyEventArgs>.AddHandler(this.TxtPassword, "PreviewKeyDown", this.OnPreviewKeyDownPassword);
 
             this.propertyNames = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly).Select(s => s.Name).ToHashSet();
             this.ValidationErrors = new ObservableDictionary<string, string>();
@@ -131,7 +130,7 @@
             set => base.SetValue(value, this.CheckContent);
         }
 
-        public string Password
+        public string Passwort
         {
             get => base.GetValue<string>();
             set => base.SetValue(value, this.CheckContent);
@@ -186,8 +185,8 @@
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             Keyboard.Focus(this);
-            this.LoadDataHandler();
             this.RegisterValidations();
+            this.LoadDataHandler();
         }
 
         private void LoadDataHandler()
@@ -217,12 +216,9 @@
                         this.AccessTyp = AccessTyp.Passwort;
                         this.SelectedBackgroundColor = ColorConverters.ConvertNameToBrush("Transparent");
                         this.Photo = EmbeddedResource.Extract("NoPicture256x226.png");
-                        base.IsPropertyChanged = false;
                     }
                     else
                     {
-                        base.IsPropertyChanged = false;
-
                         using (PasswordPinRepository repository = new PasswordPinRepository())
                         {
                             this.RegionSource = repository.ListByRegion();
@@ -237,8 +233,7 @@
                                 this.ShowDescription = this.CurrentSelectedItem.ShowDescription;
                                 this.Website = this.CurrentSelectedItem.Website;
                                 this.SelectedSymbol = this.CurrentSelectedItem.Symbol;
-                                this.TxtPassword.Text = this.CurrentSelectedItem.Passwort;
-                                this.Password = this.CurrentSelectedItem.Passwort;
+                                this.Passwort = this.CurrentSelectedItem.Passwort;
                                 this.SelectedBackgroundColor = ColorConverters.ConvertNameToBrush(this.CurrentSelectedItem.Background);
                                 if (string.IsNullOrEmpty(this.CurrentSelectedItem.Region) == false)
                                 {
@@ -309,7 +304,7 @@
                 this.CurrentSelectedItem.ShowDescription = this.ShowDescription;
                 this.CurrentSelectedItem.Website = this.Website;
                 this.CurrentSelectedItem.Symbol = this.SelectedSymbol;
-                this.CurrentSelectedItem.Passwort = this.TxtPassword.Password;
+                this.CurrentSelectedItem.Passwort = this.Passwort;
                 this.CurrentSelectedItem.Background = ColorConverters.ConvertBrushToName(this.CBColor.SelectedColor);
                 this.CurrentSelectedItem.Region = this.SelectedRegion?.Name;
                 using (PasswordPinRepository repository = new PasswordPinRepository())
@@ -515,36 +510,31 @@
                 return InputValidation<PasswordDetailUC>.This(this).NotEmpty(x => x.Title, "Titel");
             });
 
-            this.validationDelegates.Add(nameof(this.Password), () =>
+            this.validationDelegates.Add(nameof(this.Passwort), () =>
             {
-                return InputValidation<PasswordDetailUC>.This(this).NotEmptyAndMinChar(x => x.Password, "Passwort");
+                return InputValidation<PasswordDetailUC>.This(this).NotEmptyAndMinChar(x => x.Passwort, "Passwort");
             });
         }
 
         private void CheckContent<T>(T value, string propertyName)
         {
-            if (this.CurrentSelectedItem == null || base.IsPropertyChanged == false)
+            if (this.CurrentSelectedItem != null)
             {
-                return;
-            }
+                PropertyInfo propInfo = this.CurrentSelectedItem.GetType().GetProperties().FirstOrDefault(p => p.Name == propertyName);
+                if (propInfo == null)
+                {
+                    this.ChangedContent(true);
+                    return;
+                }
 
-            PropertyInfo propInfo = this.CurrentSelectedItem.GetType().GetProperties().FirstOrDefault(p => p.Name == propertyName);
-            if (propInfo == null)
-            {
-                base.IsPropertyChanged = false;
-                return;
-            }
-
-            var propValue = propInfo.GetValue(this.CurrentSelectedItem);
-            if (propValue == null)
-            {
-                this.ChangedContent(true);
-                return;
-            }
-
-            if (propValue.Equals(value) == false)
-            {
-                this.ChangedContent(true);
+                var propValue = propInfo.GetValue(this.CurrentSelectedItem);
+                if (propValue != null)
+                {
+                    if (propValue.Equals(value) == false)
+                    {
+                        this.ChangedContent(true);
+                    }
+                }
             }
 
             this.ValidationErrors.Clear();
@@ -560,27 +550,6 @@
                     }
                 }
             }
-        }
-
-        private void OnPreviewKeyDownPassword(object sender, KeyEventArgs e)
-        {
-            this.Password = ((ModernIU.Controls.MPasswordBox)e.Source).Password;
-
-            this.ValidationErrors.Clear();
-            foreach (string property in this.propertyNames)
-            {
-                Func<Result<string>> function = null;
-                if (validationDelegates.TryGetValue(property, out function) == true)
-                {
-                    Result<string> ruleText = this.DoValidation(function, property);
-                    if (string.IsNullOrEmpty(ruleText.Value) == false)
-                    {
-                        this.ValidationErrors.Add(property, ruleText.Value);
-                    }
-                }
-            }
-
-            e.Handled = false;
         }
 
         public override void ChangedContent(bool isPropertyChanged = false)

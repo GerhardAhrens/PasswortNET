@@ -1,9 +1,11 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
     using System;
+    using System.IO;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using System.Windows.Media;
     using System.Windows.Threading;
 
     using ModernBaseLibrary.Core;
@@ -201,19 +203,62 @@
                 }
             }
 
-            using (DatabaseManager dm = new DatabaseManager(databaseFile))
+            if (File.Exists(databaseFile) == true)
             {
-                Result<DatabaseInfo> dbi = dm.CheckDatabase();
-                StatusbarMain.Statusbar.Notification = $"Bereit: {dbi.ElapsedTime}ms";
-                StatusbarMain.Statusbar.SetDatabaeInfo(databaseFile, runEnvironment);
+                using (DatabaseManager dm = new DatabaseManager(databaseFile))
+                {
+                    Result<DatabaseInfo> dbi = dm.CheckDatabase();
+                    StatusbarMain.Statusbar.Notification = $"Bereit: {dbi.ElapsedTime}ms";
+                    StatusbarMain.Statusbar.SetDatabaeInfo(databaseFile, runEnvironment);
+                }
+            }
+            else
+            {
+                using (DatabaseManager dm = new DatabaseManager(databaseFile))
+                {
+                    Result<DatabaseInfo> dbi = dm.CheckDatabase();
+                    StatusbarMain.Statusbar.Notification = $"Bereit: {dbi.ElapsedTime}ms";
+                    StatusbarMain.Statusbar.SetDatabaeInfo(databaseFile, runEnvironment);
+                }
+                int lastSortItem = 0;
+                using (RegionRepository repository = new RegionRepository())
+                {
+                    if (repository.List().Any() == true)
+                    {
+                        lastSortItem = repository.List().ToList().Max<Region>(m => m.ItemSorting) + 1;
+                    }
+                    else
+                    {
+                        lastSortItem = 1;
+                    }
+
+                    Region r = new Region();
+                    r.Name = "Alle";
+                    r.CreatedBy = UserInfo.TS().CurrentUser;
+                    r.CreatedOn = UserInfo.TS().CurrentTime;
+                    r.Background = ColorConverters.ConvertBrushToName(Brushes.Transparent);
+                    r.Id = Guid.NewGuid();
+                    r.ItemSorting = lastSortItem;
+                    repository.Add(r);
+
+                    lastSortItem = repository.List().ToList().Max<Region>(m => m.ItemSorting) + 1;
+                    Region r1 = new Region();
+                    r1.Name = "Zuletzt gesehen";
+                    r1.CreatedBy = UserInfo.TS().CurrentUser;
+                    r1.CreatedOn = UserInfo.TS().CurrentTime;
+                    r1.Background = ColorConverters.ConvertBrushToName(Brushes.Transparent);
+                    r1.Id = Guid.NewGuid();
+                    r1.ItemSorting = lastSortItem;
+                    repository.Add(r1);
+                }
             }
 
             base.EventAgg.Publish<ChangeViewEventArgs>(new ChangeViewEventArgs
-            {
-                Sender = this.GetType().Name,
-                MenuButton = FunctionButtons.MainOverview,
-                LoginHash = hash,
-            });
+                {
+                    Sender = this.GetType().Name,
+                    MenuButton = FunctionButtons.MainOverview,
+                    LoginHash = hash,
+                });
         }
 
         private void CloseWindowHandler(object p1)

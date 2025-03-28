@@ -145,7 +145,7 @@
                             r.Name = this.TagName;
                             r.CreatedBy = UserInfo.TS().CurrentUser;
                             r.CreatedOn = UserInfo.TS().CurrentTime;
-                            r.Background = this.ConvertIndexToColorName(this.BackgroundColorSelected);
+                            r.Background = ColorConverters.ConvertIndexToColorName(this.BackgroundColorSelected);
                             r.Id = Guid.NewGuid();
                             r.ItemSorting = lastSortItem;
                             repository.Add(r);
@@ -189,7 +189,7 @@
                         {
                             Region r = commandParam;
                             r.Name = this.TagName;
-                            r.Background = this.ConvertIndexToColorName(this.BackgroundColorSelected);
+                            r.Background = ColorConverters.ConvertIndexToColorName(this.BackgroundColorSelected);
                             r.ModifiedBy = UserInfo.TS().CurrentUser;
                             r.ModifiedOn = UserInfo.TS().CurrentTime;
                             repository.Update(r);
@@ -199,7 +199,7 @@
                         {
                             Region r = new Region();
                             r.Name = this.TagName;
-                            r.Background = this.ConvertIndexToColorName(this.BackgroundColorSelected);
+                            r.Background = ColorConverters.ConvertIndexToColorName(this.BackgroundColorSelected);
                             r.CreatedBy = UserInfo.TS().CurrentUser;
                             r.CreatedOn = UserInfo.TS().CurrentTime;
                             r.Id = Guid.NewGuid();
@@ -319,36 +319,7 @@
 
         private void CurrentSelected(Region region, string arg2)
         {
-            this.BackgroundColorSelected = this.ConvertColorNameToIndex(region.Background);
-        }
-
-        private int ConvertColorNameToIndex(string colorName)
-        {
-            int indexColor = -1;
-            PropertyInfo[] colors = typeof(Brushes).GetProperties();
-
-            if (string.IsNullOrEmpty(colorName) == true)
-            {
-                indexColor = Array.FindIndex(colors, x => x.Name.ToUpper() == "TRANSPARENT");
-            }
-            else
-            {
-                indexColor = Array.FindIndex(colors, x => x.Name.ToUpper() == colorName.ToUpper());
-            }
-
-            if (indexColor == -1)
-            {
-                indexColor = Array.FindIndex(colors, x => x.Name.ToUpper() == "TRANSPARENT");
-            }
-
-            return indexColor;
-        }
-
-        private string ConvertIndexToColorName(int colorIndex)
-        {
-            PropertyInfo[] colors = typeof(Brushes).GetProperties();
-            string colorName = colors[colorIndex].Name;
-            return colorName;
+            this.BackgroundColorSelected = ColorConverters.ConvertColorNameToIndex(region.Background);
         }
     }
 }
