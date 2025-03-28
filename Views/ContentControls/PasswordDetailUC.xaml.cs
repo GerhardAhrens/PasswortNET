@@ -34,8 +34,6 @@
     /// </summary>
     public partial class PasswordDetailUC : UserControlBase
     {
-        private INotificationService notificationService = new NotificationService();
-
         public PasswordDetailUC(ChangeViewEventArgs args) : base(typeof(PasswordDetailUC))
         {
             this.InitializeComponent();
@@ -53,17 +51,6 @@
 
             this.InitCommands();
             this.DataContext = this;
-        }
-
-        private void OnUcUnloaded(object sender, RoutedEventArgs e)
-        {
-            PasswordPin original = PasswordPin.ToClone<PasswordPin>(this.CurrentSelectedItem);
-            using (PasswordPinRepository repository = new PasswordPinRepository())
-            {
-                original.ShowLast = DateTime.Now;
-                original.IsShowLast = true;
-                repository.Update(original);
-            }
         }
 
         #region Properties
@@ -145,6 +132,12 @@
             set => base.SetValue(value);
         }
 
+        public int ChangeTrackingCount
+        {
+            get => base.GetValue<int>();
+            set => base.SetValue(value);
+        }
+
         /* Prüfen von Eingaben */
         public ObservableDictionary<string, string> ValidationErrors
         {
@@ -179,6 +172,7 @@
             this.CmdAgg.AddOrSetCommand("FromClipboardAttachmentCommand", new RelayCommand(p1 => this.FromClipboardAttachmentHandler(p1), p2 => true));
         }
 
+        #region UserControl Events
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             Keyboard.Focus(this);
@@ -186,6 +180,19 @@
             this.LoadDataHandler();
         }
 
+        private void OnUcUnloaded(object sender, RoutedEventArgs e)
+        {
+            PasswordPin original = PasswordPin.ToClone<PasswordPin>(this.CurrentSelectedItem);
+            using (PasswordPinRepository repository = new PasswordPinRepository())
+            {
+                original.ShowLast = DateTime.Now;
+                original.IsShowLast = true;
+                repository.Update(original);
+            }
+        }
+        #endregion UserControl Events
+
+        #region Load Data
         private void LoadDataHandler()
         {
             try
@@ -195,6 +202,11 @@
                     using (SymbolsList sl = new SymbolsList())
                     {
                         this.SymbolSource = sl.GetSymbols();
+                    }
+
+                    using (ChangeTrackingRepository repository = new ChangeTrackingRepository())
+                    {
+                        this.ChangeTrackingCount = repository.CountById(this.Id);
                     }
 
                     if (this.IsNew == true)
@@ -278,6 +290,7 @@
                 throw;
             }
         }
+        #endregion Load Data
 
         #region Command Handler
         private void BackHandler(object p1)
@@ -500,6 +513,7 @@
 
         #endregion Command Handler
 
+        #region Register Validations
         private void RegisterValidations()
         {
             this.ValidationRules.Add(nameof(this.Title), () =>
@@ -512,7 +526,9 @@
                 return InputValidation<PasswordDetailUC>.This(this).NotEmptyAndMinChar(x => x.Passwort, "Passwort");
             });
         }
+        #endregion Register Validations
 
+        #region Helper Functions
         private void CheckContent<T>(T value, string propertyName)
         {
             if (this.CurrentSelectedItem != null)
@@ -574,8 +590,8 @@
             {
                 if (txt.ToLower() == "title")
                 {
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => 
-                    { 
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
+                    {
                         this.TxtTitel.Focus();
                         this.TxtTitel.Background = Brushes.Coral;
                     }));
@@ -621,5 +637,6 @@
             Regex Rgx = new Regex(Pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
             return Rgx.IsMatch(urlPage);
         }
+        #endregion Helper Functions
     }
 }
