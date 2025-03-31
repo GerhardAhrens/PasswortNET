@@ -182,12 +182,15 @@
 
         private void OnUcUnloaded(object sender, RoutedEventArgs e)
         {
-            PasswordPin original = PasswordPin.ToClone<PasswordPin>(this.CurrentSelectedItem);
-            using (PasswordPinRepository repository = new PasswordPinRepository())
+            if (this.CurrentSelectedItem != null)
             {
-                original.ShowLast = DateTime.Now;
-                original.IsShowLast = true;
-                repository.Update(original);
+                PasswordPin original = PasswordPin.ToClone<PasswordPin>(this.CurrentSelectedItem);
+                using (PasswordPinRepository repository = new PasswordPinRepository())
+                {
+                    original.ShowLast = DateTime.Now;
+                    original.IsShowLast = true;
+                    repository.Update(original);
+                }
             }
         }
         #endregion UserControl Events
@@ -426,13 +429,8 @@
             }
             else
             {
-                if (IsValidURL(this.Website?.Trim()) == false)
-                {
-                    return false;
-                }
+                return this.Website.Trim().IsValidUrl();
             }
-
-            return true;
         }
 
         private void CallWebPageHandler(object commandParm)
@@ -629,13 +627,6 @@
                     }
                 }
             }
-        }
-
-        private bool IsValidURL(string urlPage)
-        {
-            string Pattern = @"(http(s)?://)?([\w-]+\.)+[\w-]+[\w-]+[\.]+[\][a-z.]{2,3}$+([./?%&=]*)?";
-            Regex Rgx = new Regex(Pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            return Rgx.IsMatch(urlPage);
         }
         #endregion Helper Functions
     }

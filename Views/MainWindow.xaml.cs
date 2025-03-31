@@ -314,6 +314,30 @@
                         this.IsWorkPassword = false;
                         this.IsImportExport = false;
                     }
+                    else if (this.WorkContent.GetType() == typeof(WebPageDetailUC))
+                    {
+                        this.IsAppSettings = false;
+                        this.IsAbout = false;
+                        this.IsLogoff = true;
+                        this.IsWorkPassword = false;
+                        this.IsImportExport = false;
+                    }
+                    else if (this.WorkContent.GetType() == typeof(PinDetailUC))
+                    {
+                        this.IsAppSettings = false;
+                        this.IsAbout = false;
+                        this.IsLogoff = true;
+                        this.IsWorkPassword = false;
+                        this.IsImportExport = false;
+                    }
+                    else if (this.WorkContent.GetType() == typeof(LicenseDetailUC))
+                    {
+                        this.IsAppSettings = false;
+                        this.IsAbout = false;
+                        this.IsLogoff = true;
+                        this.IsWorkPassword = false;
+                        this.IsImportExport = false;
+                    }
                     else if (this.WorkContent.GetType() == typeof(ChangePasswordUC))
                     {
                         this.IsAppSettings = false;

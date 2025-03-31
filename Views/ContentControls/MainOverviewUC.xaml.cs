@@ -160,7 +160,6 @@
                             if (this.DialogDataView != null)
                             {
 
-                                this.ChangeView(ListViewMode.TileView);
                                 this.DialogDataView.Filter = rowItem => this.DataDefaultFilter(rowItem as PasswordPin);
                                 this.DialogDataView.SortDescriptions.Add(new SortDescription("AccessTyp", ListSortDirection.Ascending));
                                 this.DialogDataView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
@@ -371,6 +370,11 @@
 
         private void ChangeView(ListViewMode viewTyp = ListViewMode.TileView)
         {
+            if (this.CustomView != null)
+            {
+                this.CustomView = null;
+            }
+
             if (viewTyp == ListViewMode.GridView)
             {
                 this.CustomView = Application.Current.TryFindResource("gridView") as ViewBase;
@@ -496,7 +500,7 @@
                         {
                             Sender = this.GetType().Name,
                             EntityId = currentId,
-                            RowPosition = 0,
+                            RowPosition = this.DialogDataView.CurrentPosition,
                             FromPage = FunctionButtons.MainOverview,
                             MenuButton = FunctionButtons.WebPageDetail,
                             IsNew = false
@@ -509,7 +513,7 @@
                         {
                             Sender = this.GetType().Name,
                             EntityId = currentId,
-                            RowPosition = 0,
+                            RowPosition = this.DialogDataView.CurrentPosition,
                             FromPage = FunctionButtons.MainOverview,
                             MenuButton = FunctionButtons.PasswordDetail,
                             IsNew = false
@@ -517,9 +521,29 @@
                 }
                 else if (accessTyp == AccessTyp.Pin)
                 {
+                    base.EventAgg.Publish<ChangeViewEventArgs>(
+                        new ChangeViewEventArgs
+                        {
+                            Sender = this.GetType().Name,
+                            EntityId = currentId,
+                            RowPosition = this.DialogDataView.CurrentPosition,
+                            FromPage = FunctionButtons.MainOverview,
+                            MenuButton = FunctionButtons.PinDetail,
+                            IsNew = false
+                        });
                 }
                 else if (accessTyp == AccessTyp.License)
                 {
+                    base.EventAgg.Publish<ChangeViewEventArgs>(
+                        new ChangeViewEventArgs
+                        {
+                            Sender = this.GetType().Name,
+                            EntityId = currentId,
+                            RowPosition = this.DialogDataView.CurrentPosition,
+                            FromPage = FunctionButtons.MainOverview,
+                            MenuButton = FunctionButtons.LicenseDetail,
+                            IsNew = false
+                        });
                 }
             }
             catch (Exception ex)
@@ -621,6 +645,16 @@
 
             if (accessTyp == AccessTyp.Website)
             {
+                base.EventAgg.Publish<ChangeViewEventArgs>(
+                    new ChangeViewEventArgs
+                    {
+                        Sender = this.GetType().Name,
+                        EntityId = Guid.Empty,
+                        RowPosition = 0,
+                        FromPage = FunctionButtons.MainOverview,
+                        MenuButton = FunctionButtons.WebPageDetail,
+                        IsNew = true
+                    });
             }
             else if (accessTyp == AccessTyp.Passwort)
             {
@@ -637,9 +671,29 @@
             }
             else if (accessTyp == AccessTyp.Pin)
             {
+                base.EventAgg.Publish<ChangeViewEventArgs>(
+                    new ChangeViewEventArgs
+                    {
+                        Sender = this.GetType().Name,
+                        EntityId = Guid.Empty,
+                        RowPosition = 0,
+                        FromPage = FunctionButtons.MainOverview,
+                        MenuButton = FunctionButtons.PinDetail,
+                        IsNew = true
+                    });
             }
             else if (accessTyp == AccessTyp.License)
             {
+                base.EventAgg.Publish<ChangeViewEventArgs>(
+                    new ChangeViewEventArgs
+                    {
+                        Sender = this.GetType().Name,
+                        EntityId = Guid.Empty,
+                        RowPosition = 0,
+                        FromPage = FunctionButtons.MainOverview,
+                        MenuButton = FunctionButtons.LicenseDetail,
+                        IsNew = true
+                    });
             }
 
             this.LoadDataHandler();

@@ -2,23 +2,81 @@
     x:Class="PasswortNET.Views.ContentControls.WebPageDetailUC"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ModernBehaviors="clr-namespace:ModernIU.Behaviors;assembly=ModernUILibrary"
+    xmlns:ModernConverter="clr-namespace:ModernIU.Converters;assembly=ModernUILibrary"
     xmlns:ModernUI="clr-namespace:ModernIU.Controls;assembly=ModernUILibrary"
     xmlns:ModernWPF="clr-namespace:ModernIU.WPF.Base;assembly=ModernUILibrary"
     xmlns:base="clr-namespace:ModernUI.MVVM.Base;assembly=ModernUILibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:PasswortNET.Views.ContentControls"
-    xmlns:localControls="clr-namespace:PasswortNET.Views.TabAbout"
+    xmlns:localConverter="clr-namespace:PasswortNET.Views.Converter"
+    xmlns:localEnums="clr-namespace:PasswortNET.Core.Enums"
     xmlns:localStatic="clr-namespace:PasswortNET.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <ModernWPF:CommandKeyReference x:Key="BackCmdKey" Command="{Binding Path=CmdAgg[BackCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="TrackingCmdKey" Command="{Binding Path=CmdAgg[TrackingCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="SaveDetailCmdKey" Command="{Binding Path=CmdAgg[SaveDetailCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="AddAttachmentCmdKey" Command="{Binding Path=CmdAgg[AddAttachmentCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="PasswordGeneratorCmdKey" Command="{Binding Path=CmdAgg[PasswordGeneratorCommand]}" />
+        <ModernWPF:CommandKeyReference x:Key="CallWebPageCmdKey" Command="{Binding Path=CmdAgg[CallWebPageCommand]}" />
+
+        <ModernConverter:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter" />
+        <localConverter:PasswordStrengthConverter x:Key="PasswordStrengthConverter" />
+        <sys:Double x:Key="TextBoxWidth">500</sys:Double>
+        <sys:Double x:Key="ScaleXY">1.0</sys:Double>
+
+        <Style x:Key="StyleWatermarkLabel">
+            <Setter Property="TextBlock.Foreground" Value="{x:Static SystemColors.ControlDarkBrush}" />
+            <Setter Property="FrameworkElement.Opacity" Value="0.8" />
+            <Setter Property="TextBlock.Margin" Value="6,4,4,4" />
+        </Style>
     </UserControl.Resources>
 
-    <ModernUI:SimpleGrid Columns="*" Rows="30,*,40">
+    <UserControl.InputBindings>
+        <KeyBinding
+            Key="F4"
+            Command="{StaticResource ResourceKey=BackCmdKey}"
+            Modifiers="Ctrl" />
+
+        <KeyBinding
+            Key="S"
+            Command="{StaticResource ResourceKey=SaveDetailCmdKey}"
+            Modifiers="Ctrl" />
+
+        <KeyBinding
+            Key="A"
+            Command="{StaticResource ResourceKey=AddAttachmentCmdKey}"
+            Modifiers="Alt" />
+
+        <KeyBinding
+            Key="T"
+            Command="{StaticResource ResourceKey=TrackingCmdKey}"
+            Modifiers="Alt" />
+
+        <KeyBinding
+            Key="P"
+            Command="{StaticResource ResourceKey=PasswordGeneratorCmdKey}"
+            Modifiers="Alt" />
+
+        <KeyBinding
+            Key="W"
+            Command="{StaticResource ResourceKey=CallWebPageCmdKey}"
+            Modifiers="Alt" />
+    </UserControl.InputBindings>
+
+    <UserControl.LayoutTransform>
+        <ScaleTransform x:Name="Scalefactor" ScaleX="{StaticResource ResourceKey=ScaleXY}" ScaleY="{StaticResource ResourceKey=ScaleXY}" />
+    </UserControl.LayoutTransform>
+
+    <ModernUI:SimpleGrid Columns="*" Rows="30,Auto,*,40">
+        <!--#region Titelzeile-->
         <StackPanel
             Grid.Row="0"
             Grid.Column="0"
@@ -34,9 +92,258 @@
                 FontWeight="Bold"
                 Text="TbTitelUC" />
         </StackPanel>
+        <!--#endregion Titelzeile-->
 
-        <DockPanel
+        <!--#region Validation Notification Panel-->
+        <ScrollViewer
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            MaxHeight="60"
+            Background="Red"
+            VerticalScrollBarVisibility="Auto"
+            Visibility="{Binding Path=ValidationErrors.Count, Converter={StaticResource ResourceKey=BooleanToVisibleConverter}}">
+            <ListBox
+                Height="Auto"
+                Background="Transparent"
+                DisplayMemberPath="Value"
+                FontWeight="Bold"
+                Foreground="White"
+                IsSynchronizedWithCurrentItem="True"
+                ItemsSource="{Binding Path=ValidationErrors, UpdateSourceTrigger=PropertyChanged}"
+                SelectedIndex="0"
+                SelectedValue="{Binding Path=ValidationErrorsSelected, UpdateSourceTrigger=PropertyChanged}"
+                SelectedValuePath="Key" />
+        </ScrollViewer>
+        <!--#endregion Validation Notification Panel-->
+
+        <ScrollViewer
             Grid.Row="2"
+            VerticalAlignment="Top"
+            HorizontalScrollBarVisibility="Hidden"
+            PreviewMouseWheel="OnPreviewMouseWheel"
+            VerticalScrollBarVisibility="Hidden">
+            <ModernUI:SimpleGrid
+                Grid.Row="1"
+                Margin="5,5,0,0"
+                Columns="*,200"
+                Rows="Auto,Auto,Auto,Auto,Auto, Auto,Auto">
+                <ModernUI:IconTextBox
+                    x:Name="TxtTitel"
+                    Grid.Row="0"
+                    Width="{StaticResource ResourceKey=TextBoxWidth}"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    IconBackground="AliceBlue"
+                    IconForeground="Gray"
+                    IconPathData="{StaticResource ResourceKey=IconTitel}"
+                    IconPlacement="Left"
+                    IconWidth="18"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+                    Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"
+                    Watermark="Titel" />
+
+                <ModernUI:MCheckBox
+                    Grid.Row="1"
+                    Margin="5,5,5,5"
+                    HorizontalAlignment="Left"
+                    Content="In der Übersicht anzeigen"
+                    FlowDirection="LeftToRight"
+                    FontWeight="Medium"
+                    IsChecked="{Binding Path=ShowDescription, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" />
+
+                <ModernUI:IconTextBox
+                    x:Name="TxtNote"
+                    Grid.Row="2"
+                    Width="{StaticResource ResourceKey=TextBoxWidth}"
+                    Height="60"
+                    HorizontalAlignment="Left"
+                    VerticalContentAlignment="Top"
+                    AcceptsReturn="True"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    IconBackground="AliceBlue"
+                    IconForeground="Gray"
+                    IconPathData="{StaticResource ResourceKey=IconDescription}"
+                    IconPlacement="Left"
+                    IconWidth="18"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="2"
+                    Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
+                    Watermark="Anmerkung und Notizen" />
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal">
+                    <ModernUI:IconTextBox
+                        x:Name="TxtWebseite"
+                        Width="{StaticResource ResourceKey=TextBoxWidth}"
+                        Height="30"
+                        HorizontalAlignment="Left"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IconBackground="AliceBlue"
+                        IconForeground="Gray"
+                        IconPathData="{StaticResource ResourceKey=IconWebPage}"
+                        IconPlacement="Left"
+                        IconWidth="18"
+                        KeyboardNavigation.IsTabStop="True"
+                        KeyboardNavigation.TabIndex="3"
+                        Text="{Binding Path=Website, UpdateSourceTrigger=PropertyChanged}"
+                        Watermark="Webadresse" />
+
+                    <ModernUI:GeometryButton
+                        Width="35"
+                        Height="35"
+                        Command="{Binding Path=CmdAgg[CallWebPageCommand]}"
+                        DockPanel.Dock="Right"
+                        FontSize="20"
+                        PathData="{StaticResource ResourceKey=IconWebPage}"
+                        ToolTip="Webseite aufrufe" />
+                </StackPanel>
+
+                <TextBlock
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    FontWeight="Medium"
+                    Text="Erkennungssymbol" />
+
+                <ListBox
+                    x:Name="lbSymbole"
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Width="600"
+                    Height="60"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    ItemsSource="{Binding Path=SymbolSource}"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="4"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                    SelectedIndex="{Binding Path=SelectedSymbol, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Path
+                                Width="22"
+                                Height="22"
+                                Data="{Binding Path=Value}"
+                                Fill="Blue"
+                                Stretch="Fill" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border
+                                            Name="Border"
+                                            Padding="7,0,7,0"
+                                            BorderBrush="LightGray"
+                                            BorderThickness="1,0,1,0"
+                                            SnapsToDevicePixels="true">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="LightGreen" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
+                    <i:Interaction.Behaviors>
+                        <ModernBehaviors:ScrollIntoViewForListBox />
+                    </i:Interaction.Behaviors>
+                </ListBox>
+
+                <ModernUI:MGroupBox
+                    Grid.Row="6"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Padding="5"
+                    VerticalAlignment="Top">
+                    <ModernUI:MGroupBox.Header>
+                        <TextBlock FontWeight="Bold" Text="Sicherheitsinformationen" />
+                    </ModernUI:MGroupBox.Header>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <ModernUI:GeometryLabel
+                                Width="33"
+                                Height="30"
+                                Margin="3,0,0,0"
+                                Background="AliceBlue"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Foreground="Gray"
+                                PathData="{StaticResource ResourceKey=IconUser}" />
+
+                            <ModernUI:AutoCompleteBox
+                                x:Name="TxtBenutzername"
+                                Width="464"
+                                Height="30"
+                                HorizontalAlignment="Left"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                KeyboardNavigation.IsTabStop="True"
+                                KeyboardNavigation.TabIndex="1"
+                                Text="{Binding Path=Benutzer, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <ModernUI:IconTextBox
+                                x:Name="TxtPassword"
+                                Width="{StaticResource ResourceKey=TextBoxWidth}"
+                                Height="30"
+                                HorizontalAlignment="Left"
+                                Background="{Binding Path=Passwort, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ResourceKey=PasswordStrengthConverter}}"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                IconBackground="AliceBlue"
+                                IconForeground="Gray"
+                                IconPathData="{StaticResource ResourceKey=IconPasswort}"
+                                IconWidth="18"
+                                KeyboardNavigation.IsTabStop="True"
+                                KeyboardNavigation.TabIndex="5"
+                                Text="{Binding Path=Passwort, UpdateSourceTrigger=PropertyChanged}"
+                                Watermark="Bitte geben Sie Ihr Passwort ein" />
+
+                            <ModernUI:GeometryButton
+                                Width="35"
+                                Height="35"
+                                Command="{Binding Path=CmdAgg[PasswordGeneratorCommand]}"
+                                DockPanel.Dock="Right"
+                                FontSize="20"
+                                PathData="{StaticResource ResourceKey=IconKeyGenerator}"
+                                ToolTip="Passwortgenerator aufrufe" />
+                        </StackPanel>
+                    </StackPanel>
+                </ModernUI:MGroupBox>
+            </ModernUI:SimpleGrid>
+        </ScrollViewer>
+
+        <!--#region Fußzeile-->
+        <DockPanel
+            Grid.Row="3"
             Grid.Column="0"
             Height="Auto"
             Background="LightBlue">
@@ -50,7 +357,35 @@
                 PathData="{StaticResource ResourceKey=CloseIcon}"
                 ToolTip="Zurück" />
 
-            <Label Width="1" />
+            <ModernUI:GeometryButton
+                Width="50"
+                Height="35"
+                Command="{StaticResource ResourceKey=SaveDetailCmdKey}"
+                DockPanel.Dock="Right"
+                Foreground="Green"
+                PathData="{StaticResource ResourceKey=CheckedIcon}"
+                ToolTip="Speichern und zurück" />
+
+            <ModernUI:GeometryButton
+                Width="50"
+                Height="35"
+                Command="{StaticResource ResourceKey=AddAttachmentCmdKey}"
+                DockPanel.Dock="Right"
+                PathData="{StaticResource ResourceKey=IconAttachment}"
+                ToolTip="Bild hinzufügen" />
+
+            <ModernUI:GeometryButton
+                Width="50"
+                Height="35"
+                Command="{StaticResource ResourceKey=TrackingCmdKey}"
+                DockPanel.Dock="Right"
+                FontSize="20"
+                PathData="{StaticResource ResourceKey=IconTracking}"
+                Text="{Binding Path=ChangeTrackingCount, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}"
+                ToolTip="Letzte Änderungen anzeigen" />
+
+            <Label Width="0" />
         </DockPanel>
+        <!--#endregion Fußzeile-->
     </ModernUI:SimpleGrid>
 </base:UserControlBase>

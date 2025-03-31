@@ -29,7 +29,7 @@ namespace PasswortNET.Core
         [Description("Bearbeiten Pin")]
         PinDetail = 11,
         [Description("Bearbeiten Lizenzen")]
-        LizenzenDetail = 12,
+        LicenseDetail = 12,
         [Description("Datenbank synchronisieren")]
         DataSync = 13,
         [Description("Export Passwortdaten")]
