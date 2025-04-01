@@ -309,7 +309,6 @@
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
-
                             </Setter>
                         </Style>
                     </ListBox.ItemContainerStyle>

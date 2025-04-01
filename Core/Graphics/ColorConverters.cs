@@ -68,6 +68,11 @@ namespace PasswortNET.Core
 
         public static Brush ConvertNameToBrush(string colorName)
         {
+            if (string.IsNullOrEmpty(colorName) == true) 
+            { 
+                return Brushes.Transparent; 
+            }
+
             Color col = (Color)ColorConverter.ConvertFromString(colorName);
             Brush brushColor = new SolidColorBrush(col);
             return brushColor;
