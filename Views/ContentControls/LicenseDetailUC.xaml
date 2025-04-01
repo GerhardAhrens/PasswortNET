@@ -390,7 +390,7 @@
                             IconWidth="18"
                             KeyboardNavigation.IsTabStop="True"
                             KeyboardNavigation.TabIndex="9"
-                            Text="{Binding Path=Pin, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding Path=LicenseKey, UpdateSourceTrigger=PropertyChanged}"
                             Watermark="Bitte geben Sie einen Lizenzschlüssel ein" />
                     </StackPanel>
                 </ModernUI:MGroupBox>

@@ -16,12 +16,7 @@
 namespace PasswortNET.Core
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows.Media;
 
     public static class ColorConverters
@@ -77,6 +72,7 @@ namespace PasswortNET.Core
                 }
 
             }
+
             return result;
         }
 
@@ -94,6 +90,13 @@ namespace PasswortNET.Core
             Color col = (Color)ColorConverter.ConvertFromString(colorName);
             Brush brushColor = new SolidColorBrush(col);
             return brushColor;
+        }
+
+        public static string ConvertBrushToHex(Brush colorName)
+        {
+            string result = ((SolidColorBrush)(colorName)).Color.ToString();
+
+            return result;
         }
     }
 }
