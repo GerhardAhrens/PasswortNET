@@ -57,25 +57,6 @@ namespace PasswortNET.Core
             return colorName;
         }
 
-        public static string ConvertBrushToName(Brush colorName)
-        {
-            string result = string.Empty;
-            string cname = new BrushConverter().ConvertToString(colorName);
-            PropertyInfo[] brushes = typeof(Brushes).GetProperties();
-            foreach (PropertyInfo item in brushes)
-            {
-                Brush brush = item.GetValue(brushes) as Brush;
-                if (brush.ToString() == cname)
-                {
-                    result = item.Name;
-                    break;
-                }
-
-            }
-
-            return result;
-        }
-
         public static Brush ConvertIndexToBrush(int colorIndex)
         {
             PropertyInfo[] colors = typeof(Brushes).GetProperties();
@@ -92,11 +73,35 @@ namespace PasswortNET.Core
             return brushColor;
         }
 
-        public static string ConvertBrushToHex(Brush colorName)
+        public static string ConvertBrushToName(Brush brushName)
         {
-            string result = ((SolidColorBrush)(colorName)).Color.ToString();
+            string result = string.Empty;
+            string cname = new BrushConverter().ConvertToString(brushName);
+            PropertyInfo[] brushes = typeof(Brushes).GetProperties();
+            foreach (PropertyInfo item in brushes)
+            {
+                Brush brush = item.GetValue(brushes) as Brush;
+                if (brush.ToString() == cname)
+                {
+                    result = item.Name;
+                    break;
+                }
+
+            }
 
             return result;
+        }
+
+        public static string ConvertBrushToHex(Brush brushName)
+        {
+            string result = ((SolidColorBrush)(brushName)).Color.ToString();
+
+            return result;
+        }
+
+        public static string ConvertColorToHex(System.Drawing.Color colorName)
+        {
+            return string.Format("#{0:X2}{1:X2}{2:X2}", colorName.R, colorName.G, colorName.B);
         }
     }
 }
