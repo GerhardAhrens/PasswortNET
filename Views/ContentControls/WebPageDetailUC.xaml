@@ -2,6 +2,7 @@
     x:Class="PasswortNET.Views.ContentControls.WebPageDetailUC"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:MUIbase="clr-namespace:ModernIU.Base;assembly=ModernUILibrary"
     xmlns:ModernBehaviors="clr-namespace:ModernIU.Behaviors;assembly=ModernUILibrary"
     xmlns:ModernConverter="clr-namespace:ModernIU.Converters;assembly=ModernUILibrary"
     xmlns:ModernUI="clr-namespace:ModernIU.Controls;assembly=ModernUILibrary"
@@ -101,17 +102,21 @@
             Grid.ColumnSpan="2"
             MaxHeight="60"
             Background="Red"
+            Focusable="False"
+            KeyboardNavigation.IsTabStop="False"
             VerticalScrollBarVisibility="Auto"
             Visibility="{Binding Path=ValidationErrors.Count, Converter={StaticResource ResourceKey=BooleanToVisibleConverter}}">
             <ListBox
                 Height="Auto"
                 Background="Transparent"
                 DisplayMemberPath="Value"
+                Focusable="False"
                 FontWeight="Bold"
                 Foreground="White"
                 IsSynchronizedWithCurrentItem="True"
                 ItemsSource="{Binding Path=ValidationErrors, UpdateSourceTrigger=PropertyChanged}"
-                SelectedIndex="0"
+                KeyboardNavigation.IsTabStop="False"
+                SelectedIndex="-1"
                 SelectedValue="{Binding Path=ValidationErrorsSelected, UpdateSourceTrigger=PropertyChanged}"
                 SelectedValuePath="Key" />
         </ScrollViewer>
@@ -153,7 +158,9 @@
                     Content="In der Übersicht anzeigen"
                     FlowDirection="LeftToRight"
                     FontWeight="Medium"
-                    IsChecked="{Binding Path=ShowDescription, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" />
+                    IsChecked="{Binding Path=ShowDescription, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="2" />
 
                 <ModernUI:IconTextBox
                     x:Name="TxtNote"
@@ -171,7 +178,7 @@
                     IconPlacement="Left"
                     IconWidth="18"
                     KeyboardNavigation.IsTabStop="True"
-                    KeyboardNavigation.TabIndex="2"
+                    KeyboardNavigation.TabIndex="3"
                     Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
                     Watermark="Anmerkung und Notizen" />
 
@@ -189,7 +196,7 @@
                         IconPlacement="Left"
                         IconWidth="18"
                         KeyboardNavigation.IsTabStop="True"
-                        KeyboardNavigation.TabIndex="3"
+                        KeyboardNavigation.TabIndex="4"
                         Text="{Binding Path=Website, UpdateSourceTrigger=PropertyChanged}"
                         Watermark="Webadresse" />
 
@@ -199,9 +206,43 @@
                         Command="{Binding Path=CmdAgg[CallWebPageCommand]}"
                         DockPanel.Dock="Right"
                         FontSize="20"
+                        KeyboardNavigation.IsTabStop="False"
                         PathData="{StaticResource ResourceKey=IconWebPage}"
                         ToolTip="Webseite aufrufe" />
                 </StackPanel>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.RowSpan="6"
+                    Grid.Column="1"
+                    Width="170"
+                    Height="170"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    KeyboardNavigation.IsTabStop="False">
+                    <Image
+                        x:Name="imgPhoto"
+                        HorizontalAlignment="Left"
+                        Source="{Binding Path=Photo, UpdateSourceTrigger=PropertyChanged}"
+                        Stretch="Uniform">
+                        <Image.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem
+                                    Command="{Binding Path=CmdAgg[DeleteAttachmentCommand]}"
+                                    Header="Bild löschen"
+                                    Icon="{StaticResource ResourceKey=MenuListViewDelete}" />
+
+                                <MenuItem
+                                    Command="{Binding Path=CmdAgg[FromClipboardAttachmentCommand]}"
+                                    Header="Von der Zwischenablage"
+                                    Icon="{StaticResource ResourceKey=MenuFromClipboard}" />
+                            </ContextMenu>
+                        </Image.ContextMenu>
+                    </Image>
+                </Border>
 
                 <TextBlock
                     Grid.Row="4"
@@ -224,10 +265,12 @@
                     VerticalAlignment="Top"
                     ItemsSource="{Binding Path=SymbolSource}"
                     KeyboardNavigation.IsTabStop="True"
-                    KeyboardNavigation.TabIndex="4"
+                    KeyboardNavigation.TabIndex="5"
                     ScrollViewer.HorizontalScrollBarVisibility="Visible"
                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                    SelectedIndex="{Binding Path=SelectedSymbol, UpdateSourceTrigger=PropertyChanged}">
+                    SelectedIndex="{Binding Path=SelectedSymbol, UpdateSourceTrigger=PropertyChanged}"
+                    VirtualizingPanel.IsVirtualizing="True"
+                    VirtualizingPanel.VirtualizationMode="Recycling">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal" />
@@ -276,6 +319,34 @@
                     </i:Interaction.Behaviors>
                 </ListBox>
 
+                <StackPanel
+                    Grid.Row="5"
+                    Grid.RowSpan="2"
+                    Grid.Column="1"
+                    Height="60"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="6"
+                    Orientation="Vertical">
+                    <ModernUI:ComboBoxColor
+                        x:Name="CBColor"
+                        Width="170"
+                        Height="30"
+                        SelectedColor="{Binding Path=SelectedBackgroundColor, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <ModernUI:MComboBox
+                        Width="170"
+                        Height="30"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding Path=RegionSource}"
+                        KeyboardNavigation.IsTabStop="False"
+                        KeyboardNavigation.TabIndex="7"
+                        SelectedItem="{Binding Path=SelectedRegion, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValuePath="Id" />
+                </StackPanel>
+
                 <ModernUI:MGroupBox
                     Grid.Row="6"
                     Grid.Column="0"
@@ -298,15 +369,22 @@
                                 PathData="{StaticResource ResourceKey=IconUser}" />
 
                             <ModernUI:AutoCompleteBox
-                                x:Name="TxtBenutzername"
+                                x:Name="TxtUsername"
                                 Width="464"
                                 Height="30"
                                 HorizontalAlignment="Left"
+                                MUIbase:WatermarkAdorner.Watermark="Benutzername"
                                 BorderThickness="1"
                                 CornerRadius="3"
+                                IsDropDownOpen="False"
+                                ItemsSource="{Binding Path=UsernameSource, UpdateSourceTrigger=PropertyChanged}"
                                 KeyboardNavigation.IsTabStop="True"
-                                KeyboardNavigation.TabIndex="1"
-                                Text="{Binding Path=Benutzer, UpdateSourceTrigger=PropertyChanged}" />
+                                KeyboardNavigation.TabIndex="8"
+                                Text="{Binding Path=Username, UpdateSourceTrigger=PropertyChanged}">
+                                <ModernUI:AutoCompleteBox.FilterMemberSource>
+                                    <ModernUI:PropertyFilterDescription PropertyName="Username" />
+                                </ModernUI:AutoCompleteBox.FilterMemberSource>
+                            </ModernUI:AutoCompleteBox>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
@@ -323,7 +401,7 @@
                                 IconPathData="{StaticResource ResourceKey=IconPasswort}"
                                 IconWidth="18"
                                 KeyboardNavigation.IsTabStop="True"
-                                KeyboardNavigation.TabIndex="5"
+                                KeyboardNavigation.TabIndex="9"
                                 Text="{Binding Path=Passwort, UpdateSourceTrigger=PropertyChanged}"
                                 Watermark="Bitte geben Sie Ihr Passwort ein" />
 
@@ -333,6 +411,7 @@
                                 Command="{Binding Path=CmdAgg[PasswordGeneratorCommand]}"
                                 DockPanel.Dock="Right"
                                 FontSize="20"
+                                KeyboardNavigation.IsTabStop="False"
                                 PathData="{StaticResource ResourceKey=IconKeyGenerator}"
                                 ToolTip="Passwortgenerator aufrufe" />
                         </StackPanel>
@@ -354,6 +433,7 @@
                 Command="{StaticResource ResourceKey=BackCmdKey}"
                 DockPanel.Dock="Right"
                 Foreground="Red"
+                KeyboardNavigation.IsTabStop="False"
                 PathData="{StaticResource ResourceKey=CloseIcon}"
                 ToolTip="Zurück" />
 
@@ -363,6 +443,7 @@
                 Command="{StaticResource ResourceKey=SaveDetailCmdKey}"
                 DockPanel.Dock="Right"
                 Foreground="Green"
+                KeyboardNavigation.IsTabStop="False"
                 PathData="{StaticResource ResourceKey=CheckedIcon}"
                 ToolTip="Speichern und zurück" />
 
@@ -371,6 +452,7 @@
                 Height="35"
                 Command="{StaticResource ResourceKey=AddAttachmentCmdKey}"
                 DockPanel.Dock="Right"
+                KeyboardNavigation.IsTabStop="False"
                 PathData="{StaticResource ResourceKey=IconAttachment}"
                 ToolTip="Bild hinzufügen" />
 
@@ -380,6 +462,7 @@
                 Command="{StaticResource ResourceKey=TrackingCmdKey}"
                 DockPanel.Dock="Right"
                 FontSize="20"
+                KeyboardNavigation.IsTabStop="False"
                 PathData="{StaticResource ResourceKey=IconTracking}"
                 Text="{Binding Path=ChangeTrackingCount, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}"
                 ToolTip="Letzte Änderungen anzeigen" />

@@ -603,7 +603,18 @@
             if (result == NotificationBoxButton.Yes)
             {
                 if (accessTyp == AccessTyp.Website)
-                { 
+                {
+                    base.EventAgg.Publish<ChangeViewEventArgs>(
+                        new ChangeViewEventArgs
+                        {
+                            Sender = this.GetType().Name,
+                            EntityId = currentId,
+                            RowPosition = this.DialogDataView.CurrentPosition,
+                            FromPage = FunctionButtons.MainOverview,
+                            MenuButton = FunctionButtons.WebPageDetail,
+                            IsNew = false,
+                            IsCopy = true
+                        });
                 }
                 else if (accessTyp == AccessTyp.Passwort)
                 {
@@ -621,9 +632,31 @@
                 }
                 else if (accessTyp == AccessTyp.Pin)
                 {
+                    base.EventAgg.Publish<ChangeViewEventArgs>(
+                        new ChangeViewEventArgs
+                        {
+                            Sender = this.GetType().Name,
+                            EntityId = currentId,
+                            RowPosition = this.DialogDataView.CurrentPosition,
+                            FromPage = FunctionButtons.MainOverview,
+                            MenuButton = FunctionButtons.PinDetail,
+                            IsNew = false,
+                            IsCopy = true
+                        });
                 }
                 else if (accessTyp == AccessTyp.License)
                 {
+                    base.EventAgg.Publish<ChangeViewEventArgs>(
+                        new ChangeViewEventArgs
+                        {
+                            Sender = this.GetType().Name,
+                            EntityId = currentId,
+                            RowPosition = this.DialogDataView.CurrentPosition,
+                            FromPage = FunctionButtons.MainOverview,
+                            MenuButton = FunctionButtons.LicenseDetail,
+                            IsNew = false,
+                            IsCopy = true
+                        });
                 }
             }
         }

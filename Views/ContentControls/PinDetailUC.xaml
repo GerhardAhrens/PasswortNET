@@ -105,11 +105,266 @@
                 Foreground="White"
                 IsSynchronizedWithCurrentItem="True"
                 ItemsSource="{Binding Path=ValidationErrors, UpdateSourceTrigger=PropertyChanged}"
-                SelectedIndex="0"
+                SelectedIndex="-1"
                 SelectedValue="{Binding Path=ValidationErrorsSelected, UpdateSourceTrigger=PropertyChanged}"
                 SelectedValuePath="Key" />
         </ScrollViewer>
         <!--#endregion Validation Notification Panel-->
+
+        <ScrollViewer
+            Grid.Row="2"
+            VerticalAlignment="Top"
+            HorizontalScrollBarVisibility="Hidden"
+            PreviewMouseWheel="OnPreviewMouseWheel"
+            VerticalScrollBarVisibility="Hidden">
+            <ModernUI:SimpleGrid
+                Grid.Row="1"
+                Margin="5,5,0,0"
+                Columns="*,200"
+                Rows="Auto,Auto,Auto,Auto,Auto, Auto,Auto">
+                <ModernUI:IconTextBox
+                    x:Name="TxtTitel"
+                    Grid.Row="0"
+                    Width="{StaticResource ResourceKey=TextBoxWidth}"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    IconBackground="AliceBlue"
+                    IconForeground="Gray"
+                    IconPathData="{StaticResource ResourceKey=IconTitel}"
+                    IconPlacement="Left"
+                    IconWidth="18"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+                    Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}"
+                    Watermark="Titel" />
+
+                <ModernUI:MCheckBox
+                    Grid.Row="1"
+                    Margin="5,5,5,5"
+                    HorizontalAlignment="Left"
+                    Content="In der Übersicht anzeigen"
+                    FlowDirection="LeftToRight"
+                    FontWeight="Medium"
+                    IsChecked="{Binding Path=ShowDescription, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="2" />
+
+                <ModernUI:IconTextBox
+                    x:Name="TxtNote"
+                    Grid.Row="2"
+                    Width="{StaticResource ResourceKey=TextBoxWidth}"
+                    Height="60"
+                    HorizontalAlignment="Left"
+                    VerticalContentAlignment="Top"
+                    AcceptsReturn="True"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    IconBackground="AliceBlue"
+                    IconForeground="Gray"
+                    IconPathData="{StaticResource ResourceKey=IconDescription}"
+                    IconPlacement="Left"
+                    IconWidth="18"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="3"
+                    Text="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged}"
+                    Watermark="Anmerkung und Notizen" />
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal">
+                    <ModernUI:IconTextBox
+                        x:Name="TxtWebseite"
+                        Width="{StaticResource ResourceKey=TextBoxWidth}"
+                        Height="30"
+                        HorizontalAlignment="Left"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IconBackground="AliceBlue"
+                        IconForeground="Gray"
+                        IconPathData="{StaticResource ResourceKey=IconWebPage}"
+                        IconPlacement="Left"
+                        IconWidth="18"
+                        KeyboardNavigation.IsTabStop="True"
+                        KeyboardNavigation.TabIndex="4"
+                        Text="{Binding Path=Website, UpdateSourceTrigger=PropertyChanged}"
+                        Watermark="Webadresse" />
+
+                    <ModernUI:GeometryButton
+                        Width="35"
+                        Height="35"
+                        Command="{Binding Path=CmdAgg[CallWebPageCommand]}"
+                        DockPanel.Dock="Right"
+                        FontSize="20"
+                        KeyboardNavigation.IsTabStop="False"
+                        PathData="{StaticResource ResourceKey=IconWebPage}"
+                        ToolTip="Webseite aufrufe" />
+                </StackPanel>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.RowSpan="6"
+                    Grid.Column="1"
+                    Width="170"
+                    Height="170"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    KeyboardNavigation.IsTabStop="False">
+                    <Image
+                        x:Name="imgPhoto"
+                        HorizontalAlignment="Left"
+                        Source="{Binding Path=Photo, UpdateSourceTrigger=PropertyChanged}"
+                        Stretch="Uniform">
+                        <Image.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem
+                                    Command="{Binding Path=CmdAgg[DeleteAttachmentCommand]}"
+                                    Header="Bild löschen"
+                                    Icon="{StaticResource ResourceKey=MenuListViewDelete}" />
+
+                                <MenuItem
+                                    Command="{Binding Path=CmdAgg[FromClipboardAttachmentCommand]}"
+                                    Header="Von der Zwischenablage"
+                                    Icon="{StaticResource ResourceKey=MenuFromClipboard}" />
+                            </ContextMenu>
+                        </Image.ContextMenu>
+                    </Image>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    FontWeight="Medium"
+                    Text="Erkennungssymbol" />
+
+                <ListBox
+                    x:Name="lbSymbole"
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Width="600"
+                    Height="60"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    ItemsSource="{Binding Path=SymbolSource}"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="5"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                    SelectedIndex="{Binding Path=SelectedSymbol, UpdateSourceTrigger=PropertyChanged}"
+                    VirtualizingPanel.IsVirtualizing="True"
+                    VirtualizingPanel.VirtualizationMode="Recycling">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Path
+                                Width="22"
+                                Height="22"
+                                Data="{Binding Path=Value}"
+                                Fill="Blue"
+                                Stretch="Fill" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border
+                                            Name="Border"
+                                            Padding="7,0,7,0"
+                                            BorderBrush="LightGray"
+                                            BorderThickness="1,0,1,0"
+                                            SnapsToDevicePixels="true">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="LightGreen" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
+                    <i:Interaction.Behaviors>
+                        <ModernBehaviors:ScrollIntoViewForListBox />
+                    </i:Interaction.Behaviors>
+                </ListBox>
+
+                <StackPanel
+                    Grid.Row="5"
+                    Grid.RowSpan="2"
+                    Grid.Column="1"
+                    Height="60"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="6"
+                    Orientation="Vertical">
+                    <ModernUI:ComboBoxColor
+                        x:Name="CBColor"
+                        Width="170"
+                        Height="30"
+                        SelectedColor="{Binding Path=SelectedBackgroundColor, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <ModernUI:MComboBox
+                        Width="170"
+                        Height="30"
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding Path=RegionSource}"
+                        KeyboardNavigation.IsTabStop="False"
+                        KeyboardNavigation.TabIndex="7"
+                        SelectedItem="{Binding Path=SelectedRegion, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValuePath="Id" />
+                </StackPanel>
+
+                <ModernUI:MGroupBox
+                    Grid.Row="6"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Padding="5"
+                    VerticalAlignment="Top">
+                    <ModernUI:MGroupBox.Header>
+                        <TextBlock FontWeight="Bold" Text="Sicherheitsinformationen" />
+                    </ModernUI:MGroupBox.Header>
+                    <StackPanel Orientation="Vertical">
+                        <ModernUI:IconTextBox
+                            x:Name="TxtPin"
+                            Width="{StaticResource ResourceKey=TextBoxWidth}"
+                            Height="30"
+                            HorizontalAlignment="Left"
+                            BorderThickness="1"
+                            CornerRadius="3"
+                            IconBackground="AliceBlue"
+                            IconForeground="Gray"
+                            IconPathData="{StaticResource ResourceKey=IconPasswort}"
+                            IconWidth="18"
+                            KeyboardNavigation.IsTabStop="True"
+                            KeyboardNavigation.TabIndex="8"
+                            Text="{Binding Path=Pin, UpdateSourceTrigger=PropertyChanged}"
+                            Watermark="Bitte geben Sie eine Pin ein" />
+                    </StackPanel>
+                </ModernUI:MGroupBox>
+            </ModernUI:SimpleGrid>
+        </ScrollViewer>
 
         <!--#region Fußzeile-->
         <DockPanel

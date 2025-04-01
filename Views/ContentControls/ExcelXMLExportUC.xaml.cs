@@ -330,12 +330,15 @@
                     dtPassword.Columns.Remove("LastExport");
                     dtPassword.Columns.Remove("ShowLast");
                     dtPassword.Columns.Remove("IsShowLast");
+                    dtPassword.Columns.Remove("Timestamp");
+                    dtPassword.Columns.Remove("Fullname");
+                    dtPassword.Columns.Remove("ToSearchFilter");
+                    dtPassword.Columns.Remove("SyncHash");
+                    dtPassword.Columns.Remove("IsAttachmnent");
                     dtPassword.Columns.Remove("CreatedBy");
                     dtPassword.Columns.Remove("CreatedOn");
                     dtPassword.Columns.Remove("ModifiedBy");
                     dtPassword.Columns.Remove("ModifiedOn");
-                    dtPassword.Columns.Remove("Timestamp");
-                    dtPassword.Columns.Remove("Fullname");
 
                     if (Path.GetExtension(this.ExportFile.ToLower()) == ".xml")
                     {

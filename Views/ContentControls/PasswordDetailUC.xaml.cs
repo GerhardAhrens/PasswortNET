@@ -162,14 +162,14 @@
 
         public override void InitCommands()
         {
-            this.CmdAgg.AddOrSetCommand("BackCommand", new RelayCommand(p1 => this.BackHandler(p1), p2 => true));
-            this.CmdAgg.AddOrSetCommand("SaveDetailCommand", new RelayCommand(p1 => this.SaveDetailHandler(p1), p2 => true));
-            this.CmdAgg.AddOrSetCommand("AddAttachmentCommand", new RelayCommand(p1 => this.AddAttachmentHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("BackCommand", new RelayCommand(p1 => this.BackHandler(p1)));
+            this.CmdAgg.AddOrSetCommand("SaveDetailCommand", new RelayCommand(p1 => this.SaveDetailHandler(p1)));
+            this.CmdAgg.AddOrSetCommand("AddAttachmentCommand", new RelayCommand(p1 => this.AddAttachmentHandler(p1)));
             this.CmdAgg.AddOrSetCommand("DeleteAttachmentCommand", new RelayCommand(p1 => this.DeleteAttachmentHandler(p1), p2 => this.CanDeleteAttachmentHandler(p2)));
-            this.CmdAgg.AddOrSetCommand("TrackingCommand", new RelayCommand(p1 => this.TrackingHandler(p1), p2 => true));
-            this.CmdAgg.AddOrSetCommand("PasswordGeneratorCommand", new RelayCommand(p1 => this.PasswordGeneratorHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("TrackingCommand", new RelayCommand(p1 => this.TrackingHandler(p1)));
+            this.CmdAgg.AddOrSetCommand("PasswordGeneratorCommand", new RelayCommand(p1 => this.PasswordGeneratorHandler(p1)));
             this.CmdAgg.AddOrSetCommand("CallWebPageCommand", new RelayCommand(p1 => this.CallWebPageHandler(p1), p2 => this.CanCallWebPageHandler(p2)));
-            this.CmdAgg.AddOrSetCommand("FromClipboardAttachmentCommand", new RelayCommand(p1 => this.FromClipboardAttachmentHandler(p1), p2 => true));
+            this.CmdAgg.AddOrSetCommand("FromClipboardAttachmentCommand", new RelayCommand(p1 => this.FromClipboardAttachmentHandler(p1)));
         }
 
         #region UserControl Events
@@ -250,6 +250,10 @@
                                 if (string.IsNullOrEmpty(this.CurrentSelectedItem.Region) == false)
                                 {
                                     this.SelectedRegion = this.RegionSource.FirstOrDefault(f => f.Name == this.CurrentSelectedItem.Region);
+                                    if (this.SelectedRegion.Background != "Transparent")
+                                    {
+                                        this.SelectedBackgroundColor = ColorConverters.ConvertNameToBrush(this.SelectedRegion.Background);
+                                    }
                                 }
 
                                 this.CurrentSelectedItem.ModifiedBy = UserInfo.TS().CurrentDomainUser;
@@ -324,11 +328,11 @@
                 {
                     if (this.CurrentSelectedItem.Id == Guid.Empty && this.IsCopy == false)
                     {
+                        this.CurrentSelectedItem.Id = Guid.NewGuid();
                         this.CurrentSelectedItem.CreatedBy = UserInfo.TS().CurrentUser;
                         this.CurrentSelectedItem.CreatedOn = UserInfo.TS().CurrentTime;
                         this.CurrentSelectedItem.ModifiedBy = UserInfo.TS().CurrentUser;
                         this.CurrentSelectedItem.ModifiedOn = UserInfo.TS().CurrentTime;
-                        this.CurrentSelectedItem.Id = Guid.NewGuid();
                         OperationResult<AuditTrailResult> auditTrailresult = AuditTrail.Create(this.CurrentSelectedItem, null);
 
                         repository.Add(this.CurrentSelectedItem, auditTrailresult, this.Photo);
@@ -586,6 +590,9 @@
         {
             if (value is string txt)
             {
+                this.TxtTitel.Background = Brushes.Transparent;
+                this.TxtPassword.Background = Brushes.Transparent;
+
                 if (txt.ToLower() == "title")
                 {
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
@@ -620,7 +627,7 @@
 
                 if (e.Delta < 0)
                 {
-                    if (this.Scalefactor.ScaleX > 1.35)
+                    if (this.Scalefactor.ScaleX > 1.0)
                     {
                         this.Scalefactor.ScaleX = this.Scalefactor.ScaleX - 0.25;
                         this.Scalefactor.ScaleY = this.Scalefactor.ScaleY - 0.25;
