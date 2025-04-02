@@ -459,5 +459,23 @@ namespace PasswortNET.Core
             return resultOK.Item1;
         }
         #endregion Working Region Tag
+
+        #region Drucken
+        public static NotificationBoxButton PrinterNotReady(this INotificationService @this, string addText = "")
+        {
+            (string InfoText, string CustomText, double FontSize) msgText = ("Drucken", $"Der gewählte Drucker '{addText}' ist nicht bereit!\nPrüfen Sie den Drucker ob die eingeschaltet ist und Papier eingelegt ist.", 16);
+            Tuple<NotificationBoxButton, object> resultOK = new Tuple<NotificationBoxButton, object>(NotificationBoxButton.Ok, null);
+
+            @this.ShowDialog<MessageOk>(msgText, (result, tag) =>
+            {
+                if (result == true && tag != null)
+                {
+                    resultOK = (Tuple<NotificationBoxButton, object>)tag;
+                }
+            });
+
+            return resultOK.Item1;
+        }
+        #endregion
     }
 }

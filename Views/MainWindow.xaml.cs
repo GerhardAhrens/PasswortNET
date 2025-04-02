@@ -186,7 +186,9 @@
 
         private void PrintHandler(object p1)
         {
-            this.notificationService.FeaturesNotFound("Drucken");
+            ChangeViewEventArgs arg = new ChangeViewEventArgs();
+            arg.MenuButton = FunctionButtons.Print;
+            this.ChangeControl(arg);
         }
 
         private void DataSyncHandler(object p1)
@@ -362,6 +364,14 @@
                         this.IsLogoff = true;
                         this.IsWorkPassword = true;
                         this.IsImportExport = true;
+                    }
+                    else if (this.WorkContent.GetType() == typeof(PrintUC))
+                    {
+                        this.IsAppSettings = false;
+                        this.IsAbout = false;
+                        this.IsWorkPassword = false;
+                        this.IsLogoff = true;
+                        this.IsImportExport = false;
                     }
 
                     StatusbarMain.Statusbar.SetNotification($"Bereit: {objectRuntime.ResultMilliseconds()}ms");

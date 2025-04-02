@@ -95,6 +95,7 @@
                     Views.Add(FunctionButtons.Export, typeof(ExcelXMLExportUC));
                     Views.Add(FunctionButtons.DataSync, typeof(DataSyncUC));
                     Views.Add(FunctionButtons.AuditTrail, typeof(AuditTrailDetailUC));
+                    Views.Add(FunctionButtons.Print, typeof(PrintUC));
                 }
             }
             catch (Exception ex)
