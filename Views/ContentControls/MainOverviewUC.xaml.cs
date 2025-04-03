@@ -33,15 +33,10 @@
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Critical;
             base.EventAgg.Subscribe<WorkEventArgs>(this.WorkEntryHandler);
             WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
+            WeakEventManager<UserControl, RoutedEventArgs>.AddHandler(this, "Unloaded", this.OnUcUnloaded);
             WeakEventManager<ListView, MouseWheelEventArgs>.AddHandler(this.lvwMain, "PreviewMouseWheel", this.OnLvwPreviewMouseWheel);
-            this.Unloaded += OnUcUnloaded;
             this.InitCommands();
             this.DataContext = this;
-        }
-
-        private void OnUcUnloaded(object sender, RoutedEventArgs e)
-        {
-            this.CustomView = null;
         }
 
         #region Properties
@@ -142,6 +137,14 @@
             this.LoadDataHandler();
         }
 
+        private void OnUcUnloaded(object sender, RoutedEventArgs e)
+        {
+            MainWindow.DialogDataView = this.DialogDataView;
+            this.CustomView = null;
+            this.DialogDataView = null;
+            this.RegionSource = null;
+        }
+
         #region Load and Filter Data
         private void LoadDataHandler()
         {
@@ -170,6 +173,7 @@
                                 this.DisplayRowCount = this.DialogDataView.Count<PasswordPin>();
 
                                 this.IsFilterContentFound = this.DisplayRowCount > 0 ? true : false;
+                                MainWindow.DialogDataView = this.DialogDataView;
                             }
                         }
                     }

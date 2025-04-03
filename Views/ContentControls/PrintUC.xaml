@@ -53,16 +53,29 @@
             Grid.Row="1"
             Grid.Column="0"
             Margin="10,10,0,0"
-            Orientation="Vertical">
+            VerticalAlignment="Top"
+            Orientation="Horizontal">
             <ModernUI:FlatButton
-                Width="70"
+                Width="170"
                 Height="28"
                 Margin="2,0"
                 HorizontalAlignment="Left"
-                Command="{Binding Path=CmdAgg[PrintCommand]}"
-                Content="Drucken"
+                Command="{Binding Path=CmdAgg[PrintPasswortCommand]}"
+                Content="Drucken, Passwort, Pin"
                 CornerRadius="3"
                 IsDefault="True"
+                MouseOverBackground1="AliceBlue"
+                Type="info" />
+
+            <ModernUI:FlatButton
+                Width="170"
+                Height="28"
+                Margin="2,0"
+                HorizontalAlignment="Left"
+                Command="{Binding Path=CmdAgg[PrintLicenseCommand]}"
+                Content="Drucken, Lizenzen"
+                CornerRadius="3"
+                IsDefault="False"
                 MouseOverBackground1="AliceBlue"
                 Type="info" />
         </StackPanel>

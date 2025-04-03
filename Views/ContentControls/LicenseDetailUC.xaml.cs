@@ -80,6 +80,18 @@
             set => base.SetValue(value);
         }
 
+        public IEnumerable<string> CompanySource
+        {
+            get => base.GetValue<IEnumerable<string>>();
+            set => base.SetValue(value);
+        }
+
+        public string Company
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value, this.CheckContent);
+        }
+
         public PasswordPin CurrentSelectedItem
         {
             get => base.GetValue<PasswordPin>();
@@ -225,10 +237,16 @@
                             this.RegionSource = repository.ListByRegion();
                             this.SelectedRegion = this.RegionSource.FirstOrDefault(f => f.Name == "Alle");
 
-                            var licenseName = repository.List().Where(w => w.AccessTyp == AccessTyp.License).OrderBy(o => o.LicenseName).DistinctBy(d => d.LicenseName).Select(s => s.LicenseName).ToList();
-                            if (licenseName != null)
+                            var licenseNames = repository.List().Where(w => w.AccessTyp == AccessTyp.License).OrderBy(o => o.LicenseName).DistinctBy(d => d.LicenseName).Select(s => s.LicenseName).ToList();
+                            if (licenseNames != null)
                             {
-                                this.LicenseNameSource = licenseName;
+                                this.LicenseNameSource = licenseNames;
+                            }
+
+                            var companyNames = repository.List().Where(w => w.AccessTyp == AccessTyp.License).OrderBy(o => o.Company).DistinctBy(d => d.Company).Select(s => s.Company).ToList();
+                            if (companyNames != null)
+                            {
+                                this.CompanySource = companyNames;
                             }
                         }
 
@@ -254,6 +272,12 @@
                                 this.LicenseNameSource = licenseName;
                             }
 
+                            var companyNames = repository.List().Where(w => w.AccessTyp == AccessTyp.License).OrderBy(o => o.Company).DistinctBy(d => d.Company).Select(s => s.Company).ToList();
+                            if (companyNames != null)
+                            {
+                                this.CompanySource = companyNames;
+                            }
+
                             this.CurrentSelectedItem = repository.GetById(this.Id);
                             if (this.CurrentSelectedItem != null)
                             {
@@ -263,6 +287,7 @@
                                 this.ShowDescription = this.CurrentSelectedItem.ShowDescription;
                                 this.Website = this.CurrentSelectedItem.Website;
                                 this.SelectedSymbol = this.CurrentSelectedItem.Symbol;
+                                this.Company = this.CurrentSelectedItem.Company;
                                 this.LicenseName = this.CurrentSelectedItem.LicenseName;
                                 this.LicenseKey = this.CurrentSelectedItem.LicenseKey;
                                 this.SelectedBackgroundColor = ColorConverters.ConvertNameToBrush(this.CurrentSelectedItem.Background);
@@ -343,6 +368,7 @@
                 this.CurrentSelectedItem.ShowDescription = this.ShowDescription;
                 this.CurrentSelectedItem.Website = this.Website;
                 this.CurrentSelectedItem.Symbol = this.SelectedSymbol;
+                this.CurrentSelectedItem.Company = this.Company;
                 this.CurrentSelectedItem.LicenseName = this.LicenseName;
                 this.CurrentSelectedItem.LicenseKey = this.LicenseKey;
                 this.CurrentSelectedItem.Background = ColorConverters.ConvertBrushToName(this.CBColor.SelectedColor);
@@ -532,6 +558,11 @@
             this.ValidationRules.Add(nameof(this.Title), () =>
             {
                 return InputValidation<LicenseDetailUC>.This(this).NotEmpty(x => x.Title, "Titel");
+            });
+
+            this.ValidationRules.Add(nameof(this.Company), () =>
+            {
+                return InputValidation<LicenseDetailUC>.This(this).NotEmpty(x => x.Company, "Unternehmen");
             });
 
             this.ValidationRules.Add(nameof(this.LicenseName), () =>

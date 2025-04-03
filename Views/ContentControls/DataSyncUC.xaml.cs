@@ -358,7 +358,7 @@
                         passwortPinNew.Id = row.Id;
                         passwortPinNew.AccessTyp = row.AccessTyp;
                         passwortPinNew.Title = row.Title;
-                        passwortPinNew.IsAttachmnent = false;
+                        passwortPinNew.IsAttachment = false;
                         passwortPinNew.ShowDescription = row.ShowDescription;
                         passwortPinNew.Username = row.Username;
                         passwortPinNew.Passwort = row.Passwort;

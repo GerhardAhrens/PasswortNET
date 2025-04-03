@@ -44,7 +44,7 @@ namespace PasswortNET.Model
 
         public string Description { get; set; }
 
-        public bool IsAttachmnent { get; set; }
+        public bool IsAttachment { get; set; }
 
         public bool ShowDescription { get; set; }
 

@@ -16,7 +16,7 @@
     xmlns:localStatic="clr-namespace:PasswortNET.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    d:DesignHeight="450"
+    d:DesignHeight="470"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
@@ -347,6 +347,37 @@
                         <TextBlock FontWeight="Bold" Text="Lizenzinformationen" />
                     </ModernUI:MGroupBox.Header>
                     <StackPanel Orientation="Vertical">
+
+                        <StackPanel Orientation="Horizontal">
+                            <ModernUI:GeometryLabel
+                                Width="33"
+                                Height="30"
+                                Margin="3,0,0,0"
+                                Background="AliceBlue"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Foreground="Gray"
+                                PathData="{StaticResource ResourceKey=IconCompany}" />
+
+                            <ModernUI:AutoCompleteBox
+                                x:Name="TxtCompany"
+                                Width="464"
+                                Height="30"
+                                HorizontalAlignment="Left"
+                                MUIbase:WatermarkAdorner.Watermark="Unternehmen"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                IsDropDownOpen="False"
+                                ItemsSource="{Binding Path=CompanySource, UpdateSourceTrigger=PropertyChanged}"
+                                KeyboardNavigation.IsTabStop="True"
+                                KeyboardNavigation.TabIndex="8"
+                                Text="{Binding Path=Company, UpdateSourceTrigger=PropertyChanged}">
+                                <ModernUI:AutoCompleteBox.FilterMemberSource>
+                                    <ModernUI:PropertyFilterDescription PropertyName="Company" />
+                                </ModernUI:AutoCompleteBox.FilterMemberSource>
+                            </ModernUI:AutoCompleteBox>
+                        </StackPanel>
+
                         <StackPanel Orientation="Horizontal">
                             <ModernUI:GeometryLabel
                                 Width="33"

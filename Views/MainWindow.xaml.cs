@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Data;
     using System.Runtime.Versioning;
     using System.Windows;
     using System.Windows.Controls;
@@ -17,6 +18,7 @@
 
     using PasswortNET.Core;
     using PasswortNET.Core.Enums;
+    using PasswortNET.Model;
     using PasswortNET.Views.ContentControls;
 
     /// <summary>
@@ -95,6 +97,8 @@
             set => base.SetValue(value);
         }
 
+        public static ICollectionView DialogDataView { get; set; }
+
         private FunctionButtons CurrentUCName { get; set; }
         #endregion Properties
 
@@ -108,7 +112,7 @@
             base.CmdAgg.AddOrSetCommand("AboutCommand", new RelayCommand(p1 => this.AboutHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("ExportCommand", new RelayCommand(p1 => this.ExportHandler(p1), p2 => true));
             base.CmdAgg.AddOrSetCommand("DataSyncCommand", new RelayCommand(p1 => this.DataSyncHandler(p1), p2 => true));
-            base.CmdAgg.AddOrSetCommand("PrintCommand", new RelayCommand(p1 => this.PrintHandler(p1), p2 => true));
+            base.CmdAgg.AddOrSetCommand("PrintCommand", new RelayCommand(this.PrintHandler, this.CanPrintHandler));
             base.CmdAgg.AddOrSetCommand("AddEntryCommand", new RelayCommand(p1 => this.AddEntryHandler(p1), p2 => true));
         }
 
@@ -118,6 +122,9 @@
             NotificationService.RegisterDialog<QuestionHtmlYesNo>();
             NotificationService.RegisterDialog<MessageHtmlOk>();
             NotificationService.RegisterDialog<MessageOk>();
+
+            this.Focus();
+            Keyboard.Focus(this);
 
             this.InitTimer();
 
@@ -184,7 +191,14 @@
             this.ChangeControl(arg);
         }
 
-        private void PrintHandler(object p1)
+        private bool CanPrintHandler(object commandParam)
+        {
+            int count = MainWindow.DialogDataView.Count<PasswordPin>();
+
+            return count == 0 ? false : true;
+        }
+
+        private void PrintHandler(object commandParam)
         {
             ChangeViewEventArgs arg = new ChangeViewEventArgs();
             arg.MenuButton = FunctionButtons.Print;
