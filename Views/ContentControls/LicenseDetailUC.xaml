@@ -29,7 +29,7 @@
         <ModernWPF:CommandKeyReference x:Key="CallWebPageCmdKey" Command="{Binding Path=CmdAgg[CallWebPageCommand]}" />
 
         <ModernConverter:BooleanToVisibleConverter x:Key="BooleanToVisibleConverter" />
-        <localConverter:PasswordStrengthConverter x:Key="PasswordStrengthConverter" />
+        <ModernConverter:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
         <sys:Double x:Key="TextBoxWidth">500</sys:Double>
         <sys:Double x:Key="ScaleXY">1.0</sys:Double>
     </UserControl.Resources>
@@ -346,9 +346,9 @@
                     <ModernUI:MGroupBox.Header>
                         <TextBlock FontWeight="Bold" Text="Lizenzinformationen" />
                     </ModernUI:MGroupBox.Header>
-                    <StackPanel Orientation="Vertical">
 
-                        <StackPanel Orientation="Horizontal">
+                    <ModernUI:SimpleGrid Columns="550,*" Rows="Auto,Auto,Auto">
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
                             <ModernUI:GeometryLabel
                                 Width="33"
                                 Height="30"
@@ -378,7 +378,13 @@
                             </ModernUI:AutoCompleteBox>
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal">
+                        <ModernUI:MCheckBoxEx
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Content="Ist Lizenz ein Abo?"
+                            IsChecked="{Binding Path=IsLicenseAbo, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}" />
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <ModernUI:GeometryLabel
                                 Width="33"
                                 Height="30"
@@ -408,8 +414,24 @@
                             </ModernUI:AutoCompleteBox>
                         </StackPanel>
 
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.RowSpan="2"
+                            Grid.Column="1"
+                            Orientation="Vertical">
+                            <TextBlock VerticalAlignment="Center" Text="Lizenz gültig bis" />
+                            <ModernUI:FlatDatePicker
+                                Width="120"
+                                Margin="0,5,0,0"
+                                HorizontalAlignment="Left"
+                                IsReadOnly="False"
+                                SelectedDate="{Binding Path=LicenseValid, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ResourceKey=DateTimeToStringConverter}}"
+                                SelectedDateFormat="Short" />
+                        </StackPanel>
+
                         <ModernUI:IconTextBox
                             x:Name="TxtLicenseKey"
+                            Grid.Row="2"
                             Width="{StaticResource ResourceKey=TextBoxWidth}"
                             Height="30"
                             HorizontalAlignment="Left"
@@ -423,7 +445,7 @@
                             KeyboardNavigation.TabIndex="9"
                             Text="{Binding Path=LicenseKey, UpdateSourceTrigger=PropertyChanged}"
                             Watermark="Bitte geben Sie einen Lizenzschlüssel ein" />
-                    </StackPanel>
+                    </ModernUI:SimpleGrid>
                 </ModernUI:MGroupBox>
             </ModernUI:SimpleGrid>
         </ScrollViewer>

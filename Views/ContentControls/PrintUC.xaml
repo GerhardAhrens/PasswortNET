@@ -22,8 +22,11 @@
         <KeyBinding Key="Esc" Command="{StaticResource ResourceKey=BackCloseCmdKey}" />
     </base:UserControlBase.InputBindings>
 
-    <ModernUI:SimpleGrid Columns="*" Rows="Auto,*,30">
+    <ModernUI:SimpleGrid Columns="*" Rows="Auto,40,40,*,30">
+        <!--#region Kopfzeile-->
         <StackPanel
+            Grid.Row="0"
+            Grid.Column="0"
             Height="Auto"
             Background="LightBlue"
             Orientation="Horizontal">
@@ -48,6 +51,7 @@
                 FontWeight="Bold"
                 Text="TbTitelUC" />
         </StackPanel>
+        <!--#endregion Kopfzeile-->
 
         <StackPanel
             Grid.Row="1"
@@ -67,6 +71,21 @@
                 MouseOverBackground1="AliceBlue"
                 Type="info" />
 
+            <TextBlock
+                Margin="10,0,0,0"
+                VerticalAlignment="Center"
+                FontSize="14">
+                <Run FontWeight="Medium" Text="zu druckende Datensätze:" />
+                <Run Foreground="Blue" Text="{Binding Path=CountPassword, UpdateSourceTrigger=PropertyChanged, FallbackValue=-1}" />
+            </TextBlock>
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="10,10,0,0"
+            VerticalAlignment="Top"
+            Orientation="Horizontal">
             <ModernUI:FlatButton
                 Width="170"
                 Height="28"
@@ -78,6 +97,14 @@
                 IsDefault="False"
                 MouseOverBackground1="AliceBlue"
                 Type="info" />
+
+            <TextBlock
+                Margin="10,0,0,0"
+                VerticalAlignment="Center"
+                FontSize="14">
+                <Run FontWeight="Medium" Text="zu druckende Datensätze:" />
+                <Run Foreground="Blue" Text="{Binding Path=CountLicense, UpdateSourceTrigger=PropertyChanged, FallbackValue=-1}" />
+            </TextBlock>
         </StackPanel>
 
     </ModernUI:SimpleGrid>

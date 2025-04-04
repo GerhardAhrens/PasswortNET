@@ -140,6 +140,18 @@
             set => base.SetValue(value, this.CheckContent);
         }
 
+        public bool IsLicenseAbo
+        {
+            get => base.GetValue<bool>();
+            set => base.SetValue(value, this.CheckContent);
+        }
+
+        public DateTime? LicenseValid
+        {
+            get => base.GetValue<DateTime?>();
+            set => base.SetValue(value, this.CheckContent);
+        }
+
         public Brush SelectedBackgroundColor
         {
             get => base.GetValue<Brush>();
@@ -290,6 +302,8 @@
                                 this.Company = this.CurrentSelectedItem.Company;
                                 this.LicenseName = this.CurrentSelectedItem.LicenseName;
                                 this.LicenseKey = this.CurrentSelectedItem.LicenseKey;
+                                this.IsLicenseAbo = this.CurrentSelectedItem.IsLicenseAbo;
+                                this.LicenseValid = this.CurrentSelectedItem.LicenseValid;
                                 this.SelectedBackgroundColor = ColorConverters.ConvertNameToBrush(this.CurrentSelectedItem.Background);
                                 if (string.IsNullOrEmpty(this.CurrentSelectedItem.Region) == false)
                                 {
@@ -371,6 +385,8 @@
                 this.CurrentSelectedItem.Company = this.Company;
                 this.CurrentSelectedItem.LicenseName = this.LicenseName;
                 this.CurrentSelectedItem.LicenseKey = this.LicenseKey;
+                this.CurrentSelectedItem.IsLicenseAbo = this.IsLicenseAbo;
+                this.CurrentSelectedItem.LicenseValid = this.LicenseValid.DateOrDefault();
                 this.CurrentSelectedItem.Background = ColorConverters.ConvertBrushToName(this.CBColor.SelectedColor);
                 this.CurrentSelectedItem.Region = this.SelectedRegion?.Name;
                 using (PasswordPinRepository repository = new PasswordPinRepository())

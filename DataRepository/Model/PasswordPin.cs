@@ -70,6 +70,10 @@ namespace PasswortNET.Model
 
         public string LicenseKey { get; set; }
 
+        public bool IsLicenseAbo { get; set; }
+
+        public DateTime LicenseValid { get; set; }
+
         public string Region { get; set; }
 
         public DateTime LastExport { get; set; }

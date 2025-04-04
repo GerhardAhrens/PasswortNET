@@ -37,6 +37,18 @@
             this.DataContext = this;
         }
 
+        public int CountPassword
+        {
+            get => base.GetValue<int>();
+            set => base.SetValue(value);
+        }
+
+        public int CountLicense
+        {
+            get => base.GetValue<int>();
+            set => base.SetValue(value);
+        }
+
         public override void InitCommands()
         {
             this.CmdAgg.AddOrSetCommand("BackAboutCommand", new RelayCommand(this.BackHandler));
@@ -49,6 +61,9 @@
             this.Focus();
             Keyboard.Focus(this);
             this.IsUCLoaded = true;
+
+            this.CountPassword = MainWindow.DialogDataView.Count<PasswordPin>(x => x.AccessTyp != AccessTyp.License);
+            this.CountLicense = MainWindow.DialogDataView.Count<PasswordPin>(x => x.AccessTyp == AccessTyp.License);
         }
 
         private void BackHandler(object p1)
@@ -76,6 +91,8 @@
             dataTable.Columns.Remove("IsShowLast");
             dataTable.Columns.Remove("LicenseName");
             dataTable.Columns.Remove("LicenseKey");
+            dataTable.Columns.Remove("IsLicenseAbo");
+            dataTable.Columns.Remove("LicenseValid");
             dataTable.Columns.Remove("FullName");
             dataTable.Columns.Remove("Timestamp");
             dataTable.Columns.Remove("Symbol");
@@ -102,7 +119,6 @@
                     return;
                 }
 
-
                 var headerList = dataTable.Columns.Cast<DataColumn>().Select(e => e.ColumnName.ToString()).ToList();
                 FlowDocument fd = new FlowDocument();
                 fd.PageHeight = 768;
@@ -126,7 +142,7 @@
                 fd.ColumnGap = 0;
                 fd.ColumnWidth = (fd.PageWidth - fd.ColumnGap - fd.PagePadding.Left - fd.PagePadding.Right);
 
-                Paragraph paragraphTitle = new Paragraph(new Run("Password Manager"));
+                Paragraph paragraphTitle = new Paragraph(new Run("Password Manager (Passwort, Pin, Webzugänge)"));
                 paragraphTitle.FontStyle = FontStyles.Normal;
                 paragraphTitle.FontFamily = new FontFamily(FONTNAME);
                 paragraphTitle.FontSize = 20;
@@ -217,7 +233,6 @@
                 fd.Blocks.Add(table);
                 printDialog.PrintDocument((docPaginatorSource).DocumentPaginator, "Password Manager");
             }
-
         }
 
         private void PrintLicenseHandler(object obj)
@@ -228,14 +243,13 @@
             dataTable.Columns.Remove("ShowDescription");
             dataTable.Columns.Remove("Website");
             dataTable.Columns.Remove("CompanyId");
-            dataTable.Columns.Remove("Company");
+            dataTable.Columns.Remove("Fullname");
             dataTable.Columns.Remove("CompanyInfoMail");
             dataTable.Columns.Remove("SyncItemStatus");
             dataTable.Columns.Remove("LastExport");
             dataTable.Columns.Remove("ShowLast");
             dataTable.Columns.Remove("IsShowLast");
             dataTable.Columns.Remove("Username");
-            dataTable.Columns.Remove("Passwort");
             dataTable.Columns.Remove("Passwort");
             dataTable.Columns.Remove("Pin");
             dataTable.Columns.Remove("Timestamp");
@@ -248,6 +262,129 @@
             dataTable.Columns.Remove("IsAttachment");
             dataTable.Columns.Remove("SyncHash");
             dataTable.Columns.Remove("ToSearchFilter");
+
+            PrintDialog printDialog = new PrintDialog();
+            printDialog.PrintQueue = LocalPrintServer.GetDefaultPrintQueue();
+            if (printDialog.ShowDialog() == true)
+            {
+                printDialog.PageRangeSelection = PageRangeSelection.AllPages;
+                printDialog.UserPageRangeEnabled = false;
+                PrintQueue printQueue = printDialog.PrintQueue;
+                Tuple<bool, string, string> printerState = this.CheckPrinterState(printQueue);
+
+                if (printerState.Item1 == true)
+                {
+                    return;
+                }
+
+                var headerList = dataTable.Columns.Cast<DataColumn>().Select(e => e.ColumnName.ToString()).ToList();
+                FlowDocument fd = new FlowDocument();
+                fd.PageHeight = 768;
+                fd.PageWidth = 1104;
+                fd.IsColumnWidthFlexible = true;
+
+                PageMediaSize pageMediaSize = new PageMediaSize(fd.PageWidth, fd.PageHeight);
+                PrintTicket pt = printQueue.DefaultPrintTicket;
+                pt.PageMediaSize = pageMediaSize;
+                pt.PageOrientation = PageOrientation.Landscape;
+                pt.PageOrder = PageOrder.Standard;
+
+                IDocumentPaginatorSource docPaginatorSource = fd as IDocumentPaginatorSource;
+                WeakEventManager<DocumentPaginator, AsyncCompletedEventArgs>.AddHandler(docPaginatorSource.DocumentPaginator, "ComputePageCountCompleted", this.OnComputePageCountCompleted);
+
+                Paragraph paragraphTitle = new Paragraph(new Run("Password Manager (Softwarelizenzen)"));
+                paragraphTitle.FontStyle = FontStyles.Normal;
+                paragraphTitle.FontFamily = new FontFamily(FONTNAME);
+                paragraphTitle.FontSize = 20;
+                paragraphTitle.TextAlignment = TextAlignment.Center;
+                fd.Blocks.Add(paragraphTitle);
+
+                Paragraph paragraphFrom = new Paragraph(new Run($"Gedruckt am: {DateTime.Now.ToShortDateString()}"));
+                paragraphFrom.FontStyle = FontStyles.Normal;
+                paragraphFrom.FontFamily = new FontFamily(FONTNAME);
+                paragraphFrom.FontSize = 10;
+                paragraphFrom.TextAlignment = TextAlignment.Right;
+                fd.Blocks.Add(paragraphFrom);
+
+                Table table = new Table();
+                table.CellSpacing = 0;
+                table.BorderBrush = Brushes.White;
+                table.BorderThickness = new Thickness(1);
+                table.Margin = new Thickness(16, 0, 16, 16);
+
+                /* Spaltenkopf */
+                TableColumn titelCol = new TableColumn();
+                TableColumn descriptionCol = new TableColumn();
+                TableColumn companyCol = new TableColumn();
+                TableColumn licenseNameCol = new TableColumn();
+                TableColumn licenseKeyCol = new TableColumn();
+                TableColumn licenseAboCol = new TableColumn();
+                TableColumn licenseValidCol = new TableColumn();
+                TableColumn regionCol = new TableColumn();
+
+                titelCol.Width = new GridLength(2, GridUnitType.Auto);
+                descriptionCol.Width = new GridLength(3, GridUnitType.Auto);
+                companyCol.Width = new GridLength(3, GridUnitType.Auto);
+                licenseNameCol.Width = new GridLength(3, GridUnitType.Auto);
+                licenseKeyCol.Width = new GridLength(3, GridUnitType.Auto);
+                licenseAboCol.Width = new GridLength(2, GridUnitType.Auto);
+                licenseValidCol.Width = new GridLength(2, GridUnitType.Auto);
+                regionCol.Width = new GridLength(2, GridUnitType.Auto);
+
+                TableRowGroup headerGroup = new TableRowGroup();
+                headerGroup.Background = Brushes.LightGray;
+                TableRow headerRow = new TableRow();
+
+                headerRow.Cells.Add(this.CreateHeaderCell("Titel", false, false));
+                headerRow.Cells.Add(this.CreateHeaderCell("Beschreibung", false, false));
+                headerRow.Cells.Add(this.CreateHeaderCell("Unternehmen", false, false));
+                headerRow.Cells.Add(this.CreateHeaderCell("Lizenznehmer", false, false));
+                headerRow.Cells.Add(this.CreateHeaderCell("Lizenzschlüssel", false, false));
+                headerRow.Cells.Add(this.CreateHeaderCell("Ist Abo", false, false));
+                headerRow.Cells.Add(this.CreateHeaderCell("Gültig bis", false, false));
+                headerRow.Cells.Add(this.CreateHeaderCell("Gruppe", true, false));
+                headerGroup.Rows.Add(headerRow);
+                table.RowGroups.Add(headerGroup);
+
+                /* Datenspalten */
+                for (int i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    TableRowGroup resultGroup = new TableRowGroup();
+                    TableRow resultRow = new TableRow();
+
+                    bool lastBottom = (i == (dataTable.Rows.Count - 1));
+
+                    DataRow row = dataTable.Rows[i];
+                    for (int j = 0; j < dataTable.Columns.Count; j++)
+                    {
+                        if (row.ItemArray[j].GetType() == typeof(string))
+                        {
+                            string cellText = row.ItemArray[j].ToString();
+                            resultRow.Cells.Add(CreateCell(cellText, lastBottom, lastBottom));
+                        }
+                        else if (row.ItemArray[j].GetType() == typeof(bool))
+                        {
+                            bool cellText = row.ItemArray[j].ToBool();
+                            resultRow.Cells.Add(CreateCell(cellText == true ? "Ja" : "Nein", lastBottom, lastBottom));
+                        }
+                        else if (row.ItemArray[j].GetType() == typeof(DateTime))
+                        {
+                            DateTime cellText = row.ItemArray[j].ToDateTime();
+                            resultRow.Cells.Add(CreateCell(cellText == new DateTime(1900,1,1) ? string.Empty : cellText.ToShortDateString(), lastBottom, lastBottom));
+                        }
+                        else
+                        {
+                            resultRow.Cells.Add(CreateCell(string.Empty, lastBottom, lastBottom));
+                        }
+                    }
+
+                    resultGroup.Rows.Add(resultRow);
+                    table.RowGroups.Add(resultGroup);
+                }
+
+                fd.Blocks.Add(table);
+                printDialog.PrintDocument((docPaginatorSource).DocumentPaginator, "Password Manager");
+            }
         }
 
         private TableCell CreateHeaderCell(string text, bool lastRight, bool lastBottom)
@@ -272,46 +409,6 @@
             return tableCell;
         }
 
-        private TableCell CreateCell(string text, int colSpan, int rowSpan, bool lastRight, bool lastBottom, bool filled, bool boldText, int fontSize = 0)
-        {
-            TableCell tableCell = new TableCell();
-            if (filled)
-            {
-                tableCell.Background = Brushes.DimGray;
-            }
-            tableCell.BorderBrush = Brushes.DimGray;
-            tableCell.BorderThickness = new Thickness(0, 0, lastRight ? 0 : 1, lastBottom ? 0 : 1);
-
-            if (colSpan > 0)
-            {
-                tableCell.ColumnSpan = colSpan;
-            }
-
-            if (rowSpan > 0)
-            {
-                tableCell.RowSpan = rowSpan;
-            }
-
-            Paragraph cellPara = new Paragraph();
-            cellPara.FontFamily = new FontFamily(FONTNAME);
-            cellPara.FontSize = 11;
-            cellPara.KeepTogether = true;
-            if (boldText == true)
-            {
-                cellPara.FontWeight = FontWeights.Bold;
-            }
-
-            if (fontSize > 1)
-            {
-                cellPara.FontSize = fontSize;
-            }
-
-            cellPara.Inlines.Add(new Run(text));
-            tableCell.Blocks.Add(cellPara);
-
-            return tableCell;
-        }
-
         private TableCell CreateCell(string text, bool lastRight, bool lastBottom)
         {
             TableCell tableCell = new TableCell();
@@ -324,26 +421,6 @@
             cellPara.FontSize = 11;
             cellPara.KeepTogether = true;
             cellPara.Inlines.Add(new Run(text));
-            tableCell.Blocks.Add(cellPara);
-
-            return tableCell;
-        }
-
-        private TableCell CreateCell(int number, bool lastRight, bool lastBottom, bool boldText = false)
-        {
-            TableCell tableCell = new TableCell();
-            tableCell.BorderBrush = Brushes.Gray;
-            tableCell.BorderThickness = new Thickness(0, 0, lastRight ? 0 : 1, lastBottom ? 0 : 1);
-
-            Paragraph cellPara = new Paragraph();
-            cellPara.FontFamily = new FontFamily(FONTNAME);
-            cellPara.FontSize = 11;
-            cellPara.Inlines.Add(new Run(number.ToString()));
-            if (boldText)
-            {
-                cellPara.FontWeight = FontWeights.Bold;
-            }
-
             tableCell.Blocks.Add(cellPara);
 
             return tableCell;
