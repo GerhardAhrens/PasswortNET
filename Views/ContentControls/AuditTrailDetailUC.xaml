@@ -57,8 +57,9 @@
             <ModernUI:FlatListView
                 x:Name="lvwTracking"
                 Grid.Row="1"
-                Width="{Binding Path=ActualWidth, ElementName=nameAuditTrailDetailUC, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                Width="750"
                 Margin="0,5,0,0"
+                HorizontalAlignment="Left"
                 ModernUI:ListViewSort.AutoSort="True"
                 AllowDrop="False"
                 AlternationCount="2"
@@ -90,7 +91,7 @@
                             DisplayMemberBinding="{Binding Path=ActivityTyp}"
                             Header="Aktivität" />
 
-                        <GridViewColumn Width="200">
+                        <GridViewColumn Width="220">
                             <GridViewColumnHeader Height="Auto">
                                 <TextBlock
                                     Grid.Row="0"
@@ -108,7 +109,7 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn Width="200">
+                        <GridViewColumn Width="220">
                             <GridViewColumnHeader Height="Auto">
                                 <TextBlock
                                     Grid.Row="0"
