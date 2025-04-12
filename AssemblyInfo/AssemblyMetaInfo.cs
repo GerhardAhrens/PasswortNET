@@ -30,7 +30,7 @@ namespace PasswortNET.Core
 
         public string AssemblyName => "PasswordNET";
 
-        public Version AssemblyVersion => new Version(1,0,2025,1);
+        public Version AssemblyVersion => new Version(1,0,2025,10);
 
         public string Description => "Passwortverwaltung für Web-Zupänge, Passwörter, PIN, Lizenzen";
 

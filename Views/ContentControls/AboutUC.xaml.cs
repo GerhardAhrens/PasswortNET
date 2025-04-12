@@ -1,5 +1,6 @@
 ﻿namespace PasswortNET.Views.ContentControls
 {
+    using System.IO;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
@@ -104,6 +105,18 @@
             get => base.GetValue<string>();
             set => base.SetValue(value);
         }
+
+        public string DatenbankFile
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
+
+        public string DatenbankSize
+        {
+            get => base.GetValue<string>();
+            set => base.SetValue(value);
+        }
         #endregion Properties
 
         public override void InitCommands()
@@ -158,6 +171,12 @@
                             this.CountPin = repository.CountPin;
                             this.CountLicense = repository.CountLicense;
                             this.LastAccess = repository.LastAccess;
+                            string fileName = repository.DatabaseName;
+                            if (File.Exists(fileName) == true)
+                            {
+                                this.DatenbankFile = fileName;
+                                this.DatenbankSize = string.Format(new FileSizeFormatTo(), "{0:fs}", new FileInfo(this.DatenbankFile).Length);
+                            }
                         }
 
                         StatusbarMain.Statusbar.SetNotification($"Bereit: {result.ElapsedMilliseconds}ms");
