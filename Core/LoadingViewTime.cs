@@ -1,11 +1,11 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ObjectRuntime.cs" company="PTA GmbH">
+// <copyright file="ObjectRuntime.cs" company=" GmbH">
 //     Class: ObjectRuntime
-//     Copyright © PTA GmbH 2020
+//     Copyright ©  GmbH 2020
 // </copyright>
 //
-// <author>Gerhard Ahrens - PTA GmbH</author>
-// <email>gerhard.ahrens@pta.de</email>
+// <author>Gerhard Ahrens -  GmbH</author>
+// <email>gerhard.ahrens@.de</email>
 // <date>17.11.2020</date>
 //
 // <summary>

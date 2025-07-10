@@ -1,11 +1,11 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="WaitCursor.cs" company="PTA GmbH">
+// <copyright file="WaitCursor.cs" company=" GmbH">
 //     Class: WaitCursor
 //     Copyright © Gerhard Ahrens, 2017
 // </copyright>
 //
-// <author>Gerhard Ahrens - PTA GmbH</author>
-// <email>gerhard.ahrens@pta.de</email>
+// <author>Gerhard Ahrens -  GmbH</author>
+// <email>gerhard.ahrens@.de</email>
 // <date>25.07.2017</date>
 //
 // <summary>

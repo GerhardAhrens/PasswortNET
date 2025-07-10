@@ -1,11 +1,11 @@
 //-----------------------------------------------------------------------
-// <copyright file="AssemblyMetaInfo.cs" company="www.pta.de">
+// <copyright file="AssemblyMetaInfo.cs" company="www..de">
 //     Class: AssemblyMetaInfo
-//     Copyright © www.pta.de 2024
+//     Copyright © www..de 2024
 // </copyright>
 //
-// <author>Gerhard Ahrens - www.pta.de</author>
-// <email>gerhard.ahrens@pta.de</email>
+// <author>Gerhard Ahrens - www..de</author>
+// <email>gerhard.ahrens@.de</email>
 // <date>03.12.2024 07:49:42</date>
 //
 // <summary>
