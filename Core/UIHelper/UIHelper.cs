@@ -17,7 +17,6 @@ namespace PasswortNET.Core
 {
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Media;
 
     public static class UIHelper
     {
